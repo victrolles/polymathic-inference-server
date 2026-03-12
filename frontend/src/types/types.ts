@@ -20,9 +20,28 @@ export type imageSize = {
 
 export type ResultStatus = 'no' | 'loading' | 'done';
 
+export type IdName = {
+    id: string;
+    name: string;
+}
+
+export type ModelSizesTasks =  {
+    model: IdName;
+    sizes: IdName[];
+    tasks: IdName[];
+}
+
+export type ModelsSizesTasks = ModelSizesTasks[];
+
 export type ModelTask = {
     model_name: string;
     task_name: string;
+}
+
+export type ModelSizeTaskId = {
+    model_id: string;
+    size_id: string;
+    task_id: string;
 }
 
 export type ModelTasks = ModelTask[];

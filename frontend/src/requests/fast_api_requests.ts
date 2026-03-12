@@ -1,7 +1,7 @@
-import type { ConfigDict, MediaFiles, MediaType, ModelTask, ModelTasks } from "../types/types";
+import type { ConfigDict, MediaFiles, MediaType, ModelSizeTaskId, ModelsSizesTasks } from "../types/types";
 
-export async function requestAllModelsAndTheirFirstTask(): Promise<ModelTasks> {
-    const response = await fetch("http://localhost:8000/api/request_all_models_and_their_first_task", {
+export async function requestAllModelsSizesTasks(): Promise<ModelsSizesTasks> {
+    const response = await fetch("http://localhost:8000/api/request_all_models_sizes_tasks", {
         method: "GET",
     });
 
@@ -10,31 +10,14 @@ export async function requestAllModelsAndTheirFirstTask(): Promise<ModelTasks> {
     }
 
     const data = await response.json();
-    const model_tasks: ModelTasks = data.model_tasks.map((model_task: ModelTask) => ({ model_name: model_task.model_name, task_name: model_task.task_name }));
-    return model_tasks;
+    return data.models_sizes_tasks as ModelsSizesTasks;
 }
 
-export async function requestAllTasksNameForAModel(model_name: string): Promise<string[]> {
-    const response = await fetch("http://localhost:8000/api/request_all_tasks_name_for_a_model", {
+export async function requestAModelConfigDict(model_id: string): Promise<ConfigDict> {
+    const response = await fetch("http://localhost:8000/api/request_a_model_config_dict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model_name }),
-    });
-    
-    if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}`);
-    }
-
-    const data = await response.json();
-    const task_names: string[] = data.task_names.map((task_name: string) => task_name);
-    return task_names;
-}
-
-export async function requestConfigDictForATask(model_task: ModelTask): Promise<ConfigDict> {
-    const response = await fetch("http://localhost:8000/api/request_config_dict_for_a_task", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model_task }),
+        body: JSON.stringify({ model_id }),
     });
     
     if (!response.ok) {
@@ -42,15 +25,15 @@ export async function requestConfigDictForATask(model_task: ModelTask): Promise<
     }
     
     const data = await response.json();
-    const config_dict: ConfigDict = data.config_dict;
+    const config_dict: ConfigDict = data.config_dict as ConfigDict;
     return config_dict;
 }
 
-export async function requestRandomDataSamples(model_task: ModelTask): Promise<MediaFiles> {
+export async function requestRandomDataSamples(model_size_task_id: ModelSizeTaskId): Promise<MediaFiles> {
     const response = await fetch("http://localhost:8000/api/request_random_data_samples", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model_task }),
+        body: JSON.stringify({ model_size_task_id }),
     });
 
     if (!response.ok) {
@@ -62,11 +45,11 @@ export async function requestRandomDataSamples(model_task: ModelTask): Promise<M
     return mediaFiles;
 }
 
-export async function requestInference(model_task: ModelTask, names: string[]): Promise<MediaFiles> {
-    const response = await fetch("http://localhost:8000/api/request_inference", {
+export async function requestInference(model_size_task_id: ModelSizeTaskId, media_file_ids: string[]): Promise<MediaFiles> {
+    const response = await fetch("http://localhost:8000/api/request_inference_by_media_file_ids", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model_task, names }),
+        body: JSON.stringify({ model_size_task_id, media_file_ids }),
     });
 
     if (!response.ok) {

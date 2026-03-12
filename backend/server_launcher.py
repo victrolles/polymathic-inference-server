@@ -44,19 +44,19 @@ def start_servers():
         "gateway",
         GATEWAY_PORT,
         GATEWAY_HOST,
-        {"GATEWAY_PORT": GATEWAY_PORT, "GATEWAY_HOST": GATEWAY_HOST},
+        {"GATEWAY_PORT": GATEWAY_PORT, "GATEWAY_HOST": GATEWAY_HOST, "MEDIA_FILES_PATH": MEDIA_FILES_PATH},
         GATEWAY_VENV_PATH
     )
     procs.append(("gateway", gateway_proc))
 
     models = os.listdir(MODELS_PATH)
     idx = 0
-    for model_name in models:
-        model_sizes = get_model_sizes_from_config(MODELS_PATH, model_name)
-        venv_file_path = os.path.join(MODELS_PATH, model_name, "inference.env")
+    for model_id in models:
+        model_sizes = get_model_sizes_from_config(MODELS_PATH, model_id)
+        venv_file_path = os.path.join(MODELS_PATH, model_id, "inference.env")
         load_dotenv(venv_file_path)
         worker_venv_path = os.getenv("VENV_PATH")
-        for model_size in model_sizes:
+        for size in model_sizes:
             media_service_port = MEDIA_SERVICE_BASE_PORT + idx
             worker_port = WORKER_BASE_PORT + idx
 
@@ -73,11 +73,11 @@ def start_servers():
                 "GATEWAY_HOST": GATEWAY_HOST,
                 "WORKER_PORT": worker_port,
                 "WORKER_HOST": WORKER_HOST,
-                "MODEL_NAME": model_name,
-                "MODEL_SIZE": model_size["id"]},
+                "MODEL_ID": model_id,
+                "SIZE_ID": size["id"]},
                 MEDIA_SERVICE_VENV_PATH
             )
-            procs.append((f"{model_name}-{model_size['id']}-media-service", media_service_proc))
+            procs.append((f"{model_id}-{size['id']}-media-service", media_service_proc))
 
             # --- WORKER ---
             worker_proc = start_server(
@@ -87,7 +87,7 @@ def start_servers():
                 {"WORKER_PORT": worker_port,"WORKER_HOST": WORKER_HOST},
                 worker_venv_path
             )
-            procs.append((f"{model_name}-{model_size['id']}-worker", worker_proc))
+            procs.append((f"{model_id}-{size['id']}-worker", worker_proc))
             idx += 1
 
     return procs

@@ -14,7 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
-          <Route path="/inference/:model_name/:task_name" element={<Inference />} />
+          <Route path="/inference/:model_id/:size_id/:task_id" element={<Inference />} />
         </Route>
       </Routes>
     </Router>

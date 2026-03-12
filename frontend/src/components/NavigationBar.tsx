@@ -1,30 +1,62 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { requestAllModelsAndTheirFirstTask } from "../requests/fast_api_requests";
-import type { ModelTask, ModelTasks } from "../types/types";
+import { requestAllModelsSizesTasks } from "../requests/fast_api_requests";
+import type { IdName, ModelSizesTasks, ModelsSizesTasks } from "../types/types";
+import type { ModelSelectorProps, SizeSelectorProps } from "../types/interfaces";
 
-function ModelSelector({ model_tasks, loading, setIsModelSelectorOpen }: { model_tasks: ModelTasks; loading: boolean; setIsModelSelectorOpen: (isModelSelectorOpen: boolean) => void }) {
-    if (loading) return <select disabled><option>...</option></select>;
+function SizeSelector({model, sizes, task, setIsModelSelectorOpen}: SizeSelectorProps) {
+    return (
+        <div className="size-selector">
+            {sizes.map((size: IdName) => (
+                <Link
+                    key={size.id}
+                    to={`/inference/${model.id}/${size.id}/${task.id}`}
+                    onClick={() => {
+                        setIsModelSelectorOpen(false);
+                    }}
+                    className="size-selector-item"
+                >
+                    {size.name}
+                </Link>
+            ))}
+        </div>
+    );
+}
+
+function ModelSelector({models_sizes_tasks, setIsModelSelectorOpen} : ModelSelectorProps) {
+    const [isSizeSelectorOpen, setIsSizeSelectorOpen] = useState(false);
+    const [selectedModel, setSelectedModel] = useState<IdName | null>(null);
     return (
         <div className="model-selector">
-          {loading ? <div className="model-selector-item">Loading...</div> : (
-            model_tasks.map((model_task: ModelTask) => (
-                <Link key={`${model_task.model_name}-${model_task.task_name}`} to={`/inference/${model_task.model_name}/${model_task.task_name}`} className="model-selector-item" onClick={() => setIsModelSelectorOpen(false)}>{model_task.model_name}</Link>
-            ))
-          )}
+            {models_sizes_tasks.map((model_sizes_tasks: ModelSizesTasks) => (
+                <div key={model_sizes_tasks.model.id} onClick={() => setSelectedModel(model_sizes_tasks.model)}>
+                    <div
+                        className="model-selector-item"
+                        onClick={() => setIsSizeSelectorOpen(!isSizeSelectorOpen)}
+                    >
+                        {model_sizes_tasks.model.name}
+                    </div>
+                    {selectedModel && selectedModel.id === model_sizes_tasks.model.id && (
+                        <SizeSelector
+                            model={model_sizes_tasks.model}
+                            sizes={model_sizes_tasks.sizes}
+                            task={model_sizes_tasks.tasks[0]}
+                            setIsModelSelectorOpen={setIsModelSelectorOpen}
+                        />
+                    )}
+                </div>
+            ))}
         </div>
-    );  
+    );
 }
 
 function NavigationBar() {
     const [isModelSelectorOpen, setIsModelSelectorOpen] = useState(false);
-    const [model_tasks, setModelTasks] = useState<ModelTasks>([]);
-    const [loading, setLoading] = useState(true);
+    const [models_sizes_tasks, setModelsSizesTasks] = useState<ModelsSizesTasks>([]);
 
     useEffect(() => {
-        requestAllModelsAndTheirFirstTask()
-            .then(setModelTasks)
-            .finally(() => setLoading(false));
+        requestAllModelsSizesTasks()
+            .then(setModelsSizesTasks)
     }, []);
 
     return (
@@ -35,7 +67,7 @@ function NavigationBar() {
                 <li className="navigation-bar-item" >
                   <div className="model-selector-dropdown">
                     <span onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}>Models</span>
-                    {isModelSelectorOpen && <ModelSelector model_tasks={model_tasks} loading={loading} setIsModelSelectorOpen={setIsModelSelectorOpen} />}
+                    {isModelSelectorOpen && <ModelSelector models_sizes_tasks={models_sizes_tasks} setIsModelSelectorOpen={setIsModelSelectorOpen} />}
                   </div>
                 </li>
             </ul>

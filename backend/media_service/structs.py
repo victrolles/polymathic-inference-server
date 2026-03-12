@@ -6,8 +6,8 @@ class IdName(BaseModel):
 
 class ServerInfo(BaseModel):
     url: str
-    model_name: str
-    model_size: str
+    model_id: str
+    size_id: str
 
 class Model(BaseModel):
     model: IdName

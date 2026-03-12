@@ -1,4 +1,4 @@
-import type { imageSize, MediaFile, MediaFileNames, MediaFiles, MediaType, ModelTask } from './types';
+import type { IdName, imageSize, MediaFile, MediaFileNames, MediaFiles, MediaType, ModelsSizesTasks, ModelTask } from './types';
 
 export interface ImagesSelectorProps {
     mediaFiles: MediaFiles;
@@ -49,4 +49,16 @@ export interface InferenceProps {
 export interface InferenceRequestProps {
     model_task: ModelTask;
     names: MediaFileNames;
+}
+
+export interface ModelSelectorProps {
+    models_sizes_tasks: ModelsSizesTasks;
+    setIsModelSelectorOpen: (open: boolean) => void;
+}
+
+export interface SizeSelectorProps {
+    model: IdName;
+    sizes: IdName[];
+    task: IdName;
+    setIsModelSelectorOpen: (open: boolean) => void;
 }

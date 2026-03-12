@@ -1,12 +1,14 @@
 import os
 import asyncio
 from contextlib import asynccontextmanager
+import sys
 
 import httpx
 from fastapi import FastAPI
 
 from .structs import ServerInfo
 from .utils import extend_url, prints
+from .data_manager import DataManager
 
 GATEWAY_PORT = os.getenv("GATEWAY_PORT", "8000")
 GATEWAY_HOST = os.getenv("GATEWAY_HOST", "localhost")
@@ -20,8 +22,8 @@ WORKER_HOST = os.getenv("WORKER_HOST", "localhost")
 WORKER_PORT = os.getenv("WORKER_PORT", "8001")
 WORKER_URL = f"http://{WORKER_HOST}:{WORKER_PORT}/"
 
-MODEL_NAME = os.getenv("MODEL_NAME", "unknown")
-MODEL_SIZE = os.getenv("MODEL_SIZE", "unknown")
+MODEL_ID = os.getenv("MODEL_ID", "unknown")
+SIZE_ID = os.getenv("SIZE_ID", "unknown")
 
 MEDIA_FILES_PATH = os.getenv("MEDIA_FILES_PATH", "unknown")
 MODELS_PATH = os.getenv("MODELS_PATH", "unknown")
@@ -65,8 +67,8 @@ async def lifespan(app: FastAPI):
 
     info = ServerInfo(
         url=MEDIA_SERVICE_URL,
-        model_name=MODEL_NAME,
-        model_size=MODEL_SIZE,
+        model_id=MODEL_ID,
+        size_id=SIZE_ID,
     )
     await send_server_info("Worker", WORKER_URL, info)
     await send_server_info("Gateway", GATEWAY_URL, info)
@@ -75,5 +77,17 @@ async def lifespan(app: FastAPI):
     await remove_server_info("Worker", WORKER_URL)
     await remove_server_info("Gateway", GATEWAY_URL)
 
-
 app = FastAPI(lifespan=lifespan)
+
+model_path = os.path.join(MODELS_PATH, MODEL_ID)
+sys.path.insert(0, model_path)
+
+data_manager = DataManager(MEDIA_FILES_PATH, model_path)
+
+@app.get("/api/request_model_sizes_tasks")
+async def request_model_sizes_tasks():
+    return data_manager.get_model_sizes_tasks().model_dump()
+
+@app.get("/api/request_config_dict")
+async def request_config_dict():
+    return data_manager.get_config_dict()

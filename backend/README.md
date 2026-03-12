@@ -42,6 +42,6 @@ python -m venv ~/venvs/polymathic-inference-server/media_service
 source ~/venvs/polymathic-inference-server/media_service/bin/activate
 pip install --upgrade pip
 pip install --upgrade pillow matplotlib numpy
-pip install --upgrade pydantic fastapi uvicorn httpx
+pip install --upgrade pydantic fastapi uvicorn httpx PyYAML
 pip install torch==2.10.0 torchvision --index-url https://download.pytorch.org/whl/cu130
 ```
