@@ -9,9 +9,6 @@ sizes:
   - id: aion-large
     name: AION Large
 
-  - id: aion-xlarge
-    name: AION XLarge
-
 media-types:
   - id: image
     type: image

@@ -6,12 +6,6 @@ sizes:
   - id: sol-base
     name: SOL Base
 
-  - id: sol-large
-    name: SOL Large
-
-  - id: sol-xlarge
-    name: SOL XLarge
-
 media-types:
   - id: video
     type: video

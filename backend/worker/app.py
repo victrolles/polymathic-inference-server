@@ -2,22 +2,31 @@ import os
 
 from fastapi import FastAPI
 
-GATEWAY_PORT = os.getenv("GATEWAY_PORT", "8000")
-GATEWAY_HOST = os.getenv("GATEWAY_HOST", "localhost")
-GATEWAY_URL = f"http://{GATEWAY_HOST}:{GATEWAY_PORT}"
+from .structs import ServerInfo
+from .utils import prints
 
 WORKER_HOST = os.getenv("WORKER_HOST", "localhost")
 WORKER_PORT = os.getenv("WORKER_PORT", "8001")
-WORKER_URL = f"http://{WORKER_HOST}:{WORKER_PORT}"
-
-MODEL_NAME = os.getenv("MODEL_NAME", "unknown")
-TASK_NAME = os.getenv("TASK_NAME", "default")
-
-MEDIA_FILES_PATH = os.getenv("MEDIA_FILES_PATH", "unknown")
-SRC_PATH = os.getenv("SRC_PATH", "unknown")
+WORKER_URL = f"http://{WORKER_HOST}:{WORKER_PORT}/"
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"message": f"Hello from Worker Server {WORKER_HOST}!"}
+REGISTERED_MEDIA_SERVICE: ServerInfo | None = None
+
+@app.get("/health")
+async def health():
+    return {"ok": True}
+
+@app.post("/add-server-info")
+async def receive_server_info(info: ServerInfo):
+    global REGISTERED_MEDIA_SERVICE
+    REGISTERED_MEDIA_SERVICE = info
+    prints(f"Registered media service: {info}")
+    return {"registered": True}
+
+@app.post("/remove-server-info")
+async def remove_server_info():
+    global REGISTERED_MEDIA_SERVICE
+    REGISTERED_MEDIA_SERVICE = None
+    prints("Deregistered media service.")
+    return {"removed": True}

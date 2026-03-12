@@ -6,12 +6,6 @@ sizes:
   - id: walrus-base
     name: Walrus Base
 
-  - id: walrus-large
-    name: Walrus Large
-
-  - id: walrus-xlarge
-    name: Walrus XLarge
-
 media-types:
   - id: video
     type: video

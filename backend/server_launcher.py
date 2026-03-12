@@ -3,7 +3,7 @@ import os
 
 from dotenv import load_dotenv
 
-from utils import get_model_sizes_from_config
+from utils import get_model_sizes_from_config, prints
 
 MODELS_PATH = "/mnt/home/vgoudal/polymathic-inference-server/models"
 MEDIA_FILES_PATH = "/mnt/home/vgoudal/polymathic-inference-server/tmp/media_files"
@@ -14,7 +14,7 @@ GATEWAY_VENV_PATH = "/mnt/home/vgoudal/venvs/polymathic-inference-server/gateway
 
 MEDIA_SERVICE_BASE_PORT = 6000
 MEDIA_SERVICE_HOST = "localhost"
-MEDIA_SERVICE_VENV_PATH = "/mnt/home/vgoudal/venvs/polymathic-inference-server/media-service"
+MEDIA_SERVICE_VENV_PATH = "/mnt/home/vgoudal/venvs/polymathic-inference-server/media_service"
 
 WORKER_BASE_PORT = 7000
 WORKER_HOST = "localhost"
@@ -53,14 +53,16 @@ def start_servers():
     idx = 0
     for model_name in models:
         model_sizes = get_model_sizes_from_config(MODELS_PATH, model_name)
+        venv_file_path = os.path.join(MODELS_PATH, model_name, "inference.env")
+        load_dotenv(venv_file_path)
+        worker_venv_path = os.getenv("VENV_PATH")
         for model_size in model_sizes:
-            print(model_size["id"])
             media_service_port = MEDIA_SERVICE_BASE_PORT + idx
             worker_port = WORKER_BASE_PORT + idx
 
             # --- MEDIA SERVICE ---
             media_service_proc = start_server(
-                "media-service",
+                "media_service",
                 media_service_port,
                 MEDIA_SERVICE_HOST,
                 {"MEDIA_SERVICE_PORT": media_service_port,
@@ -77,23 +79,12 @@ def start_servers():
             )
             procs.append((f"{model_name}-{model_size['id']}-media-service", media_service_proc))
 
-
             # --- WORKER ---
-            venv_file_path = os.path.join(MODELS_PATH, "src", model_name, "inference.env")
-            load_dotenv(venv_file_path)
-            worker_venv_path = os.getenv("VENV_PATH")
             worker_proc = start_server(
                 "worker",
                 worker_port,
                 WORKER_HOST,
-                {"WORKER_PORT": worker_port,
-                "WORKER_HOST": WORKER_HOST,
-                "GATEWAY_PORT": GATEWAY_PORT,
-                "GATEWAY_HOST": GATEWAY_HOST,
-                "MEDIA_SERVICE_PORT": media_service_port,
-                "MEDIA_SERVICE_HOST": MEDIA_SERVICE_HOST,
-                "MODEL_NAME": model_name,
-                "MODEL_SIZE": model_size["id"]},
+                {"WORKER_PORT": worker_port,"WORKER_HOST": WORKER_HOST},
                 worker_venv_path
             )
             procs.append((f"{model_name}-{model_size['id']}-worker", worker_proc))
@@ -104,9 +95,14 @@ def start_servers():
 if __name__ == "__main__":
     procs = start_servers()
     try:
+        prints("Starting servers...")
+        for idx, (name, proc) in enumerate(procs):
+            prints(f"Start {name} ({idx + 1}/{len(procs)})")
         for name, proc in procs:
             proc.wait()
     except KeyboardInterrupt:
-        print("Shutting down...")
-        for name, proc in procs:
+        prints("Shutting down...")
+        for idx, (name, proc) in enumerate(procs):
+            prints(f"Shutdown {name} ({idx + 1}/{len(procs)})")
             proc.terminate()
+        prints("All servers shutdown")
