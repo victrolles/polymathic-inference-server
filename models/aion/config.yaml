@@ -1,0 +1,79 @@
+model:
+  id: aion
+  name: AION
+
+sizes:
+  - id: aion-base
+    name: AION Base
+
+  - id: aion-large
+    name: AION Large
+
+  - id: aion-xlarge
+    name: AION XLarge
+
+media-types:
+  - id: image
+    type: image
+    python-format: PIL.PngImagePlugin.PngImageFile
+
+  - id: plot
+    type: image
+    python-format: matplotlib.figure.Figure
+
+modalities:
+  - id: rgb
+    name: RGB Image
+    media-type-id: image
+
+  - id: plot
+    name: Plot
+    media-type-id: plot
+
+tasks:
+  - id: redshift-prediction
+    name: Redshift Prediction
+    data-samples:
+      modality-id: rgb
+      multiple-data-selection: true
+      display-name: true
+
+    selected-data-samples:
+      display-name: false
+      display: false
+
+    data-outputs:
+      display-name: false
+      display-multiple-results: false
+      display-multiple-modalities: false
+      modality-id: plot
+
+    ui:
+      text-top-screen: "Get redshift predictions for a set of images"
+      data-size: { width: "200px", height: "200px" }
+      submit-button-text: "Search Redshift Predictions"
+
+  - id: similarity-search
+    name: Similarity Search
+    data-samples:
+      modality-id: rgb
+      multiple-data-selection: false
+      display-name: false
+
+    selected-data-samples:
+      display-name: false
+      display: true
+      display-multiple-modalities: false
+      modality-id: rgb
+
+    data-outputs:
+      display-name: false
+      display-multiple-results: true
+      display-multiple-modalities: false
+      modality-id: rgb
+
+    ui:
+      text-top-screen: "Find objects with similar photometry and morphology"
+      data-size: { width: "120px", height: "120px" }
+      selected-data-size: { width: "25vh", height: "25vh" }
+      submit-button-text: "Search Similarity"
