@@ -1,14 +1,16 @@
-import type { IdName, imageSize, MediaFile, MediaFileNames, MediaFiles, MediaType, ModelsSizesTasks, ModelTask } from './types';
+import type { Dict, IdName, mediaSize, MediaFile, MediaFileNames, MediaFiles, MediaKind, ModelsSizesTasks, ModelTask, selectableMediaFile } from './types';
 
-export interface ImagesSelectorProps {
-    mediaFiles: MediaFiles;
-    setMediaFiles: (mediaFiles: MediaFiles) => void;
-    displaySelectedImage: boolean;
-    imageSize: imageSize;
-    selectedImageSize: imageSize;
-    multipleSelection: boolean;
-    displayName: boolean;
-    mediaType: MediaType;
+export interface MediaSelectorProps {
+    selectableMediaFiles: selectableMediaFile[];
+    setSelectableMediaFiles: (selectableMediaFiles: selectableMediaFile[]) => void;
+    dataSamples: Dict;
+    dataSize: Dict;
+}
+
+export interface SelectedMediasDisplayProps {
+    selectableMediaFiles: selectableMediaFile[];
+    selectedDataSamples: Dict;
+    mediaSize: Dict;
 }
 
 export interface ImagesContainerProps {
@@ -16,7 +18,7 @@ export interface ImagesContainerProps {
     setMediaFiles: (mediaFiles: MediaFiles) => void;
     multipleSelection: boolean;
     displayName: boolean;
-    imageSize: imageSize;
+    mediaSize: mediaSize;
 }
 
 export interface ResultsContainerProps {
@@ -26,15 +28,15 @@ export interface ResultsContainerProps {
     selectedDataHeight: number;
     displaySelectedData: boolean;
     displayName: boolean;
-    mediaType: MediaType;
+    mediaKind: MediaKind;
 }
 
-export interface ImagesItemProps {
-    image: MediaFile;
+export interface MediaItemProps {
+    mediaFile: MediaFile;
     displayName: boolean;
     isSelected: boolean;
     onClick: () => void;
-    imageSize: imageSize;
+    mediaSize: mediaSize;
 }
 
 export interface SubmitButtonProps {

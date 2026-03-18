@@ -4,9 +4,9 @@ from contextlib import asynccontextmanager
 import sys
 
 import httpx
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
-from .structs import ServerInfo
+from .structs import ServerInfo, RandomDataSamplesRequest, ModelConfigTaskRequest
 from .utils import extend_url, prints
 from .data_manager import DataManager
 
@@ -28,8 +28,9 @@ SIZE_ID = os.getenv("SIZE_ID", "unknown")
 MEDIA_FILES_PATH = os.getenv("MEDIA_FILES_PATH", "unknown")
 MODELS_PATH = os.getenv("MODELS_PATH", "unknown")
 
-async def wait_for_server(server_name: str, server_url: str, interval: float = 1.0, request_timeout: float = 5.0):
+async def wait_for_server(server_name: str, server_url: str, interval: float = 5.0, request_timeout: float = 5.0):
     async with httpx.AsyncClient(timeout=request_timeout) as client:
+        timeout=0
         while True:
             try:
                 r = await client.get(extend_url(server_url, "/health"))
@@ -40,14 +41,21 @@ async def wait_for_server(server_name: str, server_url: str, interval: float = 1
                 pass
 
             prints(f"{server_name} {server_url} not ready yet, retrying in {interval}s...")
+            timeout += interval
+            if timeout > 60:
+                raise Exception(f"{server_name} {server_url} not ready after {timeout} seconds")
             await asyncio.sleep(interval)
 
 
-async def send_server_info(server_name: str, server_url: str, info: ServerInfo, request_timeout: float = 5.0,):
+async def send_server_info(server_name: str, server_url: str, info: ServerInfo, request_timeout: float = 10.0):
     async with httpx.AsyncClient(timeout=request_timeout) as client:
-        r = await client.post(extend_url(server_url, "/add-server-info"), json=info.model_dump())
-        r.raise_for_status()
-        prints(f"Sent ServerInfo to {server_name}: {server_url}")
+        try:
+            r = await client.post(extend_url(server_url, "/add-server-info"), json=info.model_dump())
+            r.raise_for_status()
+            prints(f"Sent ServerInfo to {server_name}: {server_url}")
+        except Exception as e:
+            prints(f"Failed to send ServerInfo to {server_name}: {server_url}: {e}")
+            raise e
 
 async def remove_server_info(server_name: str, server_url: str, request_timeout: float = 5.0):
     async with httpx.AsyncClient(timeout=request_timeout) as client:
@@ -82,12 +90,18 @@ app = FastAPI(lifespan=lifespan)
 model_path = os.path.join(MODELS_PATH, MODEL_ID)
 sys.path.insert(0, model_path)
 
-data_manager = DataManager(MEDIA_FILES_PATH, model_path)
+media_files_path = os.path.join(MEDIA_FILES_PATH, MODEL_ID, SIZE_ID)
+data_manager = DataManager(media_files_path, model_path)
 
 @app.get("/api/request_model_sizes_tasks")
 async def request_model_sizes_tasks():
     return data_manager.get_model_sizes_tasks().model_dump()
 
-@app.get("/api/request_config_dict")
-async def request_config_dict():
-    return data_manager.get_config_dict()
+@app.post("/api/request_config_task")
+async def request_config_task(request: ModelConfigTaskRequest):
+    return data_manager.get_config_task(request.task_id)
+
+@app.post("/api/request_random_data_samples")
+async def request_random_data_samples(request: RandomDataSamplesRequest):
+    media_files = data_manager.get_random_data_samples(request.task_id)
+    return [media_file.model_dump() for media_file in media_files]

@@ -1,22 +1,30 @@
-export type MediaType = 'image' | 'video' | 'audio' | 'text' | 'other';
+export type MediaKind = 'image' | 'video' | 'audio' | 'text' | 'other';
 
 export type MediaFileName = string;
 
 export type MediaFile = {
-    type: MediaType;
+    kind: MediaKind;
     path: string;
+    id: string;
+    dataset_index: number;
     name: MediaFileName;
-    isSelected: boolean;
 }
 
 export type MediaFileNames = MediaFileName[];
 
 export type MediaFiles = MediaFile[];
 
-export type imageSize = {
+export type mediaSize = {
     width: string;
     height: string;
 }
+
+export type selectableMediaFile = {
+    mediaFile: MediaFile;
+    isSelected: boolean;
+}
+
+export type SelectableMediaFiles = selectableMediaFile[];
 
 export type ResultStatus = 'no' | 'loading' | 'done';
 
@@ -46,6 +54,8 @@ export type ModelSizeTaskId = {
 
 export type ModelTasks = ModelTask[];
 
-export type ConfigDict = {
+export type Dict = {
     [key: string]: any;
 }
+
+export type ConfigTasks = Dict[];

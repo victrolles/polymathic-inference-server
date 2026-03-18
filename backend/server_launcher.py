@@ -3,7 +3,7 @@ import os
 
 from dotenv import load_dotenv
 
-from utils import get_model_sizes_from_config, prints
+from utils import get_model_sizes_from_config, prints, kill_ports
 
 MODELS_PATH = "/mnt/home/vgoudal/polymathic-inference-server/models"
 MEDIA_FILES_PATH = "/mnt/home/vgoudal/polymathic-inference-server/tmp/media_files"
@@ -38,6 +38,7 @@ def start_server(server_path, port, host, env_vars, venv_path):
 
 def start_servers():
     procs = []
+    used_ports = []
 
     # --- GATEWAY ---
     gateway_proc = start_server(
@@ -48,52 +49,60 @@ def start_servers():
         GATEWAY_VENV_PATH
     )
     procs.append(("gateway", gateway_proc))
+    used_ports.append(GATEWAY_PORT)
 
     models = os.listdir(MODELS_PATH)
-    idx = 0
-    for model_id in models:
+    size_idx = 0
+    for model_idx, model_id in enumerate(models):
+        media_service_port = MEDIA_SERVICE_BASE_PORT + model_idx
+
+        # --- MEDIA SERVICE ---
+        media_service_proc = start_server(
+            "media_service",
+            media_service_port,
+            MEDIA_SERVICE_HOST,
+            {"MEDIA_SERVICE_PORT": media_service_port,
+            "MEDIA_SERVICE_HOST": MEDIA_SERVICE_HOST,
+            "MODELS_PATH": MODELS_PATH,
+            "MEDIA_FILES_PATH": MEDIA_FILES_PATH,
+            "GATEWAY_PORT": GATEWAY_PORT,
+            "GATEWAY_HOST": GATEWAY_HOST,
+            "MODEL_ID": model_id},
+            MEDIA_SERVICE_VENV_PATH
+        )
+        procs.append((f"{model_id}-media-service", media_service_proc))
+        used_ports.append(media_service_port)
+
         model_sizes = get_model_sizes_from_config(MODELS_PATH, model_id)
         venv_file_path = os.path.join(MODELS_PATH, model_id, "inference.env")
         load_dotenv(venv_file_path)
         worker_venv_path = os.getenv("VENV_PATH")
-        for size in model_sizes:
-            media_service_port = MEDIA_SERVICE_BASE_PORT + idx
-            worker_port = WORKER_BASE_PORT + idx
 
-            # --- MEDIA SERVICE ---
-            media_service_proc = start_server(
-                "media_service",
-                media_service_port,
-                MEDIA_SERVICE_HOST,
-                {"MEDIA_SERVICE_PORT": media_service_port,
-                "MEDIA_SERVICE_HOST": MEDIA_SERVICE_HOST,
-                "MODELS_PATH": MODELS_PATH,
-                "MEDIA_FILES_PATH": MEDIA_FILES_PATH,
-                "GATEWAY_PORT": GATEWAY_PORT,
-                "GATEWAY_HOST": GATEWAY_HOST,
-                "WORKER_PORT": worker_port,
-                "WORKER_HOST": WORKER_HOST,
-                "MODEL_ID": model_id,
-                "SIZE_ID": size["id"]},
-                MEDIA_SERVICE_VENV_PATH
-            )
-            procs.append((f"{model_id}-{size['id']}-media-service", media_service_proc))
+        for size in model_sizes:    
+            worker_port = WORKER_BASE_PORT + size_idx
 
             # --- WORKER ---
             worker_proc = start_server(
                 "worker",
                 worker_port,
                 WORKER_HOST,
-                {"WORKER_PORT": worker_port,"WORKER_HOST": WORKER_HOST},
+                {"WORKER_PORT": worker_port,
+                 "WORKER_HOST": WORKER_HOST,
+                 "MODELS_PATH": MODELS_PATH,
+                 "MEDIA_SERVICE_PORT": media_service_port,
+                 "MEDIA_SERVICE_HOST": MEDIA_SERVICE_HOST,
+                 "MODEL_ID": model_id,
+                 "SIZE_ID": size["id"]},
                 worker_venv_path
             )
             procs.append((f"{model_id}-{size['id']}-worker", worker_proc))
-            idx += 1
+            used_ports.append(worker_port)
+            size_idx += 1
 
-    return procs
+    return procs, used_ports
 
 if __name__ == "__main__":
-    procs = start_servers()
+    procs, used_ports = start_servers()
     try:
         prints("Starting servers...")
         for idx, (name, proc) in enumerate(procs):
@@ -105,4 +114,11 @@ if __name__ == "__main__":
         for idx, (name, proc) in enumerate(procs):
             prints(f"Shutdown {name} ({idx + 1}/{len(procs)})")
             proc.terminate()
+        for proc in (p for _, p in procs):
+            try:
+                proc.wait(timeout=3)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+        prints("Freeing ports...")
+        kill_ports(used_ports)
         prints("All servers shutdown")

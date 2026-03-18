@@ -1,4 +1,4 @@
-import type { ConfigDict, MediaFiles, MediaType, ModelSizeTaskId, ModelsSizesTasks } from "../types/types";
+import type { Dict, MediaFiles, ModelSizeTaskId, ModelsSizesTasks } from "../types/types";
 
 export async function requestAllModelsSizesTasks(): Promise<ModelsSizesTasks> {
     const response = await fetch("http://localhost:8000/api/request_all_models_sizes_tasks", {
@@ -13,20 +13,18 @@ export async function requestAllModelsSizesTasks(): Promise<ModelsSizesTasks> {
     return data.models_sizes_tasks as ModelsSizesTasks;
 }
 
-export async function requestAModelConfigDict(model_id: string): Promise<ConfigDict> {
-    const response = await fetch("http://localhost:8000/api/request_a_model_config_dict", {
+export async function requestAModelConfigTask(model_size_task_id: ModelSizeTaskId): Promise<Dict> {
+    const response = await fetch("http://localhost:8000/api/request_a_model_config_task", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model_id }),
+        body: JSON.stringify({ model_size_task_id }),
     });
     
     if (!response.ok) {
         throw new Error(`HTTP error ${response.status}`);
     }
-    
     const data = await response.json();
-    const config_dict: ConfigDict = data.config_dict as ConfigDict;
-    return config_dict;
+    return data.config_task as Dict;
 }
 
 export async function requestRandomDataSamples(model_size_task_id: ModelSizeTaskId): Promise<MediaFiles> {
@@ -41,8 +39,7 @@ export async function requestRandomDataSamples(model_size_task_id: ModelSizeTask
     }
 
     const data = await response.json();
-    const mediaFiles: MediaFiles = data.media_files.map((media_file: any) => ({ name: media_file.name, path: media_file.path, type: media_file.type as MediaType, isSelected: false }));
-    return mediaFiles;
+    return data.media_files as MediaFiles;
 }
 
 export async function requestInference(model_size_task_id: ModelSizeTaskId, media_file_ids: string[]): Promise<MediaFiles> {
@@ -57,6 +54,5 @@ export async function requestInference(model_size_task_id: ModelSizeTaskId, medi
     }
 
     const data = await response.json();
-    const mediaFiles: MediaFiles = data.media_files.map((media_file: any) => ({ name: media_file.name, path: media_file.path, type: media_file.type as MediaType, isSelected: false }));
-    return mediaFiles;
+    return data as MediaFiles;
 }

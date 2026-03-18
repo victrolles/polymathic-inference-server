@@ -16,3 +16,7 @@ git commit -m "first commit"
 git branch -M main
 git remote add origin https://github.com/victrolles/polymathic-inference-server.git
 git push -u origin main
+
+# TODO
+faire une classe appart pour media_manager
+faire qu'il ne charge pas des media deja chargé

@@ -1,28 +1,28 @@
-import type { MediaFile, MediaFiles } from "../types/types";
+import type { SelectableMediaFiles, selectableMediaFile } from "../types/types";
 
 
-export default function selectMediaFile(mediaFiles: MediaFiles, selectedMediaFile: MediaFile, multipleSelection: boolean) {
+export function setMediaFileSelection(selectableMediaFiles: SelectableMediaFiles, selectableMediaFile: selectableMediaFile, multipleSelection: boolean) {
     if (multipleSelection) {
-        return mediaFiles.map((mediaFile    ) => {
-            if (mediaFile.name === selectedMediaFile.name) {
-                return { ...mediaFile, isSelected: !mediaFile.isSelected };
+        return selectableMediaFiles.map((smf) => {
+            if (smf.mediaFile.id === selectableMediaFile.mediaFile.id) {
+                return { ...smf, isSelected: !smf.isSelected };
             }
-            return mediaFile;
+            return smf;
         });
     } else {
-        return mediaFiles.map((mediaFile) => {
-            if (mediaFile.name === selectedMediaFile.name) {
-                return { ...mediaFile, isSelected: true };
+        return selectableMediaFiles.map((smf) => {
+            if (smf.mediaFile.id === selectableMediaFile.mediaFile.id) {
+                return { ...smf, isSelected: true };
             }
-            return { ...mediaFile, isSelected: false };
+            return { ...smf, isSelected: false };
         });
     }
 }
 
-export function getSelectedMediaFiles(mediaFiles: MediaFiles) {
-    return mediaFiles.filter((mediaFile) => mediaFile.isSelected);
+export function getSelectedMediaFiles(selectableMediaFiles: SelectableMediaFiles) {
+    return selectableMediaFiles.filter((smf) => smf.isSelected);
 }
 
-export function getSelectedMediaFileNames(mediaFiles: MediaFiles): string[] {
-    return mediaFiles.filter((mediaFile) => mediaFile.isSelected).map((mediaFile) => mediaFile.name);
+export function getSelectedMediaFileNames(selectableMediaFiles: SelectableMediaFiles): string[] {
+    return selectableMediaFiles.filter((smf) => smf.isSelected).map((smf) => smf.mediaFile.name);
 }
