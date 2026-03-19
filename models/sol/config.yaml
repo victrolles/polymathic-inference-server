@@ -27,17 +27,17 @@ data_types:
 visualizers:
   - id: generate_video_from_tensor
     input:
-      - data_type_id: x_tensor
+      data_type_id: x_tensor
     output:
-      - data_type_id: x_video
+      data_type_id: x_video
 
 inference:
   - id: sol-generation
     name: SOL Generation
     input:
-      - data_type_id: sol_dataset_dict
+      data_type_id: sol_dataset_dict
     output:
-      - data_type_id: x_tensor
+      data_type_id: x_tensor
 
 datasets:
   - id: sol_dataset
@@ -116,21 +116,17 @@ tasks:
 
     selected_data_samples:
       display: true
-      display_multiple_modalities: true
+      display_multiple_modalities_simultaneously: true
       modality_ids: [br, bp, bt]
-      multiple_modalities_config:
-        enable_switch_modalities: false
 
     data_outputs:
-      display_multiple_modalities: true
+      display_multiple_modalities_simultaneously: true
       modality_ids: [br, bp, bt]
-      switch_modalities_config:
-        enable_switch_modalities: true
-        modality_ids: [br, bp, bt]
-        default_modality_id: bp
+      enable_switch_modalities: true
+      switch_modality_ids: [br, bp, bt]
 
     ui:
-      text-top-screen: "Predict the sun's activity for a given video"
-      data-size: { width: "120px", height: "120px" }
-      selected-data-size: { width: "25vh", height: "25vh" }
-      submit-button-text: "Predict Sun Activity"
+      text_top_screen: "Predict the sun's activity for a given video"
+      data_size: { width: "120px", height: "120px" }
+      selected_data_size: { width: "25vh", height: "25vh" }
+      submit_button_text: "Predict Sun Activity"

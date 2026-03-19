@@ -34,8 +34,8 @@ class VisualizerIO(BaseModel):
 
 class VisualizerConfig(BaseModel):
     id: str
-    input: list[VisualizerIO] = Field(default_factory=list)
-    output: list[VisualizerIO] = Field(default_factory=list)
+    input: VisualizerIO
+    output: VisualizerIO
 
 class DatasetConfig(BaseModel):
     id: str
@@ -63,41 +63,35 @@ class SwitchModalitiesConfig(BaseModel):
     modality_ids: list[str]
     default_modality_id: str
 
-class DisplayMultipleModalitiesConfig(BaseModel):
-    modality_ids: list[str]
-    enable_switch_modalities: bool = False
-    switch_modalities_config: Optional[SwitchModalitiesConfig] = None
-
-    @model_validator(mode="after")
-    def validate_modalities(cls, values: "DisplayMultipleModalitiesConfig") -> "DisplayMultipleModalitiesConfig":
-        if values.enable_switch_modalities:
-            if values.switch_modalities_config is None:
-                raise ValueError(
-                    "switch_modalities_config must be provided when switch_modalities is True"
-                )
-        return values
 
 class DisplayDataConfig(BaseModel):
     display: bool = False
     display_name: bool = False
     display_modalities_names: bool = False
-    display_multiple_modalities: bool = False
+    display_multiple_modalities_simultaneously: bool = False
     display_multiple_results: bool = False
+    enable_switch_modalities: bool = False
     modality_id: Optional[str] = None
-    multiple_modalities_config: Optional[DisplayMultipleModalitiesConfig] = None
+    modality_ids: Optional[list[str]] = None
+    switch_modality_ids: Optional[list[str]] = None
 
     @model_validator(mode="after")
     def validate_display(cls, values: "DisplayDataConfig") -> "DisplayDataConfig":
         if values.display:
-            if values.display_multiple_modalities:
-                if values.multiple_modalities_config is None:
+            if values.display_multiple_modalities_simultaneously:
+                if values.modality_ids is None:
                     raise ValueError(
-                        "multiple_modalities_config must be provided when display_multiple_modalities is True"
+                        "modality_ids must be provided when display_multiple_modalities_simultaneously is True"
                     )
             else:
                 if values.modality_id is None:
                     raise ValueError(
-                        "modality_id must be provided when display_multiple_modalities is False"
+                        "modality_id must be provided when display_multiple_modalities_simultaneously is False"
+                    )
+            if values.enable_switch_modalities:
+                if values.switch_modality_ids is None:
+                    raise ValueError(
+                        "switch_modality_ids must be provided when enable_switch_modalities is True"
                     )
         return values
 

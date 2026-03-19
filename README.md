@@ -17,6 +17,11 @@ git branch -M main
 git remote add origin https://github.com/victrolles/polymathic-inference-server.git
 git push -u origin main
 
+fuser -k -TERM 8000/tcp 6000-6010/tcp 7000-7010/tcp 2>/dev/null || true
+sleep 1
+fuser -k -KILL 8000/tcp 6000-6010/tcp 7000-7010/tcp 2>/dev/null || true
+
+
 # TODO
 faire une classe appart pour media_manager
 faire qu'il ne charge pas des media deja chargé

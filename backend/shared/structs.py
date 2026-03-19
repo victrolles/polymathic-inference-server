@@ -1,5 +1,7 @@
 from pydantic import BaseModel
-from media_service.data_kind import DataKind
+from typing import Any, Optional
+
+from media_service.config.data_kind import DataKind
 
 class IdName(BaseModel):
     id: str
@@ -8,23 +10,14 @@ class IdName(BaseModel):
 class ServerInfo(BaseModel):
     url: str
     model_id: str
-    size_id: str
+    size_id: Optional[str] = None
 
-class Model(BaseModel):
+class ModelInfo(BaseModel):
     model: IdName
     sizes: list[IdName]
     tasks: list[IdName]
 
-class MediaFile(BaseModel):
-    kind: DataKind
-    id: str
-    dataset_index: int
-    name: str
-    path: str
-
-class ModelConfigTaskRequest(BaseModel):
-    model_id: str
-    size_id: str
+class TaskRequest(BaseModel):
     task_id: str
 
 class ModelSizeTaskId(BaseModel):
@@ -35,54 +28,30 @@ class ModelSizeTaskId(BaseModel):
 class ModelSizeTaskRequest(BaseModel):
     model_size_task_id: ModelSizeTaskId
 
-class RandomDataSamplesRequest(BaseModel):
-    model_size_task_id: ModelSizeTaskId
+# --------- DATA ---------
 
-from pydantic import BaseModel
-from typing import Any
-from .data_kind import DataKind
-class IdName(BaseModel):
+class DatasetLocation(BaseModel):
+    id: str
+    index: int
+
+class MediaFile(BaseModel):
     id: str
     name: str
+    path: str
 
-class ServerInfo(BaseModel):
-    url: str
-    model_id: str
-    size_id: str
+class Modality(BaseModel):
+    id: str
+    kind: DataKind
+    media_file: MediaFile
 
-class Model(BaseModel):
-    model: IdName
-    sizes: list[IdName]
-    tasks: list[IdName]
+class Packet(BaseModel):
+    origin: ModelSizeTaskId | DatasetLocation
+    modalities: list[Modality]
 
-class ModelConfigTaskRequest(BaseModel):
-    task_id: str
-
-class RandomDataSamplesRequest(BaseModel):
-    task_id: str
+class CachedFile(BaseModel):
+    origin: DatasetLocation
+    modalities: list[Modality]
 
 class Dataset(BaseModel):
     id: str
     data: Any
-
-class MediaFile(BaseModel):
-    kind: DataKind
-    id: str
-    dataset_index: int
-    name: str
-    path: str
-
-from pydantic import BaseModel
-from dataclasses import dataclass, field
-from typing import Dict, List, Union
-from PIL import PngImagePlugin
-import matplotlib.figure
-
-class ServerInfo(BaseModel):
-    url: str
-    model_id: str
-    size_id: str
-
-class RandomDataSamplesRequest(BaseModel):
-    input: dict
-    task_id: str

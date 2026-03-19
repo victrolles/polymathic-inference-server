@@ -30,9 +30,9 @@ data_types:
 visualizers:
   - id: prediction-tensor-to-plot
     input:
-      - data_type_id: prediction-dict
+      data_type_id: prediction-dict
     output:
-      - data_type_id: plot-prediction
+      data_type_id: plot-prediction
 
 datasets:
   - id: legacy-survey

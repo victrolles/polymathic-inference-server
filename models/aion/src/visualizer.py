@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 
-def visualize(input, visualizer_id: str):
-    if visualizer_id == "prediction-tensor-to-plot":
+def visualize(input, modality_id: str):
+    if modality_id == "plot":
         return plot_prediction(input)
     else:
-        raise ValueError(f"Visualizer {visualizer_id} not found")
+        raise ValueError(f"Visualizer {modality_id} not found")
 
 def plot_prediction(input):
     for i in range(input.predictions.shape[0]):

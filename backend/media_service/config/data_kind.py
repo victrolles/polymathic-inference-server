@@ -6,6 +6,7 @@ import numpy as np
 import torch
 from PIL.Image import Image as PILImage
 from matplotlib.figure import Figure
+from matplotlib.animation import Animation
 import PIL.PngImagePlugin
 
 class CheckpointFormat(str, Enum):
@@ -52,6 +53,11 @@ REPRESENTATIONS = {
         python_path="matplotlib.figure.Figure",
         python_types=(Figure,),
     ),
+    "matplotlib_animation": Representation(
+        id="matplotlib_animation",
+        python_path="matplotlib.animation.Animation",
+        python_types=(Animation,),
+    ),
     "python_dict": Representation(
         id="python_dict",
         python_path="dict",
@@ -77,9 +83,12 @@ DATA_KIND_REPRESENTATIONS = {
     DataKind.IMAGE: [
         "pil_image",
         "matplotlib_figure",
-        "numpy_array",  # si tu veux autoriser aussi image sous forme ndarray
+        "numpy_array",
     ],
     DataKind.LIST: [
         "python_list",
+    ],
+    DataKind.VIDEO: [
+        "matplotlib_animation",
     ],
 }

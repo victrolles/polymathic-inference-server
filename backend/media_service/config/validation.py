@@ -1,4 +1,4 @@
-from .config_registry import ConfigRegistry
+from .registry import ConfigRegistry
 
 class ConfigValidationError(Exception):
     pass
@@ -28,16 +28,14 @@ def validate_references(registry: ConfigRegistry) -> None:
                 )
 
     for visualizer in registry.config.visualizers:
-        for item in visualizer.input:
-            if item.data_type_id not in data_type_ids:
-                raise ConfigValidationError(
-                    f"Visualizer '{visualizer.id}' input references unknown data_type_id '{item.data_type_id}'"
-                )
-        for item in visualizer.output:
-            if item.data_type_id not in data_type_ids:
-                raise ConfigValidationError(
-                    f"Visualizer '{visualizer.id}' output references unknown data_type_id '{item.data_type_id}'"
-                )
+        if visualizer.input.data_type_id not in data_type_ids:
+            raise ConfigValidationError(
+                f"Visualizer '{visualizer.id}' input references unknown data_type_id '{visualizer.input.data_type_id}'"
+            )
+        if visualizer.output.data_type_id not in data_type_ids:
+            raise ConfigValidationError(
+                f"Visualizer '{visualizer.id}' output references unknown data_type_id '{visualizer.output.data_type_id}'"
+            )
 
     for task in registry.config.tasks:
         if task.data_samples.modality_id and task.data_samples.modality_id not in modality_ids:
@@ -53,7 +51,9 @@ def validate_references(registry: ConfigRegistry) -> None:
                 f"Task '{task.id}' selected_data_samples references unknown modality_id '{task.selected_data_samples.modality_id}'"
             )
 
-        if task.data_outputs.modality_id not in modality_ids:
+        # When `display_multiple_modalities` is enabled, configs may omit `modality_id`
+        # and instead specify modality ids through the multi/switch modalities blocks.
+        if task.data_outputs.modality_id and task.data_outputs.modality_id not in modality_ids:
             raise ConfigValidationError(
                 f"Task '{task.id}' data_outputs references unknown modality_id '{task.data_outputs.modality_id}'"
             )
