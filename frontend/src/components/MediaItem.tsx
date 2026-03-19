@@ -1,10 +1,10 @@
 import type { MediaItemProps } from "../types/interfaces";
 
-function MediaItem({ mediaFile, displayName, isSelected, onClick, mediaSize }: MediaItemProps) {
+function MediaItem({ media_file, display_name, kind, media_size }: MediaItemProps) {
     return (
-        <div className={`media-item${isSelected ? "-selected" : ""}`}>
-            {displayName && <p className="media-item-name">{mediaFile.name}</p>}
-            <img src={mediaFile.path} alt={mediaFile.name} onClick={onClick} style={{ width: mediaSize.width, height: mediaSize.height }} />
+        <div className="media-item">
+            {display_name && <p className="media-item-name">{media_file.name}</p>}
+            {<img src={media_file.path} alt={media_file.name} style={{ width: media_size.width, height: media_size.height }} />}
         </div>
     );
 }

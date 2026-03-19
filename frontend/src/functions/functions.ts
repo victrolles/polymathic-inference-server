@@ -1,28 +1,28 @@
-import type { SelectableMediaFiles, selectableMediaFile } from "../types/types";
+import type { SelectablePackets, SelectablePacket, DatasetLocations, Packets } from "../types/types";
 
 
-export function setMediaFileSelection(selectableMediaFiles: SelectableMediaFiles, selectableMediaFile: selectableMediaFile, multipleSelection: boolean) {
-    if (multipleSelection) {
-        return selectableMediaFiles.map((smf) => {
-            if (smf.mediaFile.id === selectableMediaFile.mediaFile.id) {
-                return { ...smf, isSelected: !smf.isSelected };
+export function setPacketSelection(selectable_packets: SelectablePackets, selectable_packet: SelectablePacket, multiple_selection: boolean, index_modality: number) {
+    if (multiple_selection) {
+        return selectable_packets.map((smf) => {
+            if (smf.packet.modalities[index_modality].media_file.id === selectable_packet.packet.modalities[index_modality].media_file.id) {
+                return { ...smf, is_selected: !smf.is_selected };
             }
             return smf;
         });
     } else {
-        return selectableMediaFiles.map((smf) => {
-            if (smf.mediaFile.id === selectableMediaFile.mediaFile.id) {
-                return { ...smf, isSelected: true };
+        return selectable_packets.map((smf) => {
+            if (smf.packet.modalities[index_modality].media_file.id === selectable_packet.packet.modalities[index_modality].media_file.id) {
+                return { ...smf, is_selected: true };
             }
-            return { ...smf, isSelected: false };
+            return { ...smf, is_selected: false };
         });
     }
 }
 
-export function getSelectedMediaFiles(selectableMediaFiles: SelectableMediaFiles) {
-    return selectableMediaFiles.filter((smf) => smf.isSelected);
+export function getSelectedDatasetLocations(selectable_packets: SelectablePackets): DatasetLocations {
+    return selectable_packets.filter((sp) => sp.is_selected).map((sp) => sp.packet.origin) as DatasetLocations;
 }
 
-export function getSelectedMediaFileNames(selectableMediaFiles: SelectableMediaFiles): string[] {
-    return selectableMediaFiles.filter((smf) => smf.isSelected).map((smf) => smf.mediaFile.name);
+export function getSelectedPackets(selectable_packets: SelectablePackets): Packets {
+    return selectable_packets.filter((sp) => sp.is_selected).map((sp) => sp.packet) as Packets;
 }

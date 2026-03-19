@@ -340,3 +340,20 @@ ul {
     font-weight: bold;
     color: var(--primary-bg);
 }
+
+.media-item-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-image {
+    width: 25px;
+    height: 25px;
+}
+
+.packet-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

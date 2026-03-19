@@ -109,10 +109,11 @@ tasks:
 
     data_samples:
       modality_id: aia_0304
-      sample_size: 3
+      sample_size: 7
 
     selected_data_samples:
       display: true
+      display_modalities_names: true
       display_multiple_modalities_simultaneously: true
       modality_ids: [aia_1700, aia_0304]
 

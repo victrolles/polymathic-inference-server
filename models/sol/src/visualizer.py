@@ -269,11 +269,18 @@ def plot_sdo(x, idx, ax=None):
         return plot_aia(x_plot, ax=ax, wavelength=wvl)
 
 def make_video(x_obs: torch.Tensor, idx: int):
-    fig, ax = plt.subplots()
-    ax.axis('off')
+    fig, ax = plt.subplots(figsize=(4, 4), dpi=150)
+    ax.axis("off")
+
+    # Make the axes fill the whole figure
+    fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+    ax.set_position([0, 0, 1, 1])
 
     def update(frame):
-        return plot_sdo(x_obs[:,frame,:,:], idx, ax=ax)
+        ax.clear()
+        ax.axis("off")
+        ax.set_position([0, 0, 1, 1])
+        return plot_sdo(x_obs[:, frame, :, :], idx, ax=ax)
 
     plt.close()
 

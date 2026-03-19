@@ -41,6 +41,7 @@ class MediaFile(BaseModel):
 
 class Modality(BaseModel):
     id: str
+    name: str
     kind: DataKind
     media_file: MediaFile
 

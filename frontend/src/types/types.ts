@@ -1,32 +1,51 @@
 export type MediaKind = 'image' | 'video' | 'audio' | 'text' | 'other';
 
-export type MediaFileName = string;
-
-export type MediaFile = {
-    kind: MediaKind;
-    path: string;
-    id: string;
-    dataset_index: number;
-    name: MediaFileName;
+export type ModelSizeTaskId = {
+    model_id: string;
+    size_id: string;
+    task_id: string;
 }
 
-export type MediaFileNames = MediaFileName[];
+export type MediaFile = {
+    id: string;
+    name: string;
+    path: string;
+}
 
-export type MediaFiles = MediaFile[];
+export type DatasetLocation = {
+    id: string;
+    index: number;
+}
 
-export type mediaSize = {
+export type DatasetLocations = DatasetLocation[];
+
+export type Modality = {
+    id: string;
+    name: string;
+    kind: MediaKind;
+    media_file: MediaFile;
+}
+
+export type Packet = {
+    origin: ModelSizeTaskId | DatasetLocation;
+    modalities: Modality[];
+}
+
+export type Packets = Packet[];
+
+export type MediaSize = {
     width: string;
     height: string;
 }
 
-export type selectableMediaFile = {
-    mediaFile: MediaFile;
-    isSelected: boolean;
+export type SelectablePacket = {
+    packet: Packet;
+    is_selected: boolean;
 }
 
-export type SelectableMediaFiles = selectableMediaFile[];
+export type SelectablePackets = SelectablePacket[];
 
-export type ResultStatus = 'no' | 'loading' | 'done';
+export type Status = 'no' | 'loading' | 'done' | 'error';
 
 export type IdName = {
     id: string;
@@ -40,19 +59,6 @@ export type ModelSizesTasks =  {
 }
 
 export type ModelsSizesTasks = ModelSizesTasks[];
-
-export type ModelTask = {
-    model_name: string;
-    task_name: string;
-}
-
-export type ModelSizeTaskId = {
-    model_id: string;
-    size_id: string;
-    task_id: string;
-}
-
-export type ModelTasks = ModelTask[];
 
 export type Dict = {
     [key: string]: any;

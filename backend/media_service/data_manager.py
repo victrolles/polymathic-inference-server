@@ -31,8 +31,12 @@ def convert_to_file_format(full_path: str, data: Any, kind: str) -> MediaFile:
             raise ValueError(f"Unsupported object type: {type(data)}")
     elif kind == DataKind.VIDEO:
         if isinstance(data, FuncAnimation):
-            writer = FFMpegWriter(fps=4)
-            data.save(full_path, writer=writer, dpi=100)
+            data.save(
+                full_path,
+                writer="pillow",
+                fps=8,
+                savefig_kwargs={"pad_inches": 0}
+            )
         else:
             raise ValueError(f"Unsupported object type: {type(data)}")
 
@@ -92,7 +96,7 @@ class DataManager:
         # Match the output container format to the kind.
         file_ext = ".png"
         if kind == DataKind.VIDEO:
-            file_ext = ".mp4"
+            file_ext = ".gif"
         file_name_extended = f"{file_name}{file_ext}"
         full_path = os.path.join(self.media_files_path, file_name_extended)
 

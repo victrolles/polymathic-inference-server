@@ -100,7 +100,11 @@ class MediaService:
                         print(f"Using cached - skipping generation")
                     packet = Packet(
                         origin=dataset_location,
-                        modalities=[Modality(id=modality_id, kind=kind, media_file=media_file)]
+                        modalities=[Modality(
+                            id=modality_id,
+                            name=self.config_manager.registry.modalities_by_id[modality_id].name,
+                            kind=kind,
+                            media_file=media_file)]
                     )
                     packets.append(packet)
                     if not does_media_file_exist:
@@ -131,7 +135,12 @@ class MediaService:
                         )
                     else:
                         print(f"Using cached - skipping generation")
-                    modality = Modality(id=modality_id, kind=kind, media_file=media_file)
+                    modality = Modality(
+                        id=modality_id,
+                        name=self.config_manager.registry.modalities_by_id[modality_id].name,
+                        kind=kind,
+                        media_file=media_file
+                    )
                     packets[idx2].modalities.append(modality)
                     if not does_media_file_exist:
                         packet = Packet(

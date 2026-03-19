@@ -1,32 +1,30 @@
 import { useState, useEffect } from "react";
-import type { ConfigTasks, Dict, MediaFile, MediaFiles, ModelSizeTaskId, ResultStatus, selectableMediaFile } from "../types/types";
-// import type { MediaFiles, ResultStatus, Task } from "../types/types";
-// import { requestRandomImages, requestInference, requestConfigDictForATask } from "../requests/fast_api_requests";
+import type { ConfigTasks, DatasetLocations, Dict, ModelSizeTaskId, Packet, Packets, SelectablePackets, Status } from "../types/types";
 import ImageSelector from "../components/MediaSelector";
-// import SubmitButton from "../components/SubmitButton";
-import anim_spinner from "../assets/anim_spinner.svg";
-// // import { getSelectedMediaFileNames } from "../functions/functions";
-// import type { InferenceProps } from "../types/interfaces";
-import ResultsContainer from "../components/ResultsContainer";
 import { useParams } from "react-router-dom";
-import { requestAModelConfigTask, requestInference, requestRandomDataSamples } from "../requests/fast_api_requests";
-import SelectedMediasDisplay from "../components/SelectedMediasDisplay";
-// import { getSelectedMediaFileNames } from "../functions/functions";
-
+import { requestAModelConfigTask, requestRandomDataSamples, requestInference } from "../requests/fast_api_requests";
+import { getSelectedPackets, getSelectedDatasetLocations } from "../functions/functions";
+import type { InferenceRequestProps } from "../types/interfaces";
+import PacketsContainer from "../components/PacketsContainer";
+import SubmitButton from "../components/SubmitButton";
 
 function Inference() {
     const { model_id, size_id, task_id } = useParams();
-    const [configTask, setConfigTask] = useState<Dict | null>(null);
-    const [selectableMediaFiles, setSelectableMediaFiles] = useState<selectableMediaFile[]>([]);
-    const [data_results, setDataResults] = useState<MediaFiles>([]);
-    const [status, setStatus] = useState<ResultStatus>("no");
+    const [config_task, setConfigTask] = useState<Dict | null>(null);
+    const [selectable_packets, setSelectablePackets] = useState<SelectablePackets>([]);
+    const [inference_packets, setInferencePackets] = useState<Packets>([]);
+    const [samples_status, setSamplesStatus] = useState<Status>("no");
+    const [inference_status, setInferenceStatus] = useState<Status>("no");
 
     useEffect(() => {
         if (model_id && size_id && task_id) {
 
             //reset variables
-            setSelectableMediaFiles([]);
-            setStatus("no");
+            setConfigTask(null);
+            setSelectablePackets([]);
+            setInferencePackets([]);
+            setSamplesStatus("loading");
+            setInferenceStatus("no");
 
             // Get new config dictionary
             requestAModelConfigTask({ model_id, size_id, task_id })
@@ -35,60 +33,71 @@ function Inference() {
                 console.log("config_dict", data);
             }).catch((error) => {
                 console.error(error);
+                setSamplesStatus("error");
             });
         
             // Get new random data samples
             requestRandomDataSamples({ model_id, size_id, task_id })
-            .then((data: MediaFiles) => {
-                console.log("data_samples", data);
-                setSelectableMediaFiles(data.map((mediaFile: MediaFile) => ({ mediaFile, isSelected: false })));
+            .then((packets: Packets) => {
+                setSelectablePackets(packets.map((packet: Packet) => ({ packet, is_selected: false })) as SelectablePackets);
+                setSamplesStatus("done");
             }).catch((error) => {
                 console.error(error);
+                setSamplesStatus("error");
             });
         }
     }, [model_id, size_id, task_id]);
 
-    // const submitInferenceRequest = () => {
-    //     if (!model_id || !size_id || !task_id) {
-    //         setStatus("no");
-    //         return;
-    //     }
-    //     setStatus("loading");
-    //     requestInference({ model_id, size_id, task_id }, getSelectedMediaFileIds(data_samples))
-    //     .then((data: MediaFiles) => {
-    //         setDataResults(data);
-    //         setStatus("done");
-    //         console.log("data_results", data);
-    //     }).catch((error) => {
-    //         console.error(error);
-    //         setStatus("no");
-    //     });
-    // };
+    const submitInferenceRequest = () => {
+        if (!model_id || !size_id || !task_id) {
+            setInferenceStatus("no");
+            return;
+        }
+        setInferenceStatus("loading");
+        const inference_request: InferenceRequestProps = {
+            model_size_task_id: { model_id, size_id, task_id } as ModelSizeTaskId,
+            dataset_locations: getSelectedDatasetLocations(selectable_packets) as DatasetLocations
+        }
 
-    if (!configTask) {
+        requestInference(inference_request)
+        .then((packets: Packets) => {
+            setInferencePackets(packets);
+            setInferenceStatus("done");
+            console.log("inference_packets", packets);
+        }).catch((error) => {
+            console.error(error);
+            setInferenceStatus("error");
+        });
+    };
+
+    if (!config_task) {
         return null;
     }
 
     return (
         <div className="inference">
-            <p className="slogan">{configTask.ui.text_top_screen}</p>
+            <p className="slogan">{config_task.ui.text_top_screen}</p>
             <ImageSelector
-                selectableMediaFiles={selectableMediaFiles}
-                setSelectableMediaFiles={setSelectableMediaFiles}
-                dataSamples={configTask.data_samples}
-                dataSize={configTask.ui.data_size}
+                selectable_packets={selectable_packets}
+                setSelectablePackets={setSelectablePackets}
+                data_samples={config_task.data_samples}
+                media_size={config_task.ui.data_size}
             />
-            <SelectedMediasDisplay
-                selectableMediaFiles={selectableMediaFiles}
-                selectedDataSamples={configTask.selected_data_samples}
-                mediaSize={configTask.ui.data_size}
+            <PacketsContainer
+                packets={getSelectedPackets(selectable_packets)}
+                configDict={config_task.selected_data_samples as Dict}
+                media_size={config_task.ui.selected_data_size}
             />
             <hr />
-            {/* {status === 'loading' && <img src={anim_spinner} alt="AI Processing" style={{ width: 45, height: 45 }} /> }
-            {status === 'done' && 
-                <ResultsContainer mediaFiles={data_results} multipleResults={config_dict['ui']['data-outputs']['multiple-data']} dataHeight={config_dict['ui']['data-inputs']['data-size']['height']} selectedDataHeight={config_dict['ui']['data-inputs']['selected-data-size']['height']} displaySelectedData={config_dict['ui']['data-inputs']['display-selected-data']} displayName={config_dict['ui']['data-outputs']['display-name']} mediaType={config_dict['ui']['data-outputs']['type'] as MediaType} />
-            }
-            <SubmitButton submitAction={submitInferenceRequest} submitText={config_dict['ui']['submit-button']['text']} /> */}
+            <PacketsContainer
+                packets={inference_packets}
+                configDict={config_task.data_outputs as Dict}
+                media_size={config_task.ui.selected_data_size}
+            />
+            <SubmitButton
+                submitAction={submitInferenceRequest}
+                submit_text={config_task.ui.submit_button_text}
+            />
         </div>
     );
 }
