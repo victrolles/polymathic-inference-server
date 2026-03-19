@@ -73,35 +73,38 @@ class MediaService:
                 )
 
             if idx == 0:
-                # Sample indices once and reuse them across modalities so each packet
-                # contains aligned items (same dataset index).
                 n = min(task.data_samples.sample_size, len(tmp_data))
                 sample_indices = random.sample(range(len(tmp_data)), n)
+                print(f"Sample indices: {sample_indices}")
+                self.media_manager.print_cache()
 
                 for idx2, index in enumerate(sample_indices):
-                    media_file = self.data_manager.generate_media_file(
-                        dataset_id_for_modality,
-                        index,
-                        key,
-                        modality_id,
-                        kind,
-                        does_modality_use_visualizer,
+                    dataset_location = DatasetLocation(
+                        id=dataset_id_for_modality,
+                        index=index,
                     )
-                    packets.append(
-                        Packet(
-                            origin=DatasetLocation(
-                                id=dataset_id_for_modality,
-                                index=index,
-                            ),
-                            modalities=[
-                                Modality(
-                                    id=modality_id,
-                                    kind=kind,
-                                    media_file=media_file,
-                                )
-                            ],
+                    does_media_file_exist, media_file = self.media_manager.get_media_files(
+                        dataset_location,
+                        modality_id
+                    )
+                    if not does_media_file_exist:
+                        media_file = self.data_manager.generate_media_file(
+                            dataset_id_for_modality,
+                            index,
+                            key,
+                            modality_id,
+                            kind,
+                            does_modality_use_visualizer,
                         )
+                    else:
+                        print(f"Using cached - skipping generation")
+                    packet = Packet(
+                        origin=dataset_location,
+                        modalities=[Modality(id=modality_id, kind=kind, media_file=media_file)]
                     )
+                    packets.append(packet)
+                    if not does_media_file_exist:
+                        self.media_manager.cache_packet(packet)
             else:
                 if sample_indices is None:
                     raise RuntimeError("Internal error: sample_indices not initialized")
@@ -109,20 +112,32 @@ class MediaService:
                 for idx2, index in enumerate(sample_indices):
                     if index >= len(tmp_data):
                         continue
-                    media_file = self.data_manager.generate_media_file(
-                        dataset_id_for_modality,
-                        index,
-                        key,
-                        modality_id,
-                        kind,
-                        does_modality_use_visualizer,
+                    dataset_location = DatasetLocation(
+                        id=dataset_id_for_modality,
+                        index=index,
                     )
-                    packets[idx2].modalities.append(
-                        Modality(
-                            id=modality_id,
-                            kind=kind,
-                            media_file=media_file,
+                    does_media_file_exist, media_file = self.media_manager.get_media_files(
+                        dataset_location,
+                        modality_id
+                    )
+                    if not does_media_file_exist:
+                        media_file = self.data_manager.generate_media_file(
+                            dataset_id_for_modality,
+                            index,
+                            key,
+                            modality_id,
+                            kind,
+                            does_modality_use_visualizer,
                         )
-                    )
+                    else:
+                        print(f"Using cached - skipping generation")
+                    modality = Modality(id=modality_id, kind=kind, media_file=media_file)
+                    packets[idx2].modalities.append(modality)
+                    if not does_media_file_exist:
+                        packet = Packet(
+                            origin=dataset_location,
+                            modalities=[modality]
+                        )
+                        self.media_manager.cache_packet(packet)
 
         return packets

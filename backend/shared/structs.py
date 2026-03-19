@@ -48,10 +48,6 @@ class Packet(BaseModel):
     origin: ModelSizeTaskId | DatasetLocation
     modalities: list[Modality]
 
-class CachedFile(BaseModel):
-    origin: DatasetLocation
-    modalities: list[Modality]
-
 class Dataset(BaseModel):
     id: str
     data: Any
