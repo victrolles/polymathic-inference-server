@@ -70,5 +70,5 @@ async def request_config_task(request: TaskRequest):
 
 @app.post("/api/request_random_data_samples")
 async def request_random_data_samples(request: TaskRequest):
-    media_files = media_service.get_random_data_samples(request.task_id)
-    return [media_file.model_dump() for media_file in media_files]
+    packets = media_service.get_random_data_samples(request.task_id)
+    return [packet.model_dump(mode="json") for packet in packets]

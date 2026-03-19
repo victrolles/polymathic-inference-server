@@ -103,27 +103,24 @@ modalities:
     name: AIA 0094
     data_type_id: x_video
 
-  - id: gong_6768
-    name: GONG 6768
-    data_type_id: x_video
-
 tasks:
   - id: sun-prediction
     name: Sun Prediction
 
     data_samples:
-      modality_id: br
+      modality_id: aia_0304
+      sample_size: 3
 
     selected_data_samples:
       display: true
       display_multiple_modalities_simultaneously: true
-      modality_ids: [br, bp, bt]
+      modality_ids: [aia_1700, aia_0304]
 
     data_outputs:
       display_multiple_modalities_simultaneously: true
-      modality_ids: [br, bp, bt]
+      modality_ids: [br, aia_1700, aia_0304]
       enable_switch_modalities: true
-      switch_modality_ids: [br, bp, bt]
+      switch_modality_ids: [br, bp, bt, aia_1700, aia_0304]
 
     ui:
       text_top_screen: "Predict the sun's activity for a given video"

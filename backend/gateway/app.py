@@ -5,9 +5,10 @@ import httpx
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from shared.structs import ServerInfo, ModelInfo, ModelSizeTaskRequest
+from shared.structs import ServerInfo, ModelInfo, ModelSizeTaskRequest, Packet
 from shared.server_manager import ServerManager
 from shared.utils.requests import extend_url
+from shared.utils.functions import convert_packets_to_url
 
 GATEWAY_HOST = os.getenv("GATEWAY_HOST", "localhost")
 GATEWAY_PORT = os.getenv("GATEWAY_PORT", "8000")
@@ -56,7 +57,7 @@ async def request_all_models_sizes_tasks():
     models_sizes_tasks: list[ModelInfo] = []
     for server in server_manager.servers:
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(timeout=3600) as client:
                 r = await client.get(
                     extend_url(server.url, "/api/request_model_sizes_tasks")
                 )
@@ -84,7 +85,7 @@ async def request_a_model_config_task(request: ModelSizeTaskRequest):
         print(error_message)
         raise HTTPException(status_code=404, detail=error_message)
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=3600) as client:
             r = await client.post(extend_url(server.url, "/api/request_config_task"),json={"task_id": mst.task_id},)
             r.raise_for_status()
             return {"ok": True, "config_task": r.json()}
@@ -107,21 +108,20 @@ async def request_random_data_samples(request: ModelSizeTaskRequest):
         print(error_message)
         raise HTTPException(status_code=404, detail=error_message)
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=3600) as client:
             r = await client.post(
                 extend_url(server.url, "/api/request_random_data_samples"),
                 json={"task_id": mst.task_id},
             )
             r.raise_for_status()
-            # media_files = [MediaFile(**media_file) for media_file in r.json()]
-            # media_files_urls = convert_media_files_to_url(
-            #     media_files,
-            #     GATEWAY_HOST,
-            #     GATEWAY_PORT,
-            #     mst.model_id,
-            #     mst.size_id,
-            # )
-            return {"ok": True}
+            packets = [Packet(**packet) for packet in r.json()]
+            new_packets = convert_packets_to_url(
+                packets,
+                GATEWAY_HOST,
+                GATEWAY_PORT,
+                mst.model_id
+            )
+            return {"ok": True, "packets": new_packets}
     except httpx.HTTPError as e:
         error_message = (
             f"Error requesting random data samples from {server.url} for "

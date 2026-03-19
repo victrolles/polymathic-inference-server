@@ -2,6 +2,7 @@ import os
 import yaml
 
 from shared.structs import IdName
+from .data_kind import DataKind
 from .structs import AppConfig, TaskConfig
 from .registry import ConfigRegistry
 from .validation import validate_references
@@ -88,6 +89,6 @@ class ConfigManager:
                 return True, visualizer.input.data_type_id
         return False, ""
 
-    def get_kind_by_modality_id(self, modality_id: str) -> str:
+    def get_kind_by_modality_id(self, modality_id: str) -> DataKind:
         data_type_id = self.registry.modalities_by_id[modality_id].data_type_id
-        return self.registry.data_types_by_id[data_type_id].kind
+        return DataKind(self.registry.data_types_by_id[data_type_id].kind)

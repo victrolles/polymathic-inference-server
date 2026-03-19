@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import numpy as np
 from sunpy.visualization.colormaps.color_tables import aia_color_table
+import astropy.units as u
 
 modalities = {
     "br": 0,
@@ -273,6 +274,8 @@ def make_video(x_obs: torch.Tensor, idx: int):
 
     def update(frame):
         return plot_sdo(x_obs[:,frame,:,:], idx, ax=ax)
+
+    plt.close()
 
     return FuncAnimation(fig, update, frames=x_obs.shape[0], interval=33, blit=False)
 

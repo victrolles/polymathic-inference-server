@@ -39,6 +39,7 @@ export async function requestRandomDataSamples(model_size_task_id: ModelSizeTask
     }
 
     const data = await response.json();
+    console.log("data", data);
     return data.media_files as MediaFiles;
 }
 

@@ -50,9 +50,6 @@ class MediaService:
             does_modality_use_visualizer, new_data_type_id = self.config_manager.does_modality_use_visualizer(data_type_id)
             if does_modality_use_visualizer:
                 data_type_id = new_data_type_id
-                print(f"Using visualizer")
-            else:
-                print(f"No visualizer")
 
             key: str | None = None
             tmp_data = None
@@ -100,7 +97,7 @@ class MediaService:
                                 Modality(
                                     id=modality_id,
                                     kind=kind,
-                                    data=media_file,
+                                    media_file=media_file,
                                 )
                             ],
                         )
@@ -124,9 +121,8 @@ class MediaService:
                         Modality(
                             id=modality_id,
                             kind=kind,
-                            data=media_file,
+                            media_file=media_file,
                         )
                     )
 
-        print(f"Packets: {packets}")
         return packets

@@ -30,7 +30,7 @@ def convert_to_file_format(full_path: str, data: Any, kind: str) -> MediaFile:
         else:
             raise ValueError(f"Unsupported object type: {type(data)}")
     elif kind == DataKind.VIDEO:
-        if type(data) == type(FuncAnimation()):
+        if isinstance(data, FuncAnimation):
             writer = FFMpegWriter(fps=4)
             data.save(full_path, writer=writer, dpi=100)
         else:
@@ -101,5 +101,5 @@ class DataManager:
         return MediaFile(
             path=full_path,
             id=file_name,
-            dataset_index=index,
+            name=file_name,
         )

@@ -3,19 +3,24 @@ import sys
 import importlib.util
 from types import ModuleType
 
+from shared.structs import Packet
+
 def extend_url(url: str, path: str) -> str:
     return url.rstrip("/") + path
 
 
 
-# def convert_path_to_url(path: str, host: str, port: int, model_id: str, size_id: str) -> str:
-#     file_name = os.path.basename(path)
-#     return f"http://{host}:{port}/media_files/{model_id}/{size_id}/{file_name}"
+def convert_path_to_url(path: str, host: str, port: int, model_id: str) -> str:
+    file_name = os.path.basename(path)
+    return f"http://{host}:{port}/media_files/{model_id}/{file_name}"
 
-# def convert_media_files_to_url(media_files: list[MediaFile], host: str, port: int, model_id: str, size_id: str) -> list[str]:
-#     for idx in range(len(media_files)):
-#         media_files[idx].path = convert_path_to_url(media_files[idx].path, host, port, model_id, size_id)
-#     return media_files
+def convert_packets_to_url(packets: list[Packet], host: str, port: int, model_id: str) -> list[Packet]:
+    for idx, packet in enumerate(packets):
+        modalities = packet.modalities  
+        for idx2, modality in enumerate(modalities):
+            path = convert_path_to_url(modality.media_file.path, host, port, model_id)
+            packets[idx].modalities[idx2].media_file.path = path
+    return packets
 
 def load_module(model_path: str, module_name: str, file_name: str) -> ModuleType:
     model_src = os.path.abspath(os.path.join(model_path, "src"))
