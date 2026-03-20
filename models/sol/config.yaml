@@ -116,15 +116,15 @@ tasks:
 
     data_outputs:
       display_multiple_modalities_simultaneously: true
-      modality_ids: [br, aia_1700, aia_0304]
+      modality_ids: [aia_0193, aia_1600, aia_0094]
       enable_switch_modalities: true
-      switch_modality_ids: [br, bp, bt, aia_1700, aia_0304]
+      switch_modality_ids: [br, bp, bt, aia_0193, aia_1600, aia_0094]
 
     ui:
       text_top_screen: "Predict the sun's activity for a given video"
       data_size: { width: "120px", height: "120px" }
-      selected_data_size: { width: "22vh", height: "22vh" }
-      output_data_size: { width: "22vh", height: "22vh" }
+      selected_data_size: { width: "20vh", height: "20vh" }
+      output_data_size: { width: "20vh", height: "20vh" }
       submit_button_text: "Predict Sun Activity"
 
     inference:

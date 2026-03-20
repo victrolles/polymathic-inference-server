@@ -3,7 +3,7 @@ import type { ConfigTasks, DatasetLocations, Dict, ModelSizeTaskId, Packet, Pack
 import ImageSelector from "../components/MediaSelector";
 import { useParams } from "react-router-dom";
 import { requestAModelConfigTask, requestRandomDataSamples, requestInference } from "../requests/fast_api_requests";
-import { getSelectedPackets, getSelectedDatasetLocations } from "../functions/functions";
+import { getSelectedPackets, getSelectedDatasetLocations, numberOfSelectedPackets } from "../functions/functions";
 import type { InferenceRequestProps } from "../types/interfaces";
 import PacketsContainer from "../components/PacketsContainer";
 import SubmitButton from "../components/SubmitButton";
@@ -49,7 +49,7 @@ function Inference() {
     }, [model_id, size_id, task_id]);
 
     const submitInferenceRequest = () => {
-        if (!model_id || !size_id || !task_id) {
+        if (!model_id || !size_id || !task_id || numberOfSelectedPackets(selectable_packets) === 0) {
             setInferenceStatus("no");
             return;
         }

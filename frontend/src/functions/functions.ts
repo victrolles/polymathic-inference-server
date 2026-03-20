@@ -26,3 +26,7 @@ export function getSelectedDatasetLocations(selectable_packets: SelectablePacket
 export function getSelectedPackets(selectable_packets: SelectablePackets): Packets {
     return selectable_packets.filter((sp) => sp.is_selected).map((sp) => sp.packet) as Packets;
 }
+
+export function numberOfSelectedPackets(selectable_packets: SelectablePackets): number {
+    return selectable_packets.filter((sp) => sp.is_selected).length;
+}

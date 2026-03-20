@@ -2,6 +2,7 @@ import os
 import asyncio
 from contextlib import asynccontextmanager
 import sys
+import json
 
 import httpx
 from fastapi import FastAPI, HTTPException
@@ -90,14 +91,22 @@ async def request_inference(request: InferenceRequest):
         task_id=mst.task_id
     )
     print(f"inference data input")
-    binary_payload = to_binary_payload(inference_data_input)
-    print(f"binary payload")
+    payload = inference_data_input.model_dump(mode="python")
+    print(f"payload in python")
+    request_kwargs: dict = {}
+    try:
+        json.dumps(payload)
+        request_kwargs["json"] = payload
+        print("using json payload")
+    except (TypeError, ValueError, OverflowError):
+        request_kwargs["content"] = to_binary_payload(payload)
+        request_kwargs["headers"] = {"Content-Type": "application/octet-stream"}
+        print("using binary payload")
     try:
         async with httpx.AsyncClient(timeout=3600) as client:
             r = await client.post(
                 extend_url(server.url, "/api/request_inference"),
-                content=binary_payload,
-                headers={"Content-Type": "application/octet-stream"},
+                **request_kwargs,
             )
             r.raise_for_status()
             response_content_type = r.headers.get("content-type", "")

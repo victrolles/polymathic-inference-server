@@ -2,6 +2,7 @@ import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, HTTPException, Response
+from fastapi.responses import JSONResponse
 
 from shared.structs import ServerInfo, InferenceDataInput
 from shared.utils.functions import load_module
@@ -45,7 +46,8 @@ inference: InferenceBase = inference_module.Inference(size_id=SIZE_ID)
 @app.post("/api/request_inference")
 async def request_inference(request: Request):
     content_type = request.headers.get("content-type", "")
-    if "application/octet-stream" in content_type:
+    is_binary_request = "application/octet-stream" in content_type
+    if is_binary_request:
         body = await request.body()
         try:
             payload = from_binary_payload(body)
@@ -62,5 +64,7 @@ async def request_inference(request: Request):
     print("=== inferring ===")
     inference_result = inference.infer(input, task_id)
     print("=== inference result ===")
-    binary_response = to_binary_payload(inference_result)
-    return Response(content=binary_response, media_type="application/octet-stream")
+    if is_binary_request:
+        binary_response = to_binary_payload(inference_result)
+        return Response(content=binary_response, media_type="application/octet-stream")
+    return JSONResponse(content=inference_result)
