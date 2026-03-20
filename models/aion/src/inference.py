@@ -1,6 +1,7 @@
 import ast
 import random
 import os
+from typing import Any
 
 import torch
 from datasets import load_from_disk
@@ -58,7 +59,7 @@ class Inference(InferenceBase):
         all_embeddings = self.model.encode(all_tokens).cpu().numpy()
         self.all_embeddings = all_embeddings.reshape(all_embeddings.shape[0], -1)
 
-    def _get_similarity_search(self, name: str, number_of_images: int = 4) -> dict:
+    def _get_similarity_search(self, name: str, number_of_images: int = 4) -> list:
         print("====== Getting similar images ======")
         print("Find object in subset")
         data = find_object_in_subset(self.subset, name)
@@ -81,10 +82,12 @@ class Inference(InferenceBase):
             similar_images.append(self.subset['rgb'][ids])
         return similar_images
 
-    def _get_redshift_prediction(self, object_ids: list[str]) -> dict:
+    def _get_redshift_prediction(self, inputs: Any):
+        print(f"Type of inputs: {type(inputs)}")
+        print(f"Type of inputs[0]: {type(inputs[0])}")
         print("====== Getting reshift predictions ======")
         print("Prepare queries")
-        tokens, new_object_ids = prepare_queries(self.subset, self.codec_manager, object_ids)
+        tokens, new_object_ids = prepare_queries(inputs, self.codec_manager, [input['object_id'] for input in inputs])
         print("Queries prepared")
 
         print("forward pass queries")
@@ -101,7 +104,7 @@ class Inference(InferenceBase):
             object_ids=new_object_ids
         )
 
-    def infer(self, input: dict, task_id: str) -> dict:
+    def infer(self, input: Any, task_id: str):
         if task_id == "redshift-prediction":
             return self._get_redshift_prediction(input)
         elif task_id == "similarity-search":

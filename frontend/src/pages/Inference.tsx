@@ -83,17 +83,20 @@ function Inference() {
                 data_samples={config_task.data_samples}
                 media_size={config_task.ui.data_size}
             />
-            <PacketsContainer
+            {config_task.selected_data_samples.display && <PacketsContainer
                 packets={getSelectedPackets(selectable_packets)}
                 configDict={config_task.selected_data_samples as Dict}
+                status={"no"}
                 media_size={config_task.ui.selected_data_size}
             />
+            }
             <hr />
-            <PacketsContainer
+            {inference_status !== "no" && <PacketsContainer
                 packets={inference_packets}
                 configDict={config_task.data_outputs as Dict}
-                media_size={config_task.ui.selected_data_size}
-            />
+                media_size={config_task.ui.output_data_size}
+                status={inference_status}
+            />}
             <SubmitButton
                 submitAction={submitInferenceRequest}
                 submit_text={config_task.ui.submit_button_text}

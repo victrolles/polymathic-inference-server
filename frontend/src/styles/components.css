@@ -144,12 +144,19 @@ ul {
     cursor: pointer;
 }
 
-.media-item img:hover {
+.selectable-media-item img {
+    margin: 0 7px 0 7px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.selectable-media-item img:hover {
     transform: scale(1.05);
     transition: transform 0.3s ease;
 }
 
-.media-item-selected img{
+.selectable-media-item-selected img{
     border: 2px solid red;
     border-radius: 10px;
     margin: 7px;
@@ -356,4 +363,19 @@ ul {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.packets-container {
+    display: flex;
+    width: 90%;
+    background-color: var(--tertiary-bg);
+    border-radius: 10px;
+    margin: 5px;
+    overflow: auto;
+    align-items: center;
+    justify-content: center;
+}
+
+.modality-item p {
+    margin: 5px 0 5px 0;
 }

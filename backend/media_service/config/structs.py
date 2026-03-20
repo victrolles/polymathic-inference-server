@@ -11,10 +11,14 @@ class DataField(BaseModel):
     id: str
     data_type_id: str
 
+class ElementType(BaseModel):
+    data_type_id: str
+
 class DataTypeConfig(BaseModel):
     id: str
     kind: str
     representation: Optional[str] = None
+    element_type: Optional[ElementType] = None
     fields: list[DataField] = Field(default_factory=list)
 
     @field_serializer("representation")
@@ -28,6 +32,12 @@ class DataTypeConfig(BaseModel):
         if isinstance(rep_id, str):
             return rep_id
         return str(rep)
+
+    @field_serializer("element_type")
+    def _serialize_element_type(self, element_type: ElementType) -> str:
+        if element_type is None:
+            return None
+        return element_type.data_type_id
 
 class VisualizerIO(BaseModel):
     data_type_id: str
@@ -95,10 +105,15 @@ class DisplayDataConfig(BaseModel):
                     )
         return values
 
+class InferenceConfig(BaseModel):
+    input: VisualizerIO
+    output: VisualizerIO
+
 class TaskUIConfig(BaseModel):
     text_top_screen: str
     data_size: UISize
     selected_data_size: Optional[UISize] = None
+    output_data_size: UISize
     submit_button_text: str
 
 class TaskConfig(BaseModel):
@@ -108,7 +123,8 @@ class TaskConfig(BaseModel):
     selected_data_samples: DisplayDataConfig
     data_outputs: DisplayDataConfig
     ui: TaskUIConfig
-
+    inference: InferenceConfig
+    
     @model_validator(mode="after")
     def sync_selected_display_multiple_results(cls, values: "TaskConfig") -> "TaskConfig":
         """display_multiple_results (selected) suit multiple_data_selection (data_samples)."""

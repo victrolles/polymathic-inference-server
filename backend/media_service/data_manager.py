@@ -22,6 +22,8 @@ def load_dataset_torch(dataset_path: str):
     return torch.load(dataset_path, weights_only=False)
 
 def convert_to_file_format(full_path: str, data: Any, kind: str) -> MediaFile:
+    print(f"Type of data: {type(data)}")
+    print(f"Kind: {kind}")
     if kind == DataKind.IMAGE:
         if type(data) == PILImage or type(data) == PIL.PngImagePlugin.PngImageFile:
             data.save(full_path)

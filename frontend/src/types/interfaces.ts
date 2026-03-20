@@ -1,4 +1,4 @@
-import type { Dict, IdName, MediaSize, ModelSizeTaskId, DatasetLocations, MediaKind, ModelsSizesTasks, SelectablePackets, Packets, MediaFile, Packet, Modality } from './types';
+import type { Dict, IdName, MediaSize, ModelSizeTaskId, DatasetLocations, MediaKind, ModelsSizesTasks, SelectablePackets, Packets, MediaFile, Packet, Modality, Status } from './types';
 
 export interface MediaSelectorProps {
     selectable_packets: SelectablePackets;
@@ -48,6 +48,7 @@ export interface PacketsContainerProps {
     packets: Packets;
     configDict: Dict;
     media_size: MediaSize;
+    status: Status;
 }
 
 export interface PacketItemProps {

@@ -60,13 +60,13 @@ def prepare_queries(subset, codec_manager, object_ids):
     flux_z = []
     new_object_ids = []
     for i in range(len(subset)):
-        if subset['object_id'][i] in object_ids:
-            flux_image.append(subset['image'][i]['flux'])
-            flux_g.append(subset['FLUX_G'][i])
-            flux_r.append(subset['FLUX_R'][i])
-            flux_i.append(subset['FLUX_I'][i])
-            flux_z.append(subset['FLUX_Z'][i])
-            new_object_ids.append(subset['object_id'][i])
+        if subset[i]['object_id'] in object_ids:
+            flux_image.append(subset[i]['image']['flux'])
+            flux_g.append(subset[i]['FLUX_G'])
+            flux_r.append(subset[i]['FLUX_R'])
+            flux_i.append(subset[i]['FLUX_I'])
+            flux_z.append(subset[i]['FLUX_Z'])
+            new_object_ids.append(subset[i]['object_id'])
     # Create image modality
     image = LegacySurveyImage(
         flux=to_tensor(flux_image),

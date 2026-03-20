@@ -6,12 +6,14 @@ import sys
 import httpx
 from fastapi import FastAPI, HTTPException
 
-from shared.structs import ServerInfo, TaskRequest
+from shared.structs import ServerInfo, TaskRequest, InferenceRequest, InferenceDataInput
 from shared.utils.requests import (
     wait_for_server,
     add_server as register_server,
     remove_server as unregister_server,
+    extend_url,
 )
+from shared.utils.binary_transport import to_binary_payload, from_binary_payload
 from .media_service import MediaService
 from shared.server_manager import ServerManager
 
@@ -71,4 +73,49 @@ async def request_config_task(request: TaskRequest):
 @app.post("/api/request_random_data_samples")
 async def request_random_data_samples(request: TaskRequest):
     packets = media_service.get_random_data_samples(request.task_id)
+    return [packet.model_dump(mode="json") for packet in packets]
+
+@app.post("/api/request_inference")
+async def request_inference(request: InferenceRequest):
+    mst = request.model_size_task_id
+    data_inputs = media_service.process_inference(mst.task_id, request.dataset_locations)
+    
+
+    # call inference function
+    print("send to server")
+    server = server_manager.registry.get_server_by_model_size(mst.model_id, mst.size_id)
+    print(f"server: {server.url}")
+    inference_data_input = InferenceDataInput(
+        input=data_inputs,
+        task_id=mst.task_id
+    )
+    print(f"inference data input")
+    binary_payload = to_binary_payload(inference_data_input)
+    print(f"binary payload")
+    try:
+        async with httpx.AsyncClient(timeout=3600) as client:
+            r = await client.post(
+                extend_url(server.url, "/api/request_inference"),
+                content=binary_payload,
+                headers={"Content-Type": "application/octet-stream"},
+            )
+            r.raise_for_status()
+            response_content_type = r.headers.get("content-type", "")
+            if "application/octet-stream" in response_content_type:
+                inference_result = from_binary_payload(r.content)
+            else:
+                # Keep compatibility if worker still returns JSON.
+                inference_result = r.json()
+    except httpx.HTTPError as e:
+        error_message = (
+            f"Error requesting random data samples from {server.url} for "
+            f"model {mst.model_id} size {mst.size_id} task {mst.task_id}: {e}"
+        )
+        print(error_message)
+        raise HTTPException(status_code=500, detail=error_message)
+
+    #Post process inference result
+    print("post process inference result")
+    packets = media_service.post_process_inference(inference_result, mst)
+    print("return packets")
     return [packet.model_dump(mode="json") for packet in packets]

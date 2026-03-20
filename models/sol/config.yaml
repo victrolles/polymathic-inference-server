@@ -24,6 +24,11 @@ data_types:
       - id: x_obs
         data_type_id: x_tensor
 
+  - id: sol_dataset_dict_list
+    kind: list
+    element_type:
+      data_type_id: sol_dataset_dict
+
 visualizers:
   - id: generate_video_from_tensor
     input:
@@ -31,20 +36,12 @@ visualizers:
     output:
       data_type_id: x_video
 
-inference:
-  - id: sol-generation
-    name: SOL Generation
-    input:
-      data_type_id: sol_dataset_dict
-    output:
-      data_type_id: x_tensor
-
 datasets:
   - id: sol_dataset
     name: SOL Dataset
     path: /mnt/home/vgoudal/polymathic-inference/aion-inference/datasets/sol/dataset.pt
     checkpoint_format: torch_pt
-    data_type_id: sol_dataset_dict
+    data_type_id: sol_dataset_dict_list
 
 modalities:
   - id: br
@@ -126,5 +123,12 @@ tasks:
     ui:
       text_top_screen: "Predict the sun's activity for a given video"
       data_size: { width: "120px", height: "120px" }
-      selected_data_size: { width: "25vh", height: "25vh" }
+      selected_data_size: { width: "22vh", height: "22vh" }
+      output_data_size: { width: "22vh", height: "22vh" }
       submit_button_text: "Predict Sun Activity"
+
+    inference:
+      input:
+        data_type_id: sol_dataset_dict
+      output:
+        data_type_id: x_tensor

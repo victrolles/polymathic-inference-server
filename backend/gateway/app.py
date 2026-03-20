@@ -5,7 +5,7 @@ import httpx
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from shared.structs import ServerInfo, ModelInfo, ModelSizeTaskRequest, Packet
+from shared.structs import ServerInfo, ModelInfo, ModelSizeTaskRequest, Packet, InferenceRequest
 from shared.server_manager import ServerManager
 from shared.utils.requests import extend_url
 from shared.utils.functions import convert_packets_to_url
@@ -114,6 +114,41 @@ async def request_random_data_samples(request: ModelSizeTaskRequest):
                 json={"task_id": mst.task_id},
             )
             r.raise_for_status()
+            packets = [Packet(**packet) for packet in r.json()]
+            new_packets = convert_packets_to_url(
+                packets,
+                GATEWAY_HOST,
+                GATEWAY_PORT,
+                mst.model_id
+            )
+            return {"ok": True, "packets": new_packets}
+    except httpx.HTTPError as e:
+        error_message = (
+            f"Error requesting random data samples from {server.url} for "
+            f"model {mst.model_id} size {mst.size_id} task {mst.task_id}: {e}"
+        )
+        print(error_message)
+        raise HTTPException(status_code=500, detail=error_message)
+
+@app.post("/api/request_inference")
+async def request_inference(request: InferenceRequest):
+    print(f"Request: {request}")
+    mst = request.model_size_task_id
+    server = server_manager.registry.get_server_by_model(mst.model_id)
+    if server is None:
+        error_message = (
+            f"No media service for model_id={mst.model_id}"
+        )
+        print(error_message)
+        raise HTTPException(status_code=404, detail=error_message)
+    try:
+        async with httpx.AsyncClient(timeout=3600) as client:
+            r = await client.post(
+                extend_url(server.url, "/api/request_inference"),
+                json=request.model_dump(mode="json"),
+            )
+            r.raise_for_status()
+            print(f"Inference response: {r.json()}")
             packets = [Packet(**packet) for packet in r.json()]
             new_packets = convert_packets_to_url(
                 packets,

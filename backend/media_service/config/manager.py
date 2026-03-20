@@ -80,14 +80,14 @@ class ConfigManager:
 
         return modality_ids
 
-    def does_modality_use_visualizer(self, modality_id: str) -> [bool, str]:
+    def does_modality_use_visualizer(self, modality_id: str) -> [bool, str, str]:
         if len(self.registry.visualizers_by_id) == 0:
-            return False, ""
+            return False, "", ""
 
         for visualizer in self.registry.visualizers_by_id.values():
             if visualizer.output.data_type_id == modality_id:
-                return True, visualizer.input.data_type_id
-        return False, ""
+                return True, visualizer.input.data_type_id, visualizer.output.data_type_id
+        return False, "", ""
 
     def get_kind_by_modality_id(self, modality_id: str) -> DataKind:
         data_type_id = self.registry.modalities_by_id[modality_id].data_type_id

@@ -1,11 +1,13 @@
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException, Response
 
-from shared.structs import ServerInfo
+from shared.structs import ServerInfo, InferenceDataInput
 from shared.utils.functions import load_module
 from shared.utils.requests import wait_for_server, add_server, remove_server
+from shared.utils.binary_transport import from_binary_payload, to_binary_payload
+from worker.template.inference_base import InferenceBase
 
 WORKER_HOST = os.getenv("WORKER_HOST", "localhost")
 WORKER_PORT = os.getenv("WORKER_PORT", "8001")
@@ -38,7 +40,27 @@ model_path = os.path.join(MODELS_PATH, MODEL_ID)
 if not os.path.exists(model_path):
     raise FileNotFoundError(f"Model not found: {model_path}")
 inference_module = load_module(model_path, "inference", "inference.py")
-inference = inference_module.Inference(size_id=SIZE_ID)
+inference: InferenceBase = inference_module.Inference(size_id=SIZE_ID)
 
+@app.post("/api/request_inference")
+async def request_inference(request: Request):
+    content_type = request.headers.get("content-type", "")
+    if "application/octet-stream" in content_type:
+        body = await request.body()
+        try:
+            payload = from_binary_payload(body)
+            parsed_request = InferenceDataInput.model_validate(payload)
+        except Exception as exc:
+            raise HTTPException(status_code=400, detail=f"Invalid binary payload: {exc}") from exc
+    else:
+        # Keep JSON compatibility for existing clients.
+        payload = await request.json()
+        parsed_request = InferenceDataInput.model_validate(payload)
 
-    
+    input = parsed_request.input
+    task_id = parsed_request.task_id
+    print("=== inferring ===")
+    inference_result = inference.infer(input, task_id)
+    print("=== inference result ===")
+    binary_response = to_binary_payload(inference_result)
+    return Response(content=binary_response, media_type="application/octet-stream")

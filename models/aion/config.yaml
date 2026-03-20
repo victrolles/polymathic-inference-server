@@ -14,6 +14,11 @@ data_types:
     kind: image
     representation: pil_image
 
+  - id: rgb-pil-list
+    kind: list
+    element_type:
+      data_type_id: rgb-pil
+
   - id: prediction-dict
     kind: dictionary
 
@@ -27,6 +32,11 @@ data_types:
       - id: rgb
         data_type_id: rgb-pil
 
+  - id: legacy-survey-dict-list
+    kind: list
+    element_type:
+      data_type_id: legacy-survey-dict
+
 visualizers:
   - id: prediction-tensor-to-plot
     input:
@@ -39,7 +49,7 @@ datasets:
     name: Legacy Survey
     path: "/mnt/home/vgoudal/aion-inference/datasets/MultimodalUniverse/legacysurvey/subset_1000"
     checkpoint_format: huggingface
-    data_type_id: legacy-survey-dict
+    data_type_id: legacy-survey-dict-list
 
 modalities:
   - id: rgb
@@ -67,7 +77,14 @@ tasks:
     ui:
       text_top_screen: "Get redshift predictions for a set of images"
       data_size: { width: "200px", height: "200px" }
+      output_data_size: { width: "45vh", height: "40vh" }
       submit_button_text: "Search Redshift Predictions"
+
+    inference:
+      input:
+        data_type_id: legacy-survey-dict-list
+      output:
+        data_type_id: prediction-dict
 
   - id: similarity-search
     name: Similarity Search
@@ -86,4 +103,11 @@ tasks:
       text_top_screen: "Find objects with similar photometry and morphology"
       data_size: { width: "120px", height: "120px" }
       selected_data_size: { width: "25vh", height: "25vh" }
+      output_data_size: { width: "25vh", height: "25vh" }
       submit_button_text: "Search Similarity"
+
+    inference:
+      input:
+        data_type_id: legacy-survey-dict
+      output:
+        data_type_id: rgb-pil-list

@@ -7,12 +7,13 @@ def visualize(input, modality_id: str):
         raise ValueError(f"Visualizer {modality_id} not found")
 
 def plot_prediction(input):
-    for i in range(input.predictions.shape[0]):
-        plt.plot(input.predictions[i], color="C%d" % i)
-    plt.legend(input.new_object_ids)
-    plt.xlim(-0, 150)
-    # plt.ylim(0, 0.2)
-    plt.xlabel("Tokenized Redshift")
-    plt.ylabel("Probability")
-    plt.title("AION Redshift Prediction for Photometry+Morphology")
-    return plt.gcf()
+    fig, ax = plt.subplots()
+    for i in range(input['predictions'].shape[0]):
+        ax.plot(input['predictions'][i], color="C%d" % i)
+    ax.legend(input['object_ids'])
+    ax.set_xlim(-0, 150)
+    # ax.set_ylim(0, 0.2)
+    ax.set_xlabel("Tokenized Redshift")
+    ax.set_ylabel("Probability")
+    ax.set_title("AION Redshift Prediction for Photometry+Morphology")
+    return fig

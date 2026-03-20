@@ -52,3 +52,11 @@ class Packet(BaseModel):
 class Dataset(BaseModel):
     id: str
     data: Any
+
+class InferenceRequest(BaseModel):
+    model_size_task_id: ModelSizeTaskId
+    dataset_locations: list[DatasetLocation]
+
+class InferenceDataInput(BaseModel):
+    input: Any
+    task_id: str
