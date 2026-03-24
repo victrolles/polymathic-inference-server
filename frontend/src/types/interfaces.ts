@@ -11,6 +11,7 @@ export interface SelectableMediaItemProps {
     media_file: MediaFile;
     display_name: boolean;
     is_selected: boolean;
+    is_one_selected: boolean;
     kind: MediaKind;
     onClick: () => void;
     media_size: MediaSize;

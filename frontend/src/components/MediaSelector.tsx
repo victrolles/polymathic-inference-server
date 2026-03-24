@@ -1,7 +1,7 @@
-import { setPacketSelection } from "../functions/functions";
+import { setPacketSelection, isOneSelected } from "../functions/functions";
 import type { MediaSelectorProps } from "../types/interfaces";
 import LoadingItem from "./LoadingItem";
-import MediaItem from "./SelectableMediaItem";
+import SelectableMediaItem from "./SelectableMediaItem";
 import { useState, useEffect } from "react";
 
 function MediaSelector({ selectable_packets, setSelectablePackets, data_samples, media_size }: MediaSelectorProps) {
@@ -22,11 +22,12 @@ function MediaSelector({ selectable_packets, setSelectablePackets, data_samples,
                     />
                 ))}
             {selectable_packets.length > 0 && selectable_packets.map((sp) => (
-                <MediaItem
+                <SelectableMediaItem
                     key={sp.packet.modalities[index_modality].media_file.id}
                     media_file={sp.packet.modalities[index_modality].media_file}
                     display_name={data_samples.display_name}
                     is_selected={sp.is_selected}
+                    is_one_selected={isOneSelected(selectable_packets)}
                     kind={sp.packet.modalities[index_modality].kind}
                     onClick={() =>
                         setSelectablePackets(

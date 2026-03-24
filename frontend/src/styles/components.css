@@ -164,6 +164,22 @@ ul {
     cursor: pointer;
 }
 
+.selectable-media-item-not-selected img{
+    margin: 0 7px 0 7px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    filter: grayscale(100%) saturate(30%) brightness(0.8);
+    opacity: 0.45;
+}
+.selectable-media-item-not-selected canvas{
+    margin: 0 7px 0 7px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    filter: grayscale(100%) saturate(30%) brightness(0.8);
+    opacity: 0.45;
+}
 .slogan {
     padding: 0;
     margin: 0;

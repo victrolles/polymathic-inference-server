@@ -30,3 +30,7 @@ export function getSelectedPackets(selectable_packets: SelectablePackets): Packe
 export function numberOfSelectedPackets(selectable_packets: SelectablePackets): number {
     return selectable_packets.filter((sp) => sp.is_selected).length;
 }
+
+export function isOneSelected(selectable_packets: SelectablePackets): boolean {
+    return selectable_packets.filter((sp) => sp.is_selected).length >= 1;
+}
