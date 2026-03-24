@@ -61,24 +61,19 @@ class MediaService:
                 print(f"Using cached packet for dataset location: {dataset_location}")
 
             modalities: list[Modality] = []
-            for idx_modality, modality_id in enumerate(modality_ids):
+            for modality_id in modality_ids:
                 path = self.data_manager.path_finder.paths_dataset_to_modalities[(task_id, modality_id)]
                 data = None
                 does_media_file_exist = False
                 media_file = None
-                print(f"Processing path: {path.steps}")
                 for step in path.steps:
                     if step.step_type == StepType.DATASET:
                         data = self.data_manager.datasets.datasets_by_id[step.info.id].data[sample_index]
-                        print(f"Dataset")
                     elif step.step_type == StepType.DICTIONARY:
                         data = data[step.info.key]
-                        print(f"Dictionary: {step.info.key} -> {type(data)}")
                     elif step.step_type == StepType.VISUALIZER:
-                        print(f"Visualizer: {step.info.id} -> {type(data)}")
                         data = self.data_manager.visualize(data, step.info.id, step.info.modality_id)
 
-                print(f"Data: {type(data)}")
                 modality_cfg = self.config_manager.registry.modalities_by_id[modality_id]
                 kind = self.config_manager.registry.data_types_by_id[modality_cfg.data_type_id].kind
                 if is_packet_cached:
@@ -105,14 +100,8 @@ class MediaService:
         return packets
 
     def pre_process_inference(self, task_id: str, dataset_locations: list[DatasetLocation]) -> Any:
-        print(f"Task ID: {task_id}")
-        for dataset_location in dataset_locations:
-            print(f"Dataset location: {dataset_location}")
-
         task = self.config_manager.registry.tasks_by_id[task_id]
         multiple_data_selection = task.data_samples.multiple_data_selection
-        if not multiple_data_selection:
-            dataset_locations = dataset_locations[0]
         path = self.data_manager.path_finder.paths_dataset_to_inference[task_id]
         data = None
         for step in path.steps:
@@ -120,14 +109,12 @@ class MediaService:
                 if multiple_data_selection:
                     data = [self.data_manager.datasets.datasets_by_id[step.info.id].data[dataset_location.index] for dataset_location in dataset_locations]
                 else:
-                    data = self.data_manager.datasets.datasets_by_id[step.info.id].data[dataset_location.index]
-                print(f"Dataset")
+                    data = self.data_manager.datasets.datasets_by_id[step.info.id].data[dataset_locations[0].index]
             elif step.step_type == StepType.DICTIONARY:
                 if multiple_data_selection:
                     data = [data[i][step.info.key] for i in range(len(dataset_locations))]
                 else:
                     data = data[step.info.key]
-                print(f"Dictionary: {step.info.key} -> {type(data)}")
             elif step.step_type == StepType.PREPROCESSOR:
                 if multiple_data_selection:
                     if self.config_manager.registry.data_types_by_id[step.input_output_type.input_data_type_id].kind == DataKind.LIST:
@@ -136,7 +123,6 @@ class MediaService:
                         data = [self.data_manager.preprocess(data[i]) for i in range(len(dataset_locations))]
                 else:
                     data = self.data_manager.preprocess(data)
-                print(f"Preprocessor: {step.info.id} -> {type(data)}")
 
         return data
 
@@ -194,16 +180,12 @@ class MediaService:
                 path = self.data_manager.path_finder.paths_inference_to_modalities[(mst.task_id, modality_id)]
                 modified_item = item
                 media_file = None
-                print(f"Processing path: {path.steps}")
                 for step in path.steps:
                     if step.step_type == StepType.DICTIONARY:
                         modified_item = modified_item[step.info.key]
-                        print(f"Dictionary: {step.info.key} -> {type(modified_item)}")
                     elif step.step_type == StepType.VISUALIZER:
-                        print(f"Visualizer: {step.info.id} -> {type(modified_item)}")
                         modified_item = self.data_manager.visualize(modified_item, step.info.id, step.info.modality_id)
 
-                print(f"Data: {type(modified_item)}")
                 modality_cfg = self.config_manager.registry.modalities_by_id[modality_id]
                 kind = self.config_manager.registry.data_types_by_id[modality_cfg.data_type_id].kind
                 media_file = self.data_manager.generate_media_file(modified_item, modality_id, kind)

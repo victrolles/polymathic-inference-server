@@ -1,13 +1,11 @@
 import os
-import asyncio
 from contextlib import asynccontextmanager
-import sys
-import json
 
 import httpx
 from fastapi import FastAPI, HTTPException
 
 from shared.structs import ServerInfo, TaskRequest, InferenceRequest, InferenceDataInput
+from shared.utils.functions import prints
 from shared.utils.requests import (
     wait_for_server,
     add_server as register_server,
@@ -79,23 +77,21 @@ async def request_random_data_samples(request: TaskRequest):
 @app.post("/api/request_inference")
 async def request_inference(request: InferenceRequest):
     mst = request.model_size_task_id
-    print(f"========== Pre process inference ==========")
+    prints("Step 1 / 12 : Pre process inference", "MEDIA_SERVICE")
     data_inputs = media_service.pre_process_inference(mst.task_id, request.dataset_locations)
     
 
     # call inference function
-    print("send to server")
     server = server_manager.registry.get_server_by_model_size(mst.model_id, mst.size_id)
-    print(f"server: {server.url}")
     inference_data_input = InferenceDataInput(
         input=data_inputs,
         task_id=mst.task_id
     )
-    print(f"========== Serialization ==========")
+    prints("Step 2 / 12 : Serialization", "MEDIA_SERVICE")
     payload = inference_data_input.model_dump(mode="python")
     request_kwargs: dict = {}
     request_kwargs["content"] = to_binary_payload(payload)
-    print(f"========== Sending to server ==========")
+    prints("Step 3 / 12 : Sending to worker", "MEDIA_SERVICE")
     try:
         async with httpx.AsyncClient(timeout=3600) as client:
             r = await client.post(
@@ -103,9 +99,9 @@ async def request_inference(request: InferenceRequest):
                 **request_kwargs,
             )
             r.raise_for_status()
-            print(f"========== Receiving from server ==========")
+            prints("Step 9 / 12 : Receiving from worker", "MEDIA_SERVICE")
             inference_result = from_binary_payload(r.content)
-            print(f"========== Deserialization ==========")
+            prints("Step 10 / 12 : Deserializing", "MEDIA_SERVICE")
     except httpx.HTTPError as e:
         error_message = (
             f"Error requesting random data samples from {server.url} for "
@@ -115,7 +111,7 @@ async def request_inference(request: InferenceRequest):
         raise HTTPException(status_code=500, detail=error_message)
 
     #Post process inference result
-    print(f"========== Post process inference ==========")
+    prints("Step 11 / 12 : Post process inference", "MEDIA_SERVICE")
     packets = media_service.post_process_inference(inference_result, mst)
-    print(f"========== Returning packets ==========")
+    prints("Step 12 / 12 : Returning packets to gateway", "MEDIA_SERVICE")
     return [packet.model_dump(mode="json") for packet in packets]

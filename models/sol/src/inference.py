@@ -12,5 +12,4 @@ class Inference(InferenceBase):
 
     def infer(self, input: Dict, task_id: str) -> torch.Tensor:
         output = self.data['x_gen'][0]
-        print(f"Shape of output: {output.shape}")
         return output

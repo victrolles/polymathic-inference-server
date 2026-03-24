@@ -8,7 +8,15 @@ from shared.structs import Packet
 def extend_url(url: str, path: str) -> str:
     return url.rstrip("/") + path
 
-
+def prints(message: str, server_type: str):
+    if server_type == "GATEWAY":
+        print(f"[GATEWAY]: {message}")
+    elif server_type == "MEDIA_SERVICE":
+        print(f"[MEDIA_SERVICE]: {message}")
+    elif server_type == "WORKER":
+        print(f"[WORKER]: {message}")
+    else:
+        raise ValueError(f"Invalid server type: {server_type}")
 
 def convert_path_to_url(path: str, host: str, port: int, model_id: str) -> str:
     file_name = os.path.basename(path)

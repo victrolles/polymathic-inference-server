@@ -60,47 +60,21 @@ class Inference(InferenceBase):
         self.all_embeddings = all_embeddings.reshape(all_embeddings.shape[0], -1)
 
     def _get_similarity_search(self, inputs: Any, number_of_images: int = 4) -> list:
-        print("====== Getting similar images ======")
-        print(f"Find object in subset: {inputs['object_id']}")
         idx = find_object_in_subset(self.subset, inputs['object_id'])
-        print("Object found")
-
-        print("Encoding object into embeddings")
         query_tokens = prepare_query(self.subset[idx], self.codec_manager)
         query_embedding = self.model.encode(query_tokens).cpu().numpy()
         query_embedding = query_embedding.reshape(1, -1)
-        print("Object embeddings prepared")
-
-        print("Calculate similarity scores")
         similarity_scores = cosine_similarity(query_embedding, self.all_embeddings)
         similar_objects = similarity_scores.argsort(axis=1)[:, ::-1][0][:number_of_images]
-        print("Similar objects found")
-
-        print("Get similar objects")
         similar_images = []
         for ids in similar_objects:
             similar_images.append(self.subset['rgb'][ids])
         return similar_images
 
     def _get_redshift_prediction(self, inputs: Any):
-        print(f"Type of inputs: {type(inputs)}")
-        print(f"Type of inputs[0]: {type(inputs[0])}")
-        print("====== Getting reshift predictions ======")
-        print("Prepare queries")
         tokens, new_object_ids = prepare_queries(inputs, self.codec_manager, [input['object_id'] for input in inputs])
-        print("Queries prepared")
-
-        print("forward pass queries")
         tokens_Z = self.model(tokens, target_modality=Z)
-        print("Predictions obtained")
-
-        print("Calculate predictions")
         predictions = torch.softmax(tokens_Z["tok_z"][:].squeeze(), 0).detach().cpu().numpy()
-        print("Predictions calculated")
-        print(f"Predictions: {predictions}")
-        print(f"New object IDs: {new_object_ids}")
-
-        
         return dict(
             predictions=predictions,
             object_ids=new_object_ids

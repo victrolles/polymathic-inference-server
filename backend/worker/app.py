@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Response
 
 from shared.structs import ServerInfo, InferenceDataInput
-from shared.utils.functions import load_module
+from shared.utils.functions import load_module, prints
 from shared.utils.requests import wait_for_server, add_server, remove_server
 from shared.utils.binary_transport import from_binary_payload, to_binary_payload
 from worker.template.inference_base import InferenceBase
@@ -47,17 +47,17 @@ inference: InferenceBase = inference_module.Inference(size_id=SIZE_ID)
 
 @app.post("/api/request_inference")
 async def request_inference(request: Request):
-    print(f"========== Receiving request ==========")
+    prints("Step 4 / 12 : Receiving from media service", "WORKER")
     body = await request.body()
-    print(f"========== Deserializing ==========")
+    prints("Step 5 / 12 : Deserializing", "WORKER")
     payload = from_binary_payload(body)
     parsed_request = InferenceDataInput.model_validate(payload)
 
     input = parsed_request.input
     task_id = parsed_request.task_id
-    print("========== inferring ==========")
+    prints("Step 6 / 12 : Inferring", "WORKER")
     inference_result = inference.infer(input, task_id)
-    print("========== Serializing ==========")
+    prints("Step 7 / 12 : Serializing", "WORKER")
     binary_response = to_binary_payload(inference_result)
-    print(f"========== Returning response ==========")
+    prints("Step 8 / 12 : Returning response to media service", "WORKER")
     return Response(content=binary_response, media_type="application/octet-stream")

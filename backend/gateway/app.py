@@ -148,7 +148,6 @@ async def request_inference(request: InferenceRequest):
                 json=request.model_dump(mode="json"),
             )
             r.raise_for_status()
-            print(f"Inference response: {r.json()}")
             packets = [Packet(**packet) for packet in r.json()]
             new_packets = convert_packets_to_url(
                 packets,
