@@ -42,5 +42,8 @@ class MediaManager:
                 return True, modality.media_file
         return False, None
 
+    def has_index_dataset_been_cached(self, location: DatasetLocation) -> bool:
+        return (location.id, location.index) in self.cached_packets_by_location
+
     def print_cache(self) -> None:
         print(f"Cached indices: {[x.origin.index for x in self.cached_packets]}")

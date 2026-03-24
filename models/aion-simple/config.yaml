@@ -1,13 +1,13 @@
 model:
-  id: aion
-  name: AION
+  id: aion-simple
+  name: AION Simple
 
 sizes:
-  - id: aion-base
-    name: AION Base
+  - id: aion-simple-base
+    name: AION Simple Base
 
-  - id: aion-large
-    name: AION Large
+  - id: aion-simple-large
+    name: AION Simple Large
 
 data_types:
   - id: rgb-pil
@@ -38,11 +38,11 @@ data_types:
       data_type_id: legacy-survey-dict
 
 visualizers:
-  - id: prediction-tensor-to-plot
-    input:
-      data_type_id: prediction-dict
-    output:
-      data_type_id: plot-prediction
+  - id: prediction_tensor_to_plot
+    function_name: prediction_tensor_to_plot
+    input_data_type_id: prediction-dict
+    output_data_type_id: plot-prediction
+    output_modalities: [plot]
 
 datasets:
   - id: legacy-survey
@@ -77,14 +77,12 @@ tasks:
     ui:
       text_top_screen: "Get redshift predictions for a set of images"
       data_size: { width: "200px", height: "200px" }
-      output_data_size: { width: "45vh", height: "40vh" }
+      output_data_size: { width: "40vh", height: "35vh" }
       submit_button_text: "Search Redshift Predictions"
 
     inference:
-      input:
-        data_type_id: legacy-survey-dict-list
-      output:
-        data_type_id: prediction-dict
+      input_data_type_id: legacy-survey-dict-list
+      output_data_type_id: prediction-dict
 
   - id: similarity-search
     name: Similarity Search
@@ -107,7 +105,5 @@ tasks:
       submit_button_text: "Search Similarity"
 
     inference:
-      input:
-        data_type_id: legacy-survey-dict
-      output:
-        data_type_id: rgb-pil-list
+      input_data_type_id: legacy-survey-dict
+      output_data_type_id: rgb-pil-list

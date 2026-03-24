@@ -18,7 +18,7 @@ data_types:
     fps: 25
     dpi: 100
 
-  - id: sol_dataset_dict
+  - id: sol_dataset_dict_formatted
     kind: dictionary
     fields:
       - id: x_obs
@@ -26,22 +26,30 @@ data_types:
 
   - id: sol_dataset_dict_list
     kind: list
+
+  - id: sol_dataset_dict_list_formatted
+    kind: list
     element_type:
-      data_type_id: sol_dataset_dict
+      data_type_id: sol_dataset_dict_formatted
 
 visualizers:
-  - id: generate_video_from_tensor
-    input:
-      data_type_id: x_tensor
-    output:
-      data_type_id: x_video
+  - id: video_maker
+    function_name: make_video
+    input_data_type_id: x_tensor
+    output_data_type_id: x_video
+    output_modalities: [br, bp, bt, dopplergram, continuum, aia_1700, aia_1600, aia_0335, aia_0304, aia_0211, aia_0193, aia_0171, aia_0131, aia_0094]
+
+dataset_formatters:
+  - id: sol_dataset_formatter
+    function_name: format_sol_dataset
+    output_data_type_id: sol_dataset_dict_list_formatted
 
 datasets:
   - id: sol_dataset
     name: SOL Dataset
     path: /mnt/home/vgoudal/polymathic-inference/aion-inference/datasets/sol/dataset.pt
     checkpoint_format: torch_pt
-    data_type_id: sol_dataset_dict_list
+    dataset_formatter_id: sol_dataset_formatter
 
 modalities:
   - id: br
@@ -106,7 +114,7 @@ tasks:
 
     data_samples:
       modality_id: aia_0304
-      sample_size: 7
+      sample_size: 2
 
     selected_data_samples:
       display: true
@@ -128,7 +136,5 @@ tasks:
       submit_button_text: "Predict Sun Activity"
 
     inference:
-      input:
-        data_type_id: sol_dataset_dict
-      output:
-        data_type_id: x_tensor
+      input_data_type_id: sol_dataset_dict_formatted
+      output_data_type_id: x_tensor

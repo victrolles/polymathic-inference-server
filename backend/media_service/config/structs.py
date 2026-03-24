@@ -39,21 +39,47 @@ class DataTypeConfig(BaseModel):
             return None
         return element_type.data_type_id
 
-class VisualizerIO(BaseModel):
-    data_type_id: str
-
 class VisualizerConfig(BaseModel):
     id: str
-    input: VisualizerIO
-    output: VisualizerIO
+    function_name: str
+    input_data_type_id: str
+    output_data_type_id: str
+    output_modalities: list[str]
+
+class PreprocessorConfig(BaseModel):
+    id: str
+    function_name: str
+    input_data_type_id: str
+    output_data_type_id: str
+
+class PostprocessorConfig(BaseModel):
+    id: str
+    function_name: str
+    input_data_type_id: str
+    output_data_type_id: str
+
+class DatasetFormatterConfig(BaseModel):
+    id: str
+    function_name: str
+    input_data_type_id: Optional[str] = None
+    output_data_type_id: str
 
 class DatasetConfig(BaseModel):
     id: str
     name: str
     path: str
-    data_type_id: str
+    data_type_id: Optional[str] = None
     checkpoint_format: CheckpointFormat
-    
+    dataset_formatter_id: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validate_dataset_config(cls, values: "DatasetConfig") -> "DatasetConfig":
+        if values.data_type_id is None and values.dataset_formatter_id is None:
+            raise ValueError(
+                "data_type_id or dataset_formatter_id must be provided"
+            )
+        return values
+
 class ModalityConfig(BaseModel):
     id: str
     name: str
@@ -106,8 +132,22 @@ class DisplayDataConfig(BaseModel):
         return values
 
 class InferenceConfig(BaseModel):
-    input: VisualizerIO
-    output: VisualizerIO
+    input_data_type_id: Optional[str] = None
+    output_data_type_id: Optional[str] = None
+    preprocessor_id: Optional[str] = None
+    postprocessor_id: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validate_inference_config(cls, values: "InferenceConfig") -> "InferenceConfig":
+        if values.input_data_type_id is None and values.preprocessor_id is None:
+            raise ValueError(
+                "input_data_type_id or preprocessor_id must be provided"
+            )
+        if values.output_data_type_id is None and values.postprocessor_id is None:
+            raise ValueError(
+                "output_data_type_id or postprocessor_id must be provided"
+            )
+        return values
 
 class TaskUIConfig(BaseModel):
     text_top_screen: str
@@ -151,7 +191,10 @@ class AppConfig(BaseModel):
     model: ModelConfig
     sizes: list[NamedObject]
     data_types: list[DataTypeConfig]
-    visualizers: list[VisualizerConfig]
+    visualizers: Optional[list[VisualizerConfig]] = None
+    preprocessors: Optional[list[PreprocessorConfig]] = None
+    postprocessors: Optional[list[PostprocessorConfig]] = None
+    dataset_formatters: Optional[list[DatasetFormatterConfig]] = None
     datasets: list[DatasetConfig]
     modalities: list[ModalityConfig]
     tasks: list[TaskConfig]

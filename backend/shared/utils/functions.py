@@ -22,8 +22,7 @@ def convert_packets_to_url(packets: list[Packet], host: str, port: int, model_id
             packets[idx].modalities[idx2].media_file.path = path
     return packets
 
-def load_module(model_path: str, module_name: str, file_name: str) -> ModuleType:
-    model_src = os.path.abspath(os.path.join(model_path, "src"))
+def load_module(model_src: str, module_name: str, file_name: str) -> ModuleType:
     module_path = os.path.join(model_src, file_name)
     if not os.path.isfile(module_path):
         raise FileNotFoundError(f"Module not found: {module_path}")

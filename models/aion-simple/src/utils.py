@@ -46,11 +46,11 @@ def prepare_query(data, codec_manager):
 
     return codec_manager.encode(image, g, r, i, z)
     
-def find_object_in_subset(subset, name: str):
-    for idx, data in enumerate(subset['object_id']):
-        if name == data:
-            return subset[idx]
-    raise ValueError(f"Object {name} not found in subset")
+def find_object_in_subset(subset, object_id: str):
+    for idx, object_id2 in enumerate(subset['object_id']):
+        if object_id == object_id2:
+            return idx
+    raise ValueError(f"Object {object_id} not found in subset")
 
 def prepare_queries(subset, codec_manager, object_ids):
     flux_image = []

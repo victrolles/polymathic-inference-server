@@ -1,7 +1,8 @@
 from pydantic import BaseModel
-from typing import Any, Optional
+from typing import Any, Optional, Callable
 
 from media_service.config.data_kind import DataKind
+from media_service.config.structs import VisualizerConfig, PreprocessorConfig, PostprocessorConfig, DatasetFormatterConfig
 
 class IdName(BaseModel):
     id: str
@@ -60,3 +61,7 @@ class InferenceRequest(BaseModel):
 class InferenceDataInput(BaseModel):
     input: Any
     task_id: str
+
+class ScriptFunction(BaseModel):
+    config : VisualizerConfig | PreprocessorConfig | PostprocessorConfig | DatasetFormatterConfig
+    callable: Callable

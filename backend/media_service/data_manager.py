@@ -1,47 +1,13 @@
-import os
-from typing import Any
 import random
-
-import torch
-from datasets import load_from_disk
-from PIL import Image as PILImage
-import PIL
-from matplotlib.figure import Figure
-from matplotlib.animation import FuncAnimation
-from matplotlib.animation import FFMpegWriter
+from typing import Any
 
 from .config.manager import ConfigManager
-from .config.data_kind import CheckpointFormat, DataKind
-from shared.structs import Dataset, MediaFile
-from shared.utils.functions import load_module
-
-def load_dataset_huggingface(dataset_path: str):
-    return load_from_disk(dataset_path)
-
-def load_dataset_torch(dataset_path: str):
-    return torch.load(dataset_path, weights_only=False)
-
-def convert_to_file_format(full_path: str, data: Any, kind: str) -> MediaFile:
-    print(f"Type of data: {type(data)}")
-    print(f"Kind: {kind}")
-    if kind == DataKind.IMAGE:
-        if type(data) == PILImage or type(data) == PIL.PngImagePlugin.PngImageFile:
-            data.save(full_path)
-        elif type(data) == Figure:
-            data.savefig(full_path)
-        else:
-            raise ValueError(f"Unsupported object type: {type(data)}")
-    elif kind == DataKind.VIDEO:
-        if isinstance(data, FuncAnimation):
-            data.save(
-                full_path,
-                writer="pillow",
-                fps=8,
-                savefig_kwargs={"pad_inches": 0}
-            )
-        else:
-            raise ValueError(f"Unsupported object type: {type(data)}")
-
+from .config.data_kind import DataKind
+from shared.structs import MediaFile
+from .dataset_loader import DatasetLoader
+from .scripts_loader import ScriptsLoader
+from .media_converter import MediaConverter
+from .path_finder import PathFinder, StepType, Path
 
 class DataManager:
     def __init__(self, media_files_path: str, model_path: str, config_manager: ConfigManager):
@@ -49,60 +15,25 @@ class DataManager:
         self.model_path = model_path
         self.config_manager = config_manager
 
-        self.datasets: list[Dataset] = []
-        self.datasets_by_id: dict[str, Dataset] = {}
-        self.visualize = None
+        self.scripts = ScriptsLoader(model_path, config_manager)
+        self.datasets = DatasetLoader(model_path, config_manager, self.scripts)
+        self.media_converter = MediaConverter(media_files_path)
+        self.path_finder = PathFinder(model_path, config_manager)
 
-        self._load_datasets()
-        self._load_visualizers()
+    def visualize(self, data: Any, visualizer_id: str, modality_id: str) -> Any:
+        return self.scripts.visualizers_by_id[visualizer_id].callable(data, modality_id)
 
-    def _load_datasets(self) -> None:
-        # datasets_by_id must store the loaded dataset (with `.data`),
-        # not the DatasetConfig, otherwise callers can't access `.data`.
-        for dataset_config in self.config_manager.config.datasets:
-            dataset_path = dataset_config.path
-            if not os.path.exists(dataset_path):
-                raise FileNotFoundError(f"Dataset not found: {dataset_path}")
-            if dataset_config.checkpoint_format == CheckpointFormat.HUGGINGFACE:
-                data = load_dataset_huggingface(dataset_path)
-            elif dataset_config.checkpoint_format == CheckpointFormat.TORCH_PT:
-                data = load_dataset_torch(dataset_path)
-            else:
-                raise ValueError(
-                    f"Unsupported checkpoint format: {dataset_config.checkpoint_format}"
-                )
+    def preprocess(self, data: Any, task_id: str) -> Any:
+        return self.scripts.preprocessors_by_id[task_id].callable(data, task_id)
 
-            dataset_obj = Dataset(id=dataset_config.id, data=data)
-            self.datasets.append(dataset_obj)
-            self.datasets_by_id[dataset_config.id] = dataset_obj
+    def postprocess(self, data: Any, task_id: str) -> Any:
+        return self.scripts.postprocessors_by_id[task_id].callable(data, task_id)
 
-    def _load_visualizers(self) -> None:
-        if len(self.config_manager.config.visualizers) == 0:
-            return
-        full_path = os.path.join(self.model_path, "src", "visualizer.py")
-        if not os.path.exists(full_path):
-            raise FileNotFoundError(f"Visualizer file not found: {full_path}")
-        module = load_module(self.model_path, "visualizer", "visualizer.py")
-        self.visualize = getattr(module, "visualize", None)
-        if self.visualize is None:
-            raise AttributeError(f"Module {full_path} has no 'visualize' function")
-
-    def generate_media_file(self, dataset_id: str, index: int, key: str, modality_id: str, kind: DataKind, use_visualizer: bool) -> MediaFile:
-        data = self.datasets_by_id[dataset_id].data[index][key]
-        
-        if use_visualizer:
-            data = self.visualize(data, modality_id)
-
+    def generate_media_file(self, data: Any, modality_id: str, kind: DataKind) -> MediaFile:
         rand_id = random.randint(0, 1000000)
         file_name = f"{modality_id}_{rand_id}"
-        # Match the output container format to the kind.
-        file_ext = ".png"
-        if kind == DataKind.VIDEO:
-            file_ext = ".gif"
-        file_name_extended = f"{file_name}{file_ext}"
-        full_path = os.path.join(self.media_files_path, file_name_extended)
 
-        convert_to_file_format(full_path, data, kind)
+        full_path = self.media_converter.save_object(data, file_name, kind)
 
         return MediaFile(
             path=full_path,

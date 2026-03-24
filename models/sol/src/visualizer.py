@@ -268,7 +268,7 @@ def plot_sdo(x, idx, ax=None):
         wvl = Wvl.idx_to_str(idx)
         return plot_aia(x_plot, ax=ax, wavelength=wvl)
 
-def make_video(x_obs: torch.Tensor, idx: int):
+def make_videoo(x_obs: torch.Tensor, idx: int):
     fig, ax = plt.subplots(figsize=(4, 4), dpi=150)
     ax.axis("off")
 
@@ -286,5 +286,5 @@ def make_video(x_obs: torch.Tensor, idx: int):
 
     return FuncAnimation(fig, update, frames=x_obs.shape[0], interval=33, blit=False)
 
-def visualize(x_obs: torch.Tensor, modality: str):
-    return make_video(x_obs, modalities[modality])
+def make_video(x_obs: torch.Tensor, modality: str):
+    return make_videoo(x_obs, modalities[modality])

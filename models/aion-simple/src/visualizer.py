@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-def visualize(input, modality_id: str):
+def prediction_tensor_to_plot(input, modality_id: str):
     if modality_id == "plot":
         return plot_prediction(input)
     else:

@@ -27,10 +27,10 @@ class Inference(InferenceBase):
         torch.set_grad_enabled(False)
 
         #Load the subset
-        # print("Loading the subset")
-        # subset_path = "/mnt/home/vgoudal/aion-inference/datasets/MultimodalUniverse/legacysurvey/subset_1000"
-        # subset = load_from_disk(subset_path)
-        # print("Subset loaded")
+        print("Loading the subset")
+        subset_path = "/mnt/home/vgoudal/aion-inference/datasets/MultimodalUniverse/legacysurvey/subset_1000"
+        self.subset = load_from_disk(subset_path)
+        print("Subset loaded")
 
         # Decode the object_id from bytes to string: "b'0421p022-7410'" -> "0421p022-7410"
         # decoded_ids = [ast.literal_eval(oid).decode('utf-8') for oid in list(subset['object_id'])  ]
@@ -50,7 +50,7 @@ class Inference(InferenceBase):
         print("Model loaded")
 
         print("Preparing all embeddings for similarity search on Legacy Survey subset")
-        # self._prepare_all_embeddings()
+        self._prepare_all_embeddings()
         print("All embeddings prepared")
         print("====== Ready to use ======")
 
@@ -59,14 +59,14 @@ class Inference(InferenceBase):
         all_embeddings = self.model.encode(all_tokens).cpu().numpy()
         self.all_embeddings = all_embeddings.reshape(all_embeddings.shape[0], -1)
 
-    def _get_similarity_search(self, name: str, number_of_images: int = 4) -> list:
+    def _get_similarity_search(self, inputs: Any, number_of_images: int = 4) -> list:
         print("====== Getting similar images ======")
-        print("Find object in subset")
-        data = find_object_in_subset(self.subset, name)
+        print(f"Find object in subset: {inputs['object_id']}")
+        idx = find_object_in_subset(self.subset, inputs['object_id'])
         print("Object found")
 
         print("Encoding object into embeddings")
-        query_tokens = prepare_query(data, self.codec_manager)
+        query_tokens = prepare_query(self.subset[idx], self.codec_manager)
         query_embedding = self.model.encode(query_tokens).cpu().numpy()
         query_embedding = query_embedding.reshape(1, -1)
         print("Object embeddings prepared")
@@ -97,6 +97,8 @@ class Inference(InferenceBase):
         print("Calculate predictions")
         predictions = torch.softmax(tokens_Z["tok_z"][:].squeeze(), 0).detach().cpu().numpy()
         print("Predictions calculated")
+        print(f"Predictions: {predictions}")
+        print(f"New object IDs: {new_object_ids}")
 
         
         return dict(

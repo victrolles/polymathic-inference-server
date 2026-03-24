@@ -1,8 +1,7 @@
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request, HTTPException, Response
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, Request, Response
 
 from shared.structs import ServerInfo, InferenceDataInput
 from shared.utils.functions import load_module
@@ -40,31 +39,25 @@ app = FastAPI(lifespan=lifespan)
 model_path = os.path.join(MODELS_PATH, MODEL_ID)
 if not os.path.exists(model_path):
     raise FileNotFoundError(f"Model not found: {model_path}")
-inference_module = load_module(model_path, "inference", "inference.py")
+model_src = os.path.abspath(os.path.join(model_path, "src"))
+if not os.path.exists(model_src):
+    raise FileNotFoundError(f"Model src not found: {model_src}")
+inference_module = load_module(model_src, "inference", "inference.py")
 inference: InferenceBase = inference_module.Inference(size_id=SIZE_ID)
 
 @app.post("/api/request_inference")
 async def request_inference(request: Request):
-    content_type = request.headers.get("content-type", "")
-    is_binary_request = "application/octet-stream" in content_type
-    if is_binary_request:
-        body = await request.body()
-        try:
-            payload = from_binary_payload(body)
-            parsed_request = InferenceDataInput.model_validate(payload)
-        except Exception as exc:
-            raise HTTPException(status_code=400, detail=f"Invalid binary payload: {exc}") from exc
-    else:
-        # Keep JSON compatibility for existing clients.
-        payload = await request.json()
-        parsed_request = InferenceDataInput.model_validate(payload)
+    print(f"========== Receiving request ==========")
+    body = await request.body()
+    print(f"========== Deserializing ==========")
+    payload = from_binary_payload(body)
+    parsed_request = InferenceDataInput.model_validate(payload)
 
     input = parsed_request.input
     task_id = parsed_request.task_id
-    print("=== inferring ===")
+    print("========== inferring ==========")
     inference_result = inference.infer(input, task_id)
-    print("=== inference result ===")
-    if is_binary_request:
-        binary_response = to_binary_payload(inference_result)
-        return Response(content=binary_response, media_type="application/octet-stream")
-    return JSONResponse(content=inference_result)
+    print("========== Serializing ==========")
+    binary_response = to_binary_payload(inference_result)
+    print(f"========== Returning response ==========")
+    return Response(content=binary_response, media_type="application/octet-stream")

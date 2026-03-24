@@ -79,7 +79,8 @@ async def request_random_data_samples(request: TaskRequest):
 @app.post("/api/request_inference")
 async def request_inference(request: InferenceRequest):
     mst = request.model_size_task_id
-    data_inputs = media_service.process_inference(mst.task_id, request.dataset_locations)
+    print(f"========== Pre process inference ==========")
+    data_inputs = media_service.pre_process_inference(mst.task_id, request.dataset_locations)
     
 
     # call inference function
@@ -90,18 +91,11 @@ async def request_inference(request: InferenceRequest):
         input=data_inputs,
         task_id=mst.task_id
     )
-    print(f"inference data input")
+    print(f"========== Serialization ==========")
     payload = inference_data_input.model_dump(mode="python")
-    print(f"payload in python")
     request_kwargs: dict = {}
-    try:
-        json.dumps(payload)
-        request_kwargs["json"] = payload
-        print("using json payload")
-    except (TypeError, ValueError, OverflowError):
-        request_kwargs["content"] = to_binary_payload(payload)
-        request_kwargs["headers"] = {"Content-Type": "application/octet-stream"}
-        print("using binary payload")
+    request_kwargs["content"] = to_binary_payload(payload)
+    print(f"========== Sending to server ==========")
     try:
         async with httpx.AsyncClient(timeout=3600) as client:
             r = await client.post(
@@ -109,12 +103,9 @@ async def request_inference(request: InferenceRequest):
                 **request_kwargs,
             )
             r.raise_for_status()
-            response_content_type = r.headers.get("content-type", "")
-            if "application/octet-stream" in response_content_type:
-                inference_result = from_binary_payload(r.content)
-            else:
-                # Keep compatibility if worker still returns JSON.
-                inference_result = r.json()
+            print(f"========== Receiving from server ==========")
+            inference_result = from_binary_payload(r.content)
+            print(f"========== Deserialization ==========")
     except httpx.HTTPError as e:
         error_message = (
             f"Error requesting random data samples from {server.url} for "
@@ -124,7 +115,7 @@ async def request_inference(request: InferenceRequest):
         raise HTTPException(status_code=500, detail=error_message)
 
     #Post process inference result
-    print("post process inference result")
+    print(f"========== Post process inference ==========")
     packets = media_service.post_process_inference(inference_result, mst)
-    print("return packets")
+    print(f"========== Returning packets ==========")
     return [packet.model_dump(mode="json") for packet in packets]

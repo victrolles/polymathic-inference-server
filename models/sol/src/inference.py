@@ -1,4 +1,5 @@
 import torch
+from torch import load
 from typing import Dict
 
 from worker.template.inference_base import InferenceBase
@@ -6,8 +7,10 @@ from worker.template.inference_base import InferenceBase
 class Inference(InferenceBase):
     def __init__(self, size_id: str):
         self.size_id = size_id
+        path = "/mnt/home/vgoudal/polymathic-inference/aion-inference/datasets/sol/item.pt"
+        self.data = load(path, weights_only=False)
 
     def infer(self, input: Dict, task_id: str) -> torch.Tensor:
-        print("====== Infering ======")
-        print("Task ID: ", task_id)
-        return input['x_gen'][0]
+        output = self.data['x_gen'][0]
+        print(f"Shape of output: {output.shape}")
+        return output
