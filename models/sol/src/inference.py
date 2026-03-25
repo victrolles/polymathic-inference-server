@@ -11,5 +11,4 @@ class Inference(InferenceBase):
         self.data = load(path, weights_only=False)
 
     def infer(self, input: Dict, task_id: str) -> torch.Tensor:
-        output = self.data['x_gen'][0]
-        return output
+        return self.data['x_gen'][0].clone()

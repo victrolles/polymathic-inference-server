@@ -77,7 +77,7 @@ async def request_random_data_samples(request: TaskRequest):
 @app.post("/api/request_inference")
 async def request_inference(request: InferenceRequest):
     mst = request.model_size_task_id
-    prints("Step 1 / 12 : Pre process inference", "MEDIA_SERVICE")
+    prints("Step 1 / 12 : Pre processing inference", "MEDIA_SERVICE")
     data_inputs = media_service.pre_process_inference(mst.task_id, request.dataset_locations)
     
 
@@ -87,10 +87,9 @@ async def request_inference(request: InferenceRequest):
         input=data_inputs,
         task_id=mst.task_id
     )
-    prints("Step 2 / 12 : Serialization", "MEDIA_SERVICE")
-    payload = inference_data_input.model_dump(mode="python")
+    prints("Step 2 / 12 : Serializing", "MEDIA_SERVICE")
     request_kwargs: dict = {}
-    request_kwargs["content"] = to_binary_payload(payload)
+    request_kwargs["content"] = to_binary_payload(inference_data_input)
     prints("Step 3 / 12 : Sending to worker", "MEDIA_SERVICE")
     try:
         async with httpx.AsyncClient(timeout=3600) as client:

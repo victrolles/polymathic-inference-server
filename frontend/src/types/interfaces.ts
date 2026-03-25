@@ -60,6 +60,17 @@ export interface PacketItemProps {
 
 export interface ModalityItemProps {
     modality: Modality;
+    switchable_modalities: Modality[] | null;
     configDict: Dict;
     media_size: MediaSize;
+}
+
+export interface DropListProps {
+    switchable_modalities: Modality[] | null;
+    setCurrentModality: (modality: Modality) => void;
+}
+
+export interface DropBoxProps {
+    switchable_modalities: Modality[] | null;
+    setCurrentModality: (modality: Modality) => void;
 }
