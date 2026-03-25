@@ -1,0 +1,8 @@
+# Dataset formatter
+
+# Visualizer
+torch
+matplotlib
+numpy
+sunpy[all]
+astropy

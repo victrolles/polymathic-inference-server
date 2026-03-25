@@ -15,8 +15,7 @@ data_types:
   - id: x_video
     kind: video
     representation: matplotlib_animation
-    fps: 25
-    dpi: 100
+    fps: 7
 
   - id: sol_dataset_dict_formatted
     kind: dictionary

@@ -132,7 +132,6 @@ async def request_random_data_samples(request: ModelSizeTaskRequest):
 
 @app.post("/api/request_inference")
 async def request_inference(request: InferenceRequest):
-    print(f"Request: {request}")
     mst = request.model_size_task_id
     server = server_manager.registry.get_server_by_model(mst.model_id)
     if server is None:

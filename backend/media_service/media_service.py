@@ -79,7 +79,7 @@ class MediaService:
                 if is_packet_cached:
                     does_media_file_exist, media_file = self.media_manager.get_media_files(dataset_location, modality_id)
                 if not does_media_file_exist:
-                    media_file = self.data_manager.generate_media_file(data, modality_id, kind)
+                    media_file = self.data_manager.generate_media_file(data, modality_cfg)
                 else:
                     print(f"Using cached - skipping generation")
                 modalities.append(Modality(
@@ -188,7 +188,7 @@ class MediaService:
 
                 modality_cfg = self.config_manager.registry.modalities_by_id[modality_id]
                 kind = self.config_manager.registry.data_types_by_id[modality_cfg.data_type_id].kind
-                media_file = self.data_manager.generate_media_file(modified_item, modality_id, kind)
+                media_file = self.data_manager.generate_media_file(modified_item, modality_cfg)
                 modalities.append(Modality(
                     id=modality_id,
                     name=modality_cfg.name,

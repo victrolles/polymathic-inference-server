@@ -20,6 +20,9 @@ class DataTypeConfig(BaseModel):
     representation: Optional[str] = None
     element_type: Optional[ElementType] = None
     fields: list[DataField] = Field(default_factory=list)
+    fps: Optional[int] = 10
+    shape: Optional[list[int | str]] = None
+    dpi: Optional[int] = 150
 
     @field_serializer("representation")
     def _serialize_representation(self, rep: Any):
