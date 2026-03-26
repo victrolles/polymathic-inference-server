@@ -102,7 +102,6 @@ class SwitchModalitiesConfig(BaseModel):
     modality_ids: list[str]
     default_modality_id: str
 
-
 class DisplayDataConfig(BaseModel):
     display: bool = False
     display_name: bool = False
@@ -163,7 +162,7 @@ class TaskConfig(BaseModel):
     id: str
     name: str
     data_samples: DataSamplesConfig
-    selected_data_samples: DisplayDataConfig
+    selected_data_samples: DisplayDataConfig = Field(default_factory=DisplayDataConfig)
     data_outputs: DisplayDataConfig
     ui: TaskUIConfig
     inference: InferenceConfig

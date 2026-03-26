@@ -1,4 +1,5 @@
 import os
+import pickle
 
 import torch
 from datasets import load_from_disk
@@ -14,6 +15,9 @@ def load_dataset_huggingface(dataset_path: str):
 
 def load_dataset_torch(dataset_path: str):
     return torch.load(dataset_path, weights_only=False)
+
+def load_dataset_pickle(dataset_path: str):
+    return pickle.load(open(dataset_path, "rb"))
 
 class DatasetLoader:
     def __init__(self, model_path: str, config_manager: ConfigManager, scripts_loader: ScriptsLoader):
@@ -40,6 +44,8 @@ class DatasetLoader:
             data = load_dataset_huggingface(path)
         elif dataset_config.checkpoint_format == CheckpointFormat.TORCH_PT:
             data = load_dataset_torch(path)
+        elif dataset_config.checkpoint_format == CheckpointFormat.PICKLE:
+            data = load_dataset_pickle(path)
         else:
             raise ValueError(f"Unsupported checkpoint format: {dataset_config.checkpoint_format}")
 

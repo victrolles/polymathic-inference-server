@@ -13,7 +13,7 @@ class CheckpointFormat(str, Enum):
     HUGGINGFACE = "huggingface"
     SAFETENSORS = "safetensors"
     ONNX = "onnx"
-    
+    PICKLE = "pickle"
 
 class DataKind(str, Enum):
     TENSOR = "tensor"
