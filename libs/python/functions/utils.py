@@ -3,7 +3,7 @@ import sys
 import importlib.util
 from types import ModuleType
 
-from shared.structs import Packet
+from ..structs.general import Packet
 
 def extend_url(url: str, path: str) -> str:
     return url.rstrip("/") + path

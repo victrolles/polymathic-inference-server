@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, model_validator, field_serializer
 from typing import Optional, Any
 
-from .data_kind import CheckpointFormat
+from ..enums import CheckpointFormat
 
 class NamedObject(BaseModel):
     id: str

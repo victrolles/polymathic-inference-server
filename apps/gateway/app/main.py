@@ -5,10 +5,9 @@ import httpx
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from shared.structs import ServerInfo, ModelInfo, ModelSizeTaskRequest, Packet, InferenceRequest
-from shared.server_manager import ServerManager
-from shared.utils.requests import extend_url
-from shared.utils.functions import convert_packets_to_url
+from python.structs.general import ServerInfo, ModelInfo, ModelSizeTaskRequest, Packet, InferenceRequest
+from python.functions.server_manager import ServerManager
+from python.functions.utils import extend_url, convert_packets_to_url
 
 GATEWAY_HOST = os.getenv("GATEWAY_HOST", "localhost")
 GATEWAY_PORT = os.getenv("GATEWAY_PORT", "8000")
@@ -16,16 +15,11 @@ MEDIA_FILES_PATH = os.getenv("MEDIA_FILES_PATH", "unknown")
 
 server_manager = ServerManager()
 
-app = FastAPI()
-
-origins = [
-    "http://localhost:7999",
-    "http://127.0.0.1:7999"
-]
+app = FastAPI(title="gateway")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -33,6 +27,13 @@ app.add_middleware(
 
 app.mount("/media_files", StaticFiles(directory=MEDIA_FILES_PATH), name="media_files")
 
+@app.get("/healthz")
+def healthz():
+    return {"status": "ok"}
+
+@app.get("/api/healthz")
+def api_healthz():
+    return {"status": "ok", "service": "gateway"}
 
 @app.get("/health")
 async def health():

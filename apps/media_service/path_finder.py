@@ -1,11 +1,11 @@
 from enum import Enum
-from tarfile import data_filter
 
 from pydantic import BaseModel
 
 from .config.manager import ConfigManager
-from .config.structs import DataTypeConfig
-from .config.data_kind import DataKind
+
+from python.structs.config import DataTypeConfig
+from python.enums import DataKind
 
 class StepType(str, Enum):
     DATASET = "dataset"

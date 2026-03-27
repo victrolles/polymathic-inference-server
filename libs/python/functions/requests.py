@@ -1,8 +1,8 @@
 import httpx
 import asyncio
 
-from .functions import extend_url
-from ..structs import ServerInfo
+from .utils import extend_url
+from ..structs.general import ServerInfo
 
 async def wait_for_server(server_url: str, interval: float = 5.0, request_timeout: float = 5.0):
     async with httpx.AsyncClient(timeout=request_timeout) as client:

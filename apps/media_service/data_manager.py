@@ -2,12 +2,13 @@ import random
 from typing import Any
 
 from .config.manager import ConfigManager
-from .config.structs import DataTypeConfig, ModalityConfig
-from shared.structs import MediaFile
 from .dataset_loader import DatasetLoader
 from .scripts_loader import ScriptsLoader
 from .media_converter import MediaConverter
 from .path_finder import PathFinder
+
+from python.structs.config import DataTypeConfig, ModalityConfig
+from python.structs.general import MediaFile
 
 class DataManager:
     def __init__(self, media_files_path: str, model_path: str, config_manager: ConfigManager):

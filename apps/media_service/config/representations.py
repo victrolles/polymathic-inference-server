@@ -1,4 +1,3 @@
-from enum import Enum
 from dataclasses import dataclass
 
 import numpy as np
@@ -8,22 +7,7 @@ from matplotlib.figure import Figure
 from matplotlib.animation import Animation
 import PIL.PngImagePlugin
 
-class CheckpointFormat(str, Enum):
-    TORCH_PT = "torch_pt"
-    HUGGINGFACE = "huggingface"
-    SAFETENSORS = "safetensors"
-    ONNX = "onnx"
-    PICKLE = "pickle"
-
-class DataKind(str, Enum):
-    TENSOR = "tensor"
-    DICTIONARY = "dictionary"
-    IMAGE = "image"
-    LIST = "list"
-    VIDEO = "video"
-    AUDIO = "audio"
-    TEXT = "text"
-    OTHER = "other"
+from python.enums import DataKind
 
 @dataclass(frozen=True)
 class Representation:

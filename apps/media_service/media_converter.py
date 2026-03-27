@@ -4,8 +4,8 @@ import os
 import PIL.Image
 import matplotlib.figure
 
-from .config.data_kind import DataKind
-from .config.structs import DataTypeConfig
+from python.enums import DataKind
+from python.structs.config import DataTypeConfig
 
 class MediaConverter:
     def __init__(self, media_files_path: str):

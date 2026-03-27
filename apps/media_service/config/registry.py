@@ -1,4 +1,4 @@
-from .structs import AppConfig
+from python.structs.config import AppConfig
 
 class ConfigRegistry:
     def __init__(self, config: AppConfig):

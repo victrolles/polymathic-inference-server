@@ -1,4 +1,4 @@
-from .structs import ServerInfo
+from ..structs.general import ServerInfo
 
 class ServerRegistry:
     def __init__(self, servers: list[ServerInfo]):

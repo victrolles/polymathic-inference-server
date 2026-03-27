@@ -1,6 +1,6 @@
 import os
 
-from shared.structs import Packet, ModelSizeTaskId, DatasetLocation, MediaFile
+from python.structs.general import Packet, ModelSizeTaskId, DatasetLocation, MediaFile
 
 class MediaManager:
     def __init__(self, media_files_path: str):

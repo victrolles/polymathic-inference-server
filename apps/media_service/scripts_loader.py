@@ -2,9 +2,10 @@ import os
 from typing import Optional
 
 from .config.manager import ConfigManager
-from .config.structs import VisualizerConfig, PreprocessorConfig, PostprocessorConfig, DatasetFormatterConfig
-from shared.structs import ScriptFunction
-from shared.utils.functions import load_module
+
+from python.structs.config import VisualizerConfig, PreprocessorConfig, PostprocessorConfig, DatasetFormatterConfig
+from python.structs.general import ScriptFunction
+from python.functions.utils import load_module
 
 class ScriptsLoader:
     def __init__(self, model_path: str, config_manager: ConfigManager):

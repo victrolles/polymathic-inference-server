@@ -4,10 +4,12 @@ from typing import Any
 
 from .config.manager import ConfigManager
 from .data_manager import DataManager
-from shared.structs import ModelInfo, Packet, DatasetLocation, Modality, ModelSizeTaskId
 from .media_manager import MediaManager
 from .path_finder import StepType
-from .config.data_kind import DataKind
+
+from python.enums import DataKind
+from python.structs.general import ModelInfo, Packet, DatasetLocation, Modality, ModelSizeTaskId
+
 def setup_paths(media_files_path: str, models_path: str, model_id: str) -> None:
     media_files_path = os.path.join(media_files_path, model_id)
     model_path = os.path.join(models_path, model_id)

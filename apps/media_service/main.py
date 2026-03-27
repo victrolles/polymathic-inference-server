@@ -4,17 +4,18 @@ from contextlib import asynccontextmanager
 import httpx
 from fastapi import FastAPI, HTTPException
 
-from shared.structs import ServerInfo, TaskRequest, InferenceRequest, InferenceDataInput
-from shared.utils.functions import prints
-from shared.utils.requests import (
+from .media_service import MediaService
+
+from python.structs.general import ServerInfo, TaskRequest, InferenceRequest, InferenceDataInput
+from python.functions.utils import prints
+from python.functions.requests import (
     wait_for_server,
     add_server as register_server,
     remove_server as unregister_server,
     extend_url,
 )
-from shared.utils.binary_transport import to_binary_payload, from_binary_payload
-from .media_service import MediaService
-from shared.server_manager import ServerManager
+from python.functions.binary_transport import to_binary_payload, from_binary_payload
+from python.functions.server_manager import ServerManager
 
 GATEWAY_PORT = os.getenv("GATEWAY_PORT", "8000")
 GATEWAY_HOST = os.getenv("GATEWAY_HOST", "localhost")

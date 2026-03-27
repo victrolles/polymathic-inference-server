@@ -1,12 +1,14 @@
 import os
 import yaml
 
-from shared.structs import IdName
-from .data_kind import DataKind
-from .structs import AppConfig, TaskConfig
 from .registry import ConfigRegistry
-from .validation import validate_references
-from .data_kind import REPRESENTATIONS_BY_ID
+from .representations import REPRESENTATIONS_BY_ID
+
+from python.structs.general import IdName
+from python.enums import DataKind
+from python.structs.config import AppConfig, TaskConfig
+from python.functions.validation import validate_references
+
 
 class ConfigManager:
     def __init__(self, model_path: str):

@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import Any, Optional, Callable
 
-from media_service.config.data_kind import DataKind
-from media_service.config.structs import VisualizerConfig, PreprocessorConfig, PostprocessorConfig, DatasetFormatterConfig
+from ..enums import DataKind
+from .config import VisualizerConfig, PreprocessorConfig, PostprocessorConfig, DatasetFormatterConfig
 
 class IdName(BaseModel):
     id: str

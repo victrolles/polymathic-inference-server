@@ -5,10 +5,11 @@ import torch
 from datasets import load_from_disk
 
 from .config.manager import ConfigManager
-from .config.structs import DatasetConfig
-from .config.structs import CheckpointFormat
 from .scripts_loader import ScriptsLoader
-from shared.structs import Dataset
+
+from python.structs.config import DatasetConfig
+from python.enums import CheckpointFormat
+from python.structs.general import Dataset
 
 def load_dataset_huggingface(dataset_path: str):
     return load_from_disk(dataset_path)
