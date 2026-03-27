@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { ConfigTasks, DatasetLocations, Dict, ModelSizeTaskId, Packet, Packets, SelectablePackets, Status } from "../types/types";
+import type { DatasetLocations, Dict, ModelSizeTaskId, Packet, Packets, SelectablePackets, Status } from "../types/types";
 import ImageSelector from "../components/MediaSelector";
 import { useParams } from "react-router-dom";
 import { requestAModelConfigTask, requestRandomDataSamples, requestInference } from "../requests/fast_api_requests";
@@ -24,6 +24,7 @@ function Inference() {
             setSelectablePackets([]);
             setInferencePackets([]);
             setSamplesStatus("loading");
+            console.log("samples_status", samples_status);
             setInferenceStatus("no");
 
             // Get new config dictionary
