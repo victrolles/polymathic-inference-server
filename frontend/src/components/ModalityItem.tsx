@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { ModalityItemProps } from "../types/interfaces";
-import DropList from "./DropList";
 import MediaItem from "./MediaItem";
 import type { Modality } from "../types/types";
 import DropBox from "./DropBox";

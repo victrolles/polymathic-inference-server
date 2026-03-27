@@ -1,5 +1,5 @@
 import type { InferenceRequestProps } from "../types/interfaces";
-import type { Dict, Packets, ModelSizeTaskId, ModelsSizesTasks, DatasetLocation } from "../types/types";
+import type { Dict, Packets, ModelSizeTaskId, ModelsSizesTasks } from "../types/types";
 
 export async function requestAllModelsSizesTasks(): Promise<ModelsSizesTasks> {
     const response = await fetch("http://localhost:8000/api/request_all_models_sizes_tasks", {

@@ -1,12 +1,12 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import type { IdName, ModelsSizesTasks, ResultStatus } from "../types/types";
+import type { IdName, ModelsSizesTasks, Status } from "../types/types";
 import { requestAllModelsSizesTasks } from "../requests/fast_api_requests";
 import anim_spinner from "../assets/anim_spinner.svg";
 
 function SideBar() {
     const { model_id, size_id } = useParams();
-    const [status, setStatus] = useState<ResultStatus>("no");
+    const [status, setStatus] = useState<Status>("no");
     const [models_sizes_tasks, setModelsSizesTasks] = useState<ModelsSizesTasks>([]);
     const [tasks, setTasks] = useState<IdName[]>([]);
     const [size, setSize] = useState<IdName | null>(null);

@@ -1,6 +1,6 @@
 import type { MediaItemProps } from "../types/interfaces";
 
-function MediaItem({ media_file, display_name, kind, media_size }: MediaItemProps) {
+function MediaItem({ media_file, display_name, media_size }: MediaItemProps) {
     return (
         <div className="media-item">
             {display_name && <p className="media-item-name">{media_file.name}</p>}
