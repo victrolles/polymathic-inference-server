@@ -1,0 +1,1 @@
+kubectl apply -f ./deploy/k8s/base/frontend/
