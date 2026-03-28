@@ -2,7 +2,6 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# PYTHONPATH=/app → package "app" is /app/app/, "python" is /app/python/
 COPY apps/gateway/app ./app
 COPY libs/python ./python
 COPY apps/gateway/requirements.txt ./requirements.txt

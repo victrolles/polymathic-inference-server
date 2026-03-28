@@ -1,0 +1,16 @@
+{{- range .Values.models }}
+{{- if .enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "inference-platform.media_service.name" . }}-{{ .name }}-service
+spec:
+  type: {{ .Values.mediaService.service.type }}
+  selector:
+    app: {{ include "inference-platform.media_service.name" . }}-{{ .name }}-service
+  ports:
+    - port: {{ .Values.mediaService.service.port }}
+      targetPort: {{ .Values.mediaService.service.targetPort }}
+---
+{{- end }}
+{{- end }}

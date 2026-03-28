@@ -1,0 +1,47 @@
+{{- range .Values.models }}
+{{- if .enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "inference-platform.media_service.name" . }}-{{ .name }}
+spec:
+  replicas: {{ $.Values.mediaService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "inference-platform.media_service.name" . }}-{{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "inference-platform.media_service.name" . }}-{{ .name }}
+    spec:
+      containers:
+        - name: media-service
+          image: "{{ $.Values.mediaService.image.repository }}:{{ $.Values.mediaService.image.tag }}"
+          imagePullPolicy: {{ $.Values.mediaService.image.pullPolicy }}
+          ports:
+            - containerPort: {{ $.Values.mediaService.service.targetPort }}
+          env:
+            - name: MODEL_ID
+              value: "{{ .name }}"
+            - name: MODELS_PATH
+              value: {{ $.Values.env.MODELS_PATH | quote }}
+            - name: MEDIA_FILES_PATH
+              value: {{ $.Values.env.MEDIA_FILES_PATH | quote }}
+            - name: GATEWAY_HOST
+              value: {{ include "inference-platform.gateway.service" . | quote }}
+            - name: GATEWAY_PORT
+              value: {{ .Values.gateway.service.targetPort | toString | quote }}
+            - name: MEDIA_SERVICE_HOST
+              value: {{ include "inference-platform.media_service.name" . }}-{{ .name }}
+            - name: MEDIA_SERVICE_PORT
+              value: {{ $.Values.mediaService.service.targetPort | toString | quote }}
+          volumeMounts:
+            - name: media-volume
+              mountPath: {{ $.Values.mediaService.env.MEDIA_FILES_PATH | quote }}
+      volumes:
+        - name: media-volume
+          persistentVolumeClaim:
+            claimName: media-files-pvc
+---
+{{- end }}
+{{- end }}

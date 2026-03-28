@@ -1,0 +1,53 @@
+frontend:
+  replicaCount: 1
+  image:
+    repository: frontend
+    tag: latest
+    pullPolicy: Never
+  service:
+    type: NodePort
+    port: 80
+    targetPort: 80
+    nodePort: 30007
+
+gateway:
+  replicaCount: 1
+  image:
+    repository: gateway
+    tag: latest
+    pullPolicy: Never
+  service:
+    type: ClusterIP
+    port: 8000
+    targetPort: 8000
+
+mediaService:
+  image:
+    repository: media-service
+    tag: latest
+    pullPolicy: Never
+  service:
+    type: ClusterIP
+    port: 7000
+    targetPort: 7000
+
+models:
+  - name: aion-simple
+    replicas: 1
+    enabled: true
+  - name: resnet
+    replicas: 1
+    enabled: true
+  - name: sol
+    replicas: 1
+    enabled: true
+
+env:
+  MODELS_PATH: "/models"
+  MEDIA_FILES_PATH: "/media_files"
+
+storage:
+  mediaPvc:
+    size: 1Gi
+    accessModes:
+      - ReadWriteOnce

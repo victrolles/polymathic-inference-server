@@ -3,6 +3,10 @@ module load docker/28
 module load node-js/22
 module load npm/11
 module load python/3.12
+module use ~/modulefiles
+module load cuda/13.1
+module load helm/4.1
+
 
 cd $HOME/polymathic-inference-server
 

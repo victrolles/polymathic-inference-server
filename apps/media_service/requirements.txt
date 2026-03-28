@@ -1,0 +1,10 @@
+pillow
+matplotlib
+numpy
+datasets
+pydantic
+fastapi
+uvicorn
+httpx
+PyYAML
+torch

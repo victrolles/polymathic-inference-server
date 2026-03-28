@@ -7,6 +7,8 @@ RUN npm run build
 
 # Serve stage
 FROM nginx:alpine
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+ENV GATEWAY_SERVICE_HOST=gateway-service
+ENV GATEWAY_SERVICE_PORT=8000
+COPY default.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80

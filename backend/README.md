@@ -27,9 +27,7 @@ module load cuda/13.1
 python -m venv ~/venvs/polymathic-inference-server/gateway
 source ~/venvs/polymathic-inference-server/gateway/bin/activate
 pip install --upgrade pip
-pip install --upgrade pillow matplotlib numpy
 pip install --upgrade pydantic fastapi uvicorn httpx
-pip install torch==2.10.0 torchvision --index-url https://download.pytorch.org/whl/cu130
 ```
 
 module load python/3.12

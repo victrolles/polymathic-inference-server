@@ -17,12 +17,12 @@ from python.functions.requests import (
 from python.functions.binary_transport import to_binary_payload, from_binary_payload
 from python.functions.server_manager import ServerManager
 
-GATEWAY_PORT = os.getenv("GATEWAY_PORT", "8000")
-GATEWAY_HOST = os.getenv("GATEWAY_HOST", "localhost")
+GATEWAY_PORT = os.getenv("GATEWAY_PORT", "unknown")
+GATEWAY_HOST = os.getenv("GATEWAY_HOST", "unknown")
 GATEWAY_URL = f"http://{GATEWAY_HOST}:{GATEWAY_PORT}/"
 
-MEDIA_SERVICE_HOST = os.getenv("MEDIA_SERVICE_HOST", "localhost")
-MEDIA_SERVICE_PORT = os.getenv("MEDIA_SERVICE_PORT", "6000")
+MEDIA_SERVICE_HOST = os.getenv("MEDIA_SERVICE_HOST", "unknown")
+MEDIA_SERVICE_PORT = os.getenv("MEDIA_SERVICE_PORT", "unknown")
 MEDIA_SERVICE_URL = f"http://{MEDIA_SERVICE_HOST}:{MEDIA_SERVICE_PORT}/"
 
 MODEL_ID = os.getenv("MODEL_ID", "unknown")

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "inference-platform.gateway.name" . }}
+spec:
+  replicas: {{ .Values.gateway.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "inference-platform.gateway.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "inference-platform.gateway.name" . }}
+    spec:
+      containers:
+        - name: gateway
+          image: "{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag }}"
+          imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.gateway.service.targetPort }}
+          env:
+            - name: GATEWAY_HOST
+              value: {{ include "inference-platform.gateway.service" . | quote }}
+            - name: GATEWAY_PORT
+              value: {{ .Values.gateway.service.targetPort | toString | quote }}
+            - name: MEDIA_FILES_PATH
+              value: {{ .Values.gateway.env.MEDIA_FILES_PATH | quote }}
+          volumeMounts:
+            - name: media-volume
+              mountPath: {{ .Values.gateway.env.MEDIA_FILES_PATH | quote }}
+          readinessProbe: 
+            httpGet:
+              path: /healthz
+              port: {{ .Values.gateway.service.targetPort }}
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.gateway.service.targetPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      volumes:
+        - name: media-volume
+          persistentVolumeClaim:
+            claimName: {{ include "inference-platform.mediaPvc.name" . }}
