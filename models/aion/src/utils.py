@@ -4,8 +4,7 @@ from aion.modalities import (
     LegacySurveyFluxG,
     LegacySurveyFluxR,
     LegacySurveyFluxI,
-    LegacySurveyFluxZ,
-    Z
+    LegacySurveyFluxZ
 )
 
 def to_tensor(data_array, dtype=torch.float32, device="cuda"):

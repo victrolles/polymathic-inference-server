@@ -1,13 +1,13 @@
 model:
-  id: aion-simple
-  name: AION Simple
+  id: aion
+  name: AION
 
 sizes:
-  - id: aion-simple-base
-    name: AION Simple Base
+  - id: aion-base
+    name: AION Base
 
-  - id: aion-simple-large
-    name: AION Simple Large
+  - id: aion-large
+    name: AION Large
 
 data_types:
   - id: rgb-pil

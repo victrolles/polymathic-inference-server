@@ -11,7 +11,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 from aion.modalities import Z
 
 from utils import find_object_in_subset, prepare_query, prepare_queries, prepare_all_queries
-from worker.template.inference_base import InferenceBase
+
+from python.templates.inference_base import InferenceBase
 
 class Inference(InferenceBase):
     def __init__(self, size_id: str):
