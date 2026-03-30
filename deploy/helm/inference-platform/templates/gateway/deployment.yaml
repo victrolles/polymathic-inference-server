@@ -24,10 +24,10 @@ spec:
             - name: GATEWAY_PORT
               value: {{ .Values.gateway.service.targetPort | toString | quote }}
             - name: MEDIA_FILES_PATH
-              value: {{ .Values.gateway.env.MEDIA_FILES_PATH | quote }}
+              value: {{ .Values.env.MEDIA_FILES_PATH | quote }}
           volumeMounts:
             - name: media-volume
-              mountPath: {{ .Values.gateway.env.MEDIA_FILES_PATH | quote }}
+              mountPath: {{ .Values.env.MEDIA_FILES_PATH | quote }}
           readinessProbe: 
             httpGet:
               path: /healthz

@@ -1,5 +1,4 @@
 import pickle
-from typing import Dict
 
 import torch
 import torch.nn as nn
@@ -16,12 +15,13 @@ class Inference(InferenceBase):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         # Load subset
-        path_to_subset = "/mnt/home/vgoudal/polymathic-inference/resnet-cifar10-basics/data.pkl"
+        path_to_subset = "/data/datasets/resnet/subset-cifar10/data.pkl"
         with open(path_to_subset, "rb") as f:
             self.subset = pickle.load(f)
 
         # Load model
-        model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+        model = models.resnet18(weights=None)
+        model.load_state_dict(torch.load("/data/weights/resnet/resnet18/resnet18.pth"))
         model.fc = nn.Identity()
         model.eval()
         self.model = model.to(self.device)

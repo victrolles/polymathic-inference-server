@@ -1,6 +1,6 @@
 apiVersion: v2
 name: inference-platform
-description: Polymathic inference platform (gateway, frontend, storage)
+description: Polymathic inference platform (gateway, frontend, storage). Models are discovered from models/<name>/config.yaml under the chart (symlink to repo models/).
 type: application
 version: 0.1.0
 appVersion: "0.1.0"

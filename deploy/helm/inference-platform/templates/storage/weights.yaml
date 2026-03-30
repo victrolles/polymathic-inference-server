@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "inference-platform.weights.name" . }}
+spec:
+  resources:
+    requests:
+      storage: {{ .Values.storage.weights.size | default "1Gi" }}

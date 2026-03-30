@@ -9,8 +9,8 @@ from python.structs.general import ServerInfo, ModelInfo, ModelSizeTaskRequest, 
 from python.functions.server_manager import ServerManager
 from python.functions.utils import extend_url, convert_packets_to_url
 
-GATEWAY_HOST = os.getenv("GATEWAY_HOST", "localhost")
-GATEWAY_PORT = os.getenv("GATEWAY_PORT", "8000")
+GATEWAY_HOST = os.getenv("GATEWAY_HOST", "unknown")
+GATEWAY_PORT = os.getenv("GATEWAY_PORT", "unknown")
 MEDIA_FILES_PATH = os.getenv("MEDIA_FILES_PATH", "unknown")
 
 server_manager = ServerManager()

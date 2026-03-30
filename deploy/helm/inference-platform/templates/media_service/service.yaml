@@ -1,16 +1,17 @@
-{{- range .Values.models }}
-{{- if .enabled }}
+{{- $models := include "inference-platform.discoveredModels" $ | fromYaml }}
+{{- range $model := $models }}
+{{- if $model.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "inference-platform.media_service.name" . }}-{{ .name }}-service
+  name: {{ printf "%s-media-service-%s-service" (include "inference-platform.name" $) $model.name | quote }}
 spec:
-  type: {{ .Values.mediaService.service.type }}
+  type: {{ $.Values.mediaService.service.type }}
   selector:
-    app: {{ include "inference-platform.media_service.name" . }}-{{ .name }}-service
+    app: {{ printf "%s-media-service-%s-service" (include "inference-platform.name" $) $model.name | quote }}
   ports:
-    - port: {{ .Values.mediaService.service.port }}
-      targetPort: {{ .Values.mediaService.service.targetPort }}
+    - port: {{ $.Values.mediaService.service.port }}
+      targetPort: {{ $.Values.mediaService.service.targetPort }}
 ---
 {{- end }}
 {{- end }}

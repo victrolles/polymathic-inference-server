@@ -1,10 +1,15 @@
 model:
   id: resnet
   name: ResNet
+  enabled: true
+  replicas: 1
 
 sizes:
   - id: resnet18
     name: ResNet18
+    path: "/mnt/home/vgoudal/ceph/models/pytorch/resnet/resnet18/resnet18.pth"
+    replicas: 1
+    enabled: true
 
 data_types:
   - id: tensor

@@ -11,6 +11,15 @@ from python.structs.config import DatasetConfig
 from python.enums import CheckpointFormat
 from python.structs.general import Dataset
 
+def create_dataset_path(datasets_path: str, original_path: str) -> str:
+    splits = original_path.split("/")
+    if os.path.isfile(original_path):
+        return os.path.join(datasets_path, splits[-2], splits[-1])
+    elif os.path.isdir(original_path):
+        return os.path.join(datasets_path, splits[-1])
+    else:
+        raise FileNotFoundError(f"Dataset not found: {original_path}")
+
 def load_dataset_huggingface(dataset_path: str):
     return load_from_disk(dataset_path)
 
@@ -21,8 +30,9 @@ def load_dataset_pickle(dataset_path: str):
     return pickle.load(open(dataset_path, "rb"))
 
 class DatasetLoader:
-    def __init__(self, model_path: str, config_manager: ConfigManager, scripts_loader: ScriptsLoader):
+    def __init__(self, model_path: str, datasets_path: str, config_manager: ConfigManager, scripts_loader: ScriptsLoader):
         self.model_path = model_path
+        self.datasets_path = datasets_path
         self.config_manager = config_manager
         self.scripts_loader = scripts_loader
 
@@ -38,9 +48,7 @@ class DatasetLoader:
             self.datasets_by_id[dataset_config.id] = dataset
 
     def _load_dataset(self, dataset_config: DatasetConfig) -> Dataset:
-        path = dataset_config.path
-        if not os.path.exists(path):
-            raise FileNotFoundError(f"Dataset not found: {path}")
+        path = create_dataset_path(self.datasets_path, dataset_config.path)
         if dataset_config.checkpoint_format == CheckpointFormat.HUGGINGFACE:
             data = load_dataset_huggingface(path)
         elif dataset_config.checkpoint_format == CheckpointFormat.TORCH_PT:

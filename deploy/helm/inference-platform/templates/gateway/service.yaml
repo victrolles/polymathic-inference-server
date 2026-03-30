@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "inference-platform.gateway.name" . }}-service
+  name: '{{ include "inference-platform.gateway.name" . }}-service'
 spec:
   type: {{ .Values.gateway.service.type }}
   selector:

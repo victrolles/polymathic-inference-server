@@ -1,43 +1,43 @@
 {{- $models := include "inference-platform.discoveredModels" $ | fromYaml }}
 {{- range $model := $models }}
 {{- if $model.enabled }}
+{{- range $size := $model.sizes }}
+{{- if $size.enabled }}
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "inference-platform.media_service.name" (dict "root" $ "modelName" $model.name) | quote }}
+  name: {{ include "inference-platform.worker.name" (dict "root" $ "modelName" $model.name "sizeName" $size.name) | quote }}
 spec:
-  replicas: {{ $model.replicas }}
+  replicas: {{ $size.replicas }}
   selector:
     matchLabels:
-      app: {{ include "inference-platform.media_service.name" (dict "root" $ "modelName" $model.name) | quote }}
+      app: {{ include "inference-platform.worker.name" (dict "root" $ "modelName" $model.name "sizeName" $size.name) | quote }}
   template:
     metadata:
       labels:
-        app: {{ include "inference-platform.media_service.name" (dict "root" $ "modelName" $model.name) | quote }}
+        app: {{ include "inference-platform.worker.name" (dict "root" $ "modelName" $model.name "sizeName" $size.name) | quote }}
     spec:
       containers:
         - name: media-service
-          image: "{{ $.Values.mediaService.image.repository }}:{{ $.Values.mediaService.image.tag }}"
-          imagePullPolicy: {{ $.Values.mediaService.image.pullPolicy }}
+          image: "{{ $.Values.worker.image.repository }}:{{ $.Values.worker.image.tag }}"
+          imagePullPolicy: {{ $.Values.worker.image.pullPolicy }}
           ports:
-            - containerPort: {{ $.Values.mediaService.service.targetPort }}
+            - containerPort: {{ $.Values.worker.service.targetPort }}
           env:
             - name: MODEL_ID
               value: "{{ $model.name }}"
             - name: MODELS_PATH
-              value: {{ $.Values.storage.models.mountPath | quote }}
+              value: {{ $.Values.env.MODELS_PATH | quote }}
             - name: MEDIA_FILES_PATH
-              value: {{ $.Values.storage.mediaFiles.mountPath | quote }}
-            - name: DATASETS_PATH
-              value: {{ $.Values.storage.datasets.mountPath | quote }}
+              value: {{ $.Values.env.MEDIA_FILES_PATH | quote }}
             - name: GATEWAY_HOST
-              value: {{ include "inference-platform.gateway.name" $ | quote }}
+              value: {{ include "inference-platform.gateway.service" $ | quote }}
             - name: GATEWAY_PORT
               value: {{ $.Values.gateway.service.targetPort | toString | quote }}
             - name: MEDIA_SERVICE_HOST
-              value: {{ include "inference-platform.media_service.name" (dict "root" $ "modelName" $model.name) | quote }}
+              value: '{{ include "inference-platform.media_service.name" $ }}-{{ $model.name }}'
             - name: MEDIA_SERVICE_PORT
               value: {{ $.Values.mediaService.service.targetPort | toString | quote }}
           volumeMounts:

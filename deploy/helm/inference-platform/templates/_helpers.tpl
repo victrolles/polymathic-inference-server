@@ -2,26 +2,57 @@
 {{- .Chart.Name -}}
 {{- end }}
 
-{{- define "inference-platform.fullname" -}}
-{{- .Release.Name }}-{{ .Chart.Name }}
+{{- define "inference-platform.frontend.name" -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-frontend" (include "inference-platform.name" $root) -}}
 {{- end }}
 
-{{- define "inference-platform.frontend.name" -}}
-{{- printf "%s-frontend" .Release.Name -}}
+{{- define "inference-platform.frontend.service" -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-frontend-service" (include "inference-platform.name" $root) -}}
 {{- end }}
 
 {{- define "inference-platform.gateway.name" -}}
-{{- printf "%s-gateway" .Release.Name -}}
-{{- end }}
-
-{{- define "inference-platform.media_service.name" -}}
-{{- printf "%s-media-service" .Release.Name -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-gateway" (include "inference-platform.name" $root) -}}
 {{- end }}
 
 {{- define "inference-platform.gateway.service" -}}
-{{- printf "%s-gateway-service" .Release.Name -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-gateway-service" (include "inference-platform.name" $root) -}}
 {{- end }}
 
-{{- define "inference-platform.mediaPvc.name" -}}
-{{- printf "%s-media-files" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- define "inference-platform.media_service.name" -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-media-service-%s" (include "inference-platform.name" $root) .modelName -}}
+{{- end }}
+
+{{- define "inference-platform.media_service.service" -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-media-service-%s-service" (include "inference-platform.name" $root) .modelName -}}
+{{- end }}
+
+{{- define "inference-platform.worker.name" -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-worker-%s-%s" (include "inference-platform.name" $root) .modelName .sizeName }}
+{{- end }}
+
+{{- define "inference-platform.mediaFiles.name" -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-media-files" (include "inference-platform.name" $root) -}}
+{{- end }}
+
+{{- define "inference-platform.models.name" -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-models" (include "inference-platform.name" $root) -}}
+{{- end }}
+
+{{- define "inference-platform.weights.name" -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-weights" (include "inference-platform.name" $root) -}}
+{{- end }}
+
+{{- define "inference-platform.datasets.name" -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-datasets" (include "inference-platform.name" $root) -}}
 {{- end }}

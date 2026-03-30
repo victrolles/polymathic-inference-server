@@ -1,6 +1,3 @@
-import ast
-import random
-import os
 from typing import Any
 
 import torch
@@ -29,7 +26,7 @@ class Inference(InferenceBase):
 
         #Load the subset
         print("Loading the subset")
-        subset_path = "/mnt/home/vgoudal/aion-inference/datasets/MultimodalUniverse/legacysurvey/subset_1000"
+        subset_path = "/data/datasets/aion/subset_1000"
         self.subset = load_from_disk(subset_path)
         print("Subset loaded")
 
@@ -44,7 +41,12 @@ class Inference(InferenceBase):
 
         #Load the model
         print("Loading the model")
-        model_path = "/mnt/home/vgoudal/ceph/huggingface/models/polymathic-ai/aion-base"
+        if self.size_id == "aion-base":
+            model_path = "/data/weights/aion/aion-base/aion-base"
+        elif self.size_id == "aion-large":
+            model_path = "/data/weights/aion/aion-large/aion-base"
+        else:
+            raise ValueError(f"Unknown size ID: {self.size_id}")
         self.model = AION.from_pretrained(model_path)
         self.model.to(self.device)
         self.model.eval()

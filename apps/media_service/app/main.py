@@ -29,6 +29,7 @@ MODEL_ID = os.getenv("MODEL_ID", "unknown")
 
 MEDIA_FILES_PATH = os.getenv("MEDIA_FILES_PATH", "unknown")
 MODELS_PATH = os.getenv("MODELS_PATH", "unknown")
+DATASETS_PATH = os.getenv("DATASETS_PATH", "unknown")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -44,7 +45,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 server_manager = ServerManager()
-media_service = MediaService(MEDIA_FILES_PATH, MODELS_PATH, MODEL_ID)
+media_service = MediaService(MEDIA_FILES_PATH, MODELS_PATH, DATASETS_PATH, MODEL_ID)
 
 @app.get("/health")
 async def health():

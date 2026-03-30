@@ -19,6 +19,9 @@ MEDIA_SERVICE_HOST = os.getenv("MEDIA_SERVICE_HOST", "unknown")
 MEDIA_SERVICE_URL = f"http://{MEDIA_SERVICE_HOST}:{MEDIA_SERVICE_PORT}/"
 
 MODELS_PATH = os.getenv("MODELS_PATH", "unknown")
+DATASETS_PATH = os.getenv("DATASETS_PATH", "unknown")
+WEIGHTS_PATH = os.getenv("WEIGHTS_PATH", "unknown")
+
 MODEL_ID = os.getenv("MODEL_ID")
 SIZE_ID = os.getenv("SIZE_ID")
 

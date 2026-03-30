@@ -1,6 +1,3 @@
-# Dataset formatter
-
-# Visualizer
 torch
 matplotlib
 numpy

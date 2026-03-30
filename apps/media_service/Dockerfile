@@ -11,8 +11,8 @@ COPY apps/media_service/requirements.txt ./requirements.txt
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r ./requirements.txt && \
-    if [ -f "./models/${MODEL_ID}/requirements.txt" ]; then \
-      pip install --no-cache-dir -r "./models/${MODEL_ID}/requirements.txt"; \
+    if [ -f "./models/${MODEL_ID}/requirements/pipeline.txt" ]; then \
+      pip install --no-cache-dir -r "./models/${MODEL_ID}/requirements/pipeline.txt"; \
     fi
 
 ENV PYTHONPATH=/app

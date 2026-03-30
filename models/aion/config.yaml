@@ -1,13 +1,21 @@
 model:
   id: aion
   name: AION
+  replicas: 1
+  enabled: true
 
 sizes:
   - id: aion-base
     name: AION Base
+    path: "/mnt/home/vgoudal/ceph/huggingface/models/polymathic-ai/aion-base"
+    replicas: 1
+    enabled: true
 
   - id: aion-large
     name: AION Large
+    path: "/mnt/home/vgoudal/ceph/huggingface/models/polymathic-ai/aion-base"
+    replicas: 1
+    enabled: true
 
 data_types:
   - id: rgb-pil

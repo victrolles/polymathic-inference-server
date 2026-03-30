@@ -1,0 +1,8 @@
+polymathic-aion
+huggingface_hub
+transformers
+matplotlib
+astropy
+datasets
+scikit-learn
+torch

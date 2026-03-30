@@ -10,18 +10,21 @@ from .path_finder import StepType
 from python.enums import DataKind
 from python.structs.general import ModelInfo, Packet, DatasetLocation, Modality, ModelSizeTaskId
 
-def setup_paths(media_files_path: str, models_path: str, model_id: str) -> None:
+def setup_paths(media_files_path: str, models_path: str, datasets_path: str, model_id: str) -> None:
     media_files_path = os.path.join(media_files_path, model_id)
     model_path = os.path.join(models_path, model_id)
+    datasets_path = os.path.join(datasets_path, model_id)
     if not os.path.exists(media_files_path):
         os.makedirs(media_files_path)
     if not os.path.exists(model_path):
         os.makedirs(model_path)
-    return media_files_path, model_path
+    if not os.path.exists(datasets_path):
+        os.makedirs(datasets_path)
+    return media_files_path, model_path, datasets_path
 
 class MediaService:
-    def __init__(self, media_files_path: str, models_path: str, model_id: str):
-        media_files_path, model_path = setup_paths(media_files_path, models_path, model_id)
+    def __init__(self, media_files_path: str, models_path: str, datasets_path: str, model_id: str):
+        media_files_path, model_path, datasets_path = setup_paths(media_files_path, models_path, datasets_path, model_id)
         self.config_manager = ConfigManager(model_path)
         self.data_manager = DataManager(media_files_path, model_path, self.config_manager)
         self.media_manager = MediaManager(media_files_path)

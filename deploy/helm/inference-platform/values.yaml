@@ -31,23 +31,29 @@ mediaService:
     port: 7000
     targetPort: 7000
 
-models:
-  - name: aion-simple
-    replicas: 1
-    enabled: true
-  - name: resnet
-    replicas: 1
-    enabled: true
-  - name: sol
-    replicas: 1
-    enabled: true
-
-env:
-  MODELS_PATH: "/models"
-  MEDIA_FILES_PATH: "/media_files"
+worker:
+  image:
+    repository: worker
+    tag: latest
+    pullPolicy: Never
+  service:
+    type: ClusterIP
+    port: 6000
+    targetPort: 6000
 
 storage:
-  mediaPvc:
+  models:
     size: 1Gi
-    accessModes:
-      - ReadWriteOnce
+    mountPath: /data/models
+
+  datasets:
+    size: 1Gi
+    mountPath: /data/datasets
+
+  mediaFiles:
+    size: 1Gi
+    mountPath: /data/media_files
+
+  weights:
+    size: 1Gi
+    mountPath: /data/weights
