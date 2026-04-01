@@ -37,6 +37,11 @@
 {{- printf "%s-worker-%s-%s" (include "inference-platform.name" $root) .modelName .sizeName }}
 {{- end }}
 
+{{- define "inference-platform.worker.service" -}}
+{{- $root := .root | default . -}}
+{{- printf "%s-worker-%s-%s-service" (include "inference-platform.name" $root) .modelName .sizeName -}}
+{{- end }}
+
 {{- define "inference-platform.mediaFiles.name" -}}
 {{- $root := .root | default . -}}
 {{- printf "%s-media-files" (include "inference-platform.name" $root) -}}

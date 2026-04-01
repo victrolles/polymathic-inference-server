@@ -1,3 +1,4 @@
+{{- if .Values.frontend.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,9 +18,10 @@ spec:
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           env:
-            - name: GATEWAY_HOST
+            - name: GATEWAY_SERVICE_HOST
               value: {{ include "inference-platform.gateway.service" . | quote }}
-            - name: GATEWAY_PORT
+            - name: GATEWAY_SERVICE_PORT
               value: {{ .Values.gateway.service.targetPort | toString | quote }}
           ports:
             - containerPort: {{ .Values.frontend.service.targetPort }}
+{{- end }}

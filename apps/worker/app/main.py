@@ -3,12 +3,11 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
 
-from .template.inference_base import InferenceBase
-
-from python.structs import ServerInfo, InferenceDataInput
-from python.utils.functions import load_module, prints
-from python.utils.requests import wait_for_server, add_server, remove_server
-from python.utils.binary_transport import from_binary_payload, to_binary_payload
+from python.templates.inference_base import InferenceBase
+from python.structs.general import ServerInfo, InferenceDataInput
+from python.functions.utils import load_module, prints
+from python.functions.requests import wait_for_server, add_server, remove_server
+from python.functions.binary_transport import from_binary_payload, to_binary_payload
 
 WORKER_HOST = os.getenv("WORKER_HOST", "unknown")
 WORKER_PORT = os.getenv("WORKER_PORT", "unknown")

@@ -26,7 +26,7 @@ class MediaService:
     def __init__(self, media_files_path: str, models_path: str, datasets_path: str, model_id: str):
         media_files_path, model_path, datasets_path = setup_paths(media_files_path, models_path, datasets_path, model_id)
         self.config_manager = ConfigManager(model_path)
-        self.data_manager = DataManager(media_files_path, model_path, self.config_manager)
+        self.data_manager = DataManager(media_files_path, model_path, datasets_path, self.config_manager)
         self.media_manager = MediaManager(media_files_path)
         
 

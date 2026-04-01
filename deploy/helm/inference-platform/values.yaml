@@ -24,7 +24,6 @@ gateway:
 mediaService:
   image:
     repository: media-service
-    tag: latest
     pullPolicy: Never
   service:
     type: ClusterIP
@@ -34,7 +33,6 @@ mediaService:
 worker:
   image:
     repository: worker
-    tag: latest
     pullPolicy: Never
   service:
     type: ClusterIP
@@ -42,18 +40,21 @@ worker:
     targetPort: 6000
 
 storage:
-  models:
-    size: 1Gi
-    mountPath: /data/models
 
   datasets:
-    size: 1Gi
+    size: 5Gi
     mountPath: /data/datasets
+    accessModes:
+      - ReadOnlyMany
 
   mediaFiles:
-    size: 1Gi
+    size: 5Gi
     mountPath: /data/media_files
+    accessModes:
+      - ReadWriteMany
 
   weights:
-    size: 1Gi
+    size: 5Gi
     mountPath: /data/weights
+    accessModes:
+      - ReadOnlyMany

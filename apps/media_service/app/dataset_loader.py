@@ -11,14 +11,16 @@ from python.structs.config import DatasetConfig
 from python.enums import CheckpointFormat
 from python.structs.general import Dataset
 
+def has_entensions(file:str):
+    _, ext = os.path.splitext(os.path.basename(file))
+    return ext != ""
+
 def create_dataset_path(datasets_path: str, original_path: str) -> str:
     splits = original_path.split("/")
-    if os.path.isfile(original_path):
-        return os.path.join(datasets_path, splits[-2], splits[-1])
-    elif os.path.isdir(original_path):
+    if has_entensions(splits[-1]):
         return os.path.join(datasets_path, splits[-1])
     else:
-        raise FileNotFoundError(f"Dataset not found: {original_path}")
+        return os.path.join(datasets_path, splits[-1])
 
 def load_dataset_huggingface(dataset_path: str):
     return load_from_disk(dataset_path)

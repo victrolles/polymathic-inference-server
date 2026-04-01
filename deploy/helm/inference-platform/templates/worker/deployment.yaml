@@ -1,61 +1,58 @@
-{{- $models := include "inference-platform.discoveredModels" $ | fromYaml }}
-{{- range $model := $models }}
-{{- if $model.enabled }}
-{{- range $size := $model.sizes }}
-{{- if $size.enabled }}
+{{- if .Values.worker.enabled }}
+{{- $models := include "inference-platform.discoveredModels" $ | fromYamlArray }}
+{{- range $_, $model := $models }}
+{{- if index $model "enabled" }}
+{{- range $_, $size := (index $model "sizes") | default list }}
+{{- if index $size "enabled" }}
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "inference-platform.worker.name" (dict "root" $ "modelName" $model.name "sizeName" $size.name) | quote }}
+  name: {{ include "inference-platform.worker.name" (dict "root" $ "modelName" (index $model "name") "sizeName" (index $size "name")) | quote }}
 spec:
-  replicas: {{ $size.replicas }}
+  replicas: {{ index $size "replicas" | default 1 }}
   selector:
     matchLabels:
-      app: {{ include "inference-platform.worker.name" (dict "root" $ "modelName" $model.name "sizeName" $size.name) | quote }}
+      app: {{ include "inference-platform.worker.name" (dict "root" $ "modelName" (index $model "name") "sizeName" (index $size "name")) | quote }}
   template:
     metadata:
       labels:
-        app: {{ include "inference-platform.worker.name" (dict "root" $ "modelName" $model.name "sizeName" $size.name) | quote }}
+        app: {{ include "inference-platform.worker.name" (dict "root" $ "modelName" (index $model "name") "sizeName" (index $size "name")) | quote }}
     spec:
       containers:
-        - name: media-service
-          image: "{{ $.Values.worker.image.repository }}:{{ $.Values.worker.image.tag }}"
+        - name: worker
+          image: "{{ $.Values.worker.image.repository }}:{{ index $model "name" }}"
           imagePullPolicy: {{ $.Values.worker.image.pullPolicy }}
           ports:
             - containerPort: {{ $.Values.worker.service.targetPort }}
           env:
             - name: MODEL_ID
-              value: "{{ $model.name }}"
-            - name: MODELS_PATH
-              value: {{ $.Values.env.MODELS_PATH | quote }}
-            - name: MEDIA_FILES_PATH
-              value: {{ $.Values.env.MEDIA_FILES_PATH | quote }}
-            - name: GATEWAY_HOST
-              value: {{ include "inference-platform.gateway.service" $ | quote }}
-            - name: GATEWAY_PORT
-              value: {{ $.Values.gateway.service.targetPort | toString | quote }}
+              value: "{{ index $model "name" }}"
+            - name: SIZE_ID
+              value: "{{ index $size "name" }}"
+            - name: WORKER_HOST
+              value: {{ include "inference-platform.worker.service" (dict "root" $ "modelName" (index $model "name") "sizeName" (index $size "name")) | quote }}
+            - name: WORKER_PORT
+              value: {{ $.Values.worker.service.targetPort | toString | quote }}
             - name: MEDIA_SERVICE_HOST
-              value: '{{ include "inference-platform.media_service.name" $ }}-{{ $model.name }}'
+              value: {{ include "inference-platform.media_service.service" (dict "root" $ "modelName" (index $model "name")) | quote }}
             - name: MEDIA_SERVICE_PORT
               value: {{ $.Values.mediaService.service.targetPort | toString | quote }}
           volumeMounts:
-            - name: models
-              mountPath: {{ $.Values.storage.models.mountPath | quote }}
-            - name: mediaFiles
-              mountPath: {{ $.Values.storage.mediaFiles.mountPath | quote }}
+            - name: weights
+              mountPath: {{ $.Values.storage.weights.mountPath | quote }}
             - name: datasets
               mountPath: {{ $.Values.storage.datasets.mountPath | quote }}
       volumes:
-        - name: models
+        - name: weights
           persistentVolumeClaim:
-            claimName: {{ include "inference-platform.models.name" $ }}
-        - name: mediaFiles
-          persistentVolumeClaim:
-            claimName: {{ include "inference-platform.mediaFiles.name" $ }}
+            claimName: {{ include "inference-platform.weights.name" $ }}
         - name: datasets
           persistentVolumeClaim:
             claimName: {{ include "inference-platform.datasets.name" $ }}
+{{- end }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

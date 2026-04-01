@@ -1,7 +1,7 @@
 {{- define "inference-platform.discoveredModels" -}}
 {{- $root := . }}
 {{- $list := list }}
-{{- range $path := $root.Files.Glob "models/*/config.yaml" }}
+{{- range $path, $_ := $root.Files.Glob "models/*/config.yaml" }}
   {{- $parts := splitList "/" $path }}
   {{- $name := index $parts 1 }}
   {{- $yaml := $root.Files.Get $path | fromYaml }}
@@ -53,7 +53,6 @@
     {{- $datasetList = append $datasetList (dict "name" $dataset_id "path" $dataset_path) }}
   {{- end }}
   {{- $list = append $list (dict "name" $name "enabled" $enabled "replicas" $replicas "sizes" $sizeList "datasets" $datasetList) }}
-  {{- warn (printf "inference-platform: discovered model path=%s name=%s enabled=%v replicas=%d sizes=%d" $path $name $enabled $replicas (len $sizeList)) }}
 {{- end }}
 {{- $list | toYaml }}
 {{- end }}

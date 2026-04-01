@@ -5,7 +5,7 @@ import torch.nn as nn
 import torchvision.models as models
 import torch.nn.functional as F
 
-from worker.template.inference_base import InferenceBase
+from python.templates.inference_base import InferenceBase
 
 class Inference(InferenceBase):
     def __init__(self, size_id: str):
@@ -15,7 +15,7 @@ class Inference(InferenceBase):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         # Load subset
-        path_to_subset = "/data/datasets/resnet/subset-cifar10/data.pkl"
+        path_to_subset = "/data/datasets/resnet/data.pkl"
         with open(path_to_subset, "rb") as f:
             self.subset = pickle.load(f)
 

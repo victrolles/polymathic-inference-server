@@ -1,8 +1,12 @@
+{{- if .Values.storage.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ include "inference-platform.weights.name" . }}
 spec:
+  accessModes:
+{{ toYaml .Values.storage.weights.accessModes | indent 4 }}
   resources:
     requests:
       storage: {{ .Values.storage.weights.size | default "1Gi" }}
+{{- end }}

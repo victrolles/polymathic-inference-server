@@ -1,3 +1,5 @@
+{{- if .Values.gateway.enabled }}
+{{- $models := include "inference-platform.discoveredModels" . | fromYamlArray }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,10 +26,10 @@ spec:
             - name: GATEWAY_PORT
               value: {{ .Values.gateway.service.targetPort | toString | quote }}
             - name: MEDIA_FILES_PATH
-              value: {{ .Values.env.MEDIA_FILES_PATH | quote }}
+              value: {{ .Values.storage.mediaFiles.mountPath | quote }}
           volumeMounts:
             - name: media-volume
-              mountPath: {{ .Values.env.MEDIA_FILES_PATH | quote }}
+              mountPath: {{ .Values.storage.mediaFiles.mountPath | quote }}
           readinessProbe: 
             httpGet:
               path: /healthz
@@ -43,4 +45,5 @@ spec:
       volumes:
         - name: media-volume
           persistentVolumeClaim:
-            claimName: {{ include "inference-platform.mediaPvc.name" . }}
+            claimName: {{ include "inference-platform.mediaFiles.name" . }}
+{{- end }}

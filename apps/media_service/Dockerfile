@@ -2,18 +2,20 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-ENV MODEL_ID=unknown
+ENV MODELS_PATH=/app/models
 
 COPY apps/media_service/app ./app
 COPY libs/python ./python
-COPY models/${MODEL_ID} ./models/${MODEL_ID}
+COPY models ./models
 COPY apps/media_service/requirements.txt ./requirements.txt
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r ./requirements.txt && \
-    if [ -f "./models/${MODEL_ID}/requirements/pipeline.txt" ]; then \
-      pip install --no-cache-dir -r "./models/${MODEL_ID}/requirements/pipeline.txt"; \
-    fi
+    for model in ./models/*; do \
+      if [ -f "$model/requirements/pipeline.txt" ]; then \
+        pip install --no-cache-dir -r "$model/requirements/pipeline.txt"; \
+      fi; \
+    done
 
 ENV PYTHONPATH=/app
 

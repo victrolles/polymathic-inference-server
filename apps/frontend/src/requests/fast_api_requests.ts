@@ -2,7 +2,7 @@ import type { InferenceRequestProps } from "../types/interfaces";
 import type { Dict, Packets, ModelSizeTaskId, ModelsSizesTasks } from "../types/types";
 
 export async function requestAllModelsSizesTasks(): Promise<ModelsSizesTasks> {
-    const response = await fetch("http://localhost:8000/api/request_all_models_sizes_tasks", {
+    const response = await fetch("/api/request_all_models_sizes_tasks", {
         method: "GET",
     });
 
@@ -15,7 +15,7 @@ export async function requestAllModelsSizesTasks(): Promise<ModelsSizesTasks> {
 }
 
 export async function requestAModelConfigTask(model_size_task_id: ModelSizeTaskId): Promise<Dict> {
-    const response = await fetch("http://localhost:8000/api/request_a_model_config_task", {
+    const response = await fetch("/api/request_a_model_config_task", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model_size_task_id }),
@@ -29,7 +29,7 @@ export async function requestAModelConfigTask(model_size_task_id: ModelSizeTaskI
 }
 
 export async function requestRandomDataSamples(model_size_task_id: ModelSizeTaskId): Promise<Packets> {
-    const response = await fetch("http://localhost:8000/api/request_random_data_samples", {
+    const response = await fetch("/api/request_random_data_samples", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model_size_task_id }),
@@ -44,7 +44,7 @@ export async function requestRandomDataSamples(model_size_task_id: ModelSizeTask
 }
 
 export async function requestInference(inference_requests: InferenceRequestProps): Promise<Packets> {
-    const response = await fetch("http://localhost:8000/api/request_inference", {
+    const response = await fetch("/api/request_inference", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(inference_requests),

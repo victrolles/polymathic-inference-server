@@ -42,6 +42,7 @@ function Inference() {
             .then((packets: Packets) => {
                 setSelectablePackets(packets.map((packet: Packet) => ({ packet, is_selected: false })) as SelectablePackets);
                 setSamplesStatus("done");
+                console.log("packets", packets);
             }).catch((error) => {
                 console.error(error);
                 setSamplesStatus("error");

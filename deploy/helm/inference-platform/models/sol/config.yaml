@@ -1,0 +1,146 @@
+model:
+  id: sol
+  name: SOL
+  replicas: 1
+  enabled: false
+
+sizes:
+  - id: sol-base
+    name: SOL Base
+    path: "/mnt/home/vgoudal/ceph/huggingface/models/polymathic-ai/aion-base"
+    replicas: 1
+    enabled: false
+
+data_types:
+  - id: x_tensor
+    kind: tensor
+    representation: torch_tensor
+    shape: [C, F, H, W]
+
+  - id: x_video
+    kind: video
+    representation: matplotlib_animation
+    fps: 7
+
+  - id: sol_dataset_dict_formatted
+    kind: dictionary
+    fields:
+      - id: x_obs
+        data_type_id: x_tensor
+
+  - id: sol_dataset_dict_list
+    kind: list
+
+  - id: sol_dataset_dict_list_formatted
+    kind: list
+    element_type:
+      data_type_id: sol_dataset_dict_formatted
+
+visualizers:
+  - id: video_maker
+    function_name: make_video
+    input_data_type_id: x_tensor
+    output_data_type_id: x_video
+    output_modalities: [br, bp, bt, dopplergram, continuum, aia_1700, aia_1600, aia_0335, aia_0304, aia_0211, aia_0193, aia_0171, aia_0131, aia_0094]
+
+dataset_formatters:
+  - id: sol_dataset_formatter
+    function_name: format_sol_dataset
+    output_data_type_id: sol_dataset_dict_list_formatted
+
+datasets:
+  - id: sol_dataset
+    name: SOL Dataset
+    path: /mnt/home/vgoudal/polymathic-inference/aion-inference/datasets/sol/dataset.pt
+    checkpoint_format: torch_pt
+    dataset_formatter_id: sol_dataset_formatter
+
+modalities:
+  - id: br
+    name: BR
+    data_type_id: x_video
+
+  - id: bp
+    name: BP
+    data_type_id: x_video
+
+  - id: bt
+    name: BT
+    data_type_id: x_video
+
+  - id: dopplergram
+    name: Dopplergram
+    data_type_id: x_video
+
+  - id: continuum
+    name: Continuum
+    data_type_id: x_video
+
+  - id: aia_1700
+    name: AIA 1700
+    data_type_id: x_video
+
+  - id: aia_1600
+    name: AIA 1600
+    data_type_id: x_video
+
+  - id: aia_0335
+    name: AIA 0335
+    data_type_id: x_video
+
+  - id: aia_0304
+    name: AIA 0304
+    data_type_id: x_video
+
+  - id: aia_0211
+    name: AIA 0211
+    data_type_id: x_video
+
+  - id: aia_0193
+    name: AIA 0193
+    data_type_id: x_video
+
+  - id: aia_0171
+    name: AIA 0171
+    data_type_id: x_video
+
+  - id: aia_0131
+    name: AIA 0131
+    data_type_id: x_video
+
+  - id: aia_0094
+    name: AIA 0094
+    data_type_id: x_video
+
+tasks:
+  - id: sun-prediction
+    name: Sun Prediction
+
+    data_samples:
+      modality_id: aia_0304
+      sample_size: 10
+
+    selected_data_samples:
+      display: true
+      display_modalities_names: true
+      display_multiple_modalities_simultaneously: true
+      modality_ids: [bt, aia_1700, aia_0304]
+
+    data_outputs:
+      display: true
+      display_modalities_names: true
+      display_multiple_modalities_simultaneously: true
+      modality_ids: [bt, aia_1700, aia_0304]
+      enable_switch_modalities: true
+      switch_modality_ids: [bt, aia_1700, aia_0304, aia_0193, aia_0094]
+
+    ui:
+      text_top_screen: "Predict the sun's activity for a given video"
+      data_size: { width: "120px", height: "120px" }
+      selected_data_size: { width: "20vh", height: "20vh" }
+      output_data_size: { width: "20vh", height: "20vh" }
+      submit_button_text: "Predict Sun Activity"
+
+    inference:
+      input_data_type_id: sol_dataset_dict_formatted
+      output_data_type_id: x_tensor

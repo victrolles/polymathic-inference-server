@@ -11,13 +11,14 @@ from python.structs.config import DataTypeConfig, ModalityConfig
 from python.structs.general import MediaFile
 
 class DataManager:
-    def __init__(self, media_files_path: str, model_path: str, config_manager: ConfigManager):
+    def __init__(self, media_files_path: str, model_path: str, datasets_path: str, config_manager: ConfigManager):
         self.media_files_path = media_files_path
         self.model_path = model_path
+        self.datasets_path = datasets_path
         self.config_manager = config_manager
 
         self.scripts = ScriptsLoader(model_path, config_manager)
-        self.datasets = DatasetLoader(model_path, config_manager, self.scripts)
+        self.datasets = DatasetLoader(model_path, datasets_path, config_manager, self.scripts)
         self.media_converter = MediaConverter(media_files_path)
         self.path_finder = PathFinder(model_path, config_manager)
 

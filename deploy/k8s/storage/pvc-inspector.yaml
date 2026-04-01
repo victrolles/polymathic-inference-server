@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pvc-inspector
+  namespace: default
+spec:
+  restartPolicy: Never
+  containers:
+    - name: inspector
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 3600"]
+      stdin: true
+      tty: true
+      volumeMounts:
+        - name: datasets
+          mountPath: /data/datasets
+        - name: media-files
+          mountPath: /data/media_files
+        - name: weights
+          mountPath: /data/weights
+  volumes:
+    - name: datasets
+      persistentVolumeClaim:
+        claimName: inference-platform-datasets
+    - name: media-files
+      persistentVolumeClaim:
+        claimName: inference-platform-media-files
+    - name: weights
+      persistentVolumeClaim:
+        claimName: inference-platform-weights

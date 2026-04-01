@@ -3,11 +3,11 @@ import yaml
 
 from .registry import ConfigRegistry
 from .representations import REPRESENTATIONS_BY_ID
+from .validation import validate_references
 
 from python.structs.general import IdName
 from python.enums import DataKind
 from python.structs.config import AppConfig, TaskConfig
-from python.functions.validation import validate_references
 
 
 class ConfigManager:

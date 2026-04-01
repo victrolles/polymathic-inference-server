@@ -20,7 +20,7 @@ def prints(message: str, server_type: str):
 
 def convert_path_to_url(path: str, host: str, port: int, model_id: str) -> str:
     file_name = os.path.basename(path)
-    return f"http://{host}:{port}/media_files/{model_id}/{file_name}"
+    return f"/media_files/{model_id}/{file_name}"
 
 def convert_packets_to_url(packets: list[Packet], host: str, port: int, model_id: str) -> list[Packet]:
     for idx, packet in enumerate(packets):

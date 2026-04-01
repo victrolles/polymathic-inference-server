@@ -1,8 +1,12 @@
+{{- if .Values.storage.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ include "inference-platform.mediaFiles.name" . }}
 spec:
+  accessModes:
+{{ toYaml .Values.storage.mediaFiles.accessModes | indent 4 }}
   resources:
     requests:
       storage: {{ .Values.storage.mediaFiles.size | default "1Gi" }}
+{{- end }}

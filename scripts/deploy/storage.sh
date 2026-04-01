@@ -1,1 +1,0 @@
-kubectl apply -f deploy/k8s/base/storage/media-pvc.yaml

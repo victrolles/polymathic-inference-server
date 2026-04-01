@@ -188,10 +188,19 @@ class TaskConfig(BaseModel):
 class ModelConfig(BaseModel):
     id: str
     name: str
+    enabled: bool = True
+    replicas: int = 1
+
+class SizeConfig(BaseModel):
+    id: str
+    name: str
+    enabled: bool = True
+    replicas: int = 1
+    path: str
 
 class AppConfig(BaseModel):
     model: ModelConfig
-    sizes: list[NamedObject]
+    sizes: list[SizeConfig]
     data_types: list[DataTypeConfig]
     visualizers: Optional[list[VisualizerConfig]] = None
     preprocessors: Optional[list[PreprocessorConfig]] = None

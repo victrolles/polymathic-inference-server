@@ -2,7 +2,7 @@ import torch
 from torch import load
 from typing import Dict
 
-from worker.template.inference_base import InferenceBase
+from python.templates.inference_base import InferenceBase
 
 class Inference(InferenceBase):
     def __init__(self, size_id: str):
