@@ -186,7 +186,7 @@ And its hard-coded version.
 
 ### Part 4 / 6 : datasets
 
-Most of the data processing is done on the [Media Service micro-service (ℹ️) ](server_architecture.md), so a class  `datasets` has to define and contains :
+Most of the data processing is done on the [Media Service micro-service (ℹ️) ](../../server_architecture.md), so a class  `datasets` has to be defined and contains :
  - `path` : the path to the dataset on your machine
  - `checkpoint_format` : The type of file your dataset has been saved with (.pt, .pkl, .hdf5, etc...)
  - `data_type_id` : describe the data type
@@ -204,7 +204,7 @@ datasets:
 
 ### Part 5 / 6 : modalities
 
-ℹ️ modality define the type of visual you want to display on the webpage
+ℹ️ modality defines the type of visual you want to display on the webpage
 
 ```yaml
 modalities:
@@ -279,10 +279,16 @@ Related to the section [Prepare your inference function](Part-4-/-4-:-Prepare-yo
 
 ---
 
-Congrats!!!
-
+<p align="center">
+  Congrats!!!
+</p>
 <p align="center">
   <img src="https://media1.tenor.com/m/L9kNtb5Ak2IAAAAd/congrats-congratulations.gif" height="140">
 </p>
+<p align="center">
+  You have reached the end of the quick started tutorial !
+</p>
 
-You have reached the end of the quick started tutorial 
+---
+
+If you want to go further, you can now go to the next tutorial [Advanced Usages : add a model](../add_a_model_advanced_usages/tutorial.md).

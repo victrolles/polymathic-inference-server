@@ -12,5 +12,5 @@ Built with a modular, microservice-based architecture, PRISM is designed to hand
 
 ### Tutorials
 
-- 📖 [Getting Started : add a model](docs/tutorials/add_a_model_quick_start.md)
-- ⚙️ [Advanced Usage : add a model](docs/tutorials/add_a_model_advanced_usage.md)
+- 📖 [Getting Started : add a model](docs/tutorials/add_a_model_quick_start/tutorial.md)
+- ⚙️ [Advanced Usages : add a model](docs/tutorials/add_a_model_advanced_usages/tutorial.md)
