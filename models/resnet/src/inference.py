@@ -48,8 +48,8 @@ class Inference(InferenceBase):
             embeddings.append(embedding)
         self.embeddings_trch = torch.cat(embeddings, dim=0)
 
-    def infer(self, item, task_id: str):
-        input = item.to(self.device)
+    def infer(self, data, task_id: str):
+        input = data.to(self.device)
         input = input.unsqueeze(0)
         embedding = self._embed(input)
         sim = F.cosine_similarity(embedding, self.embeddings_trch, dim=1)

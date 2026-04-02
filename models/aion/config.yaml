@@ -8,7 +8,6 @@ sizes:
     name: AION Base
     path: "/mnt/home/vgoudal/ceph/huggingface/models/polymathic-ai/aion-base"
     enabled_gpu: true
-    enabled: false
 
 data_types:
   - id: rgb-pil
