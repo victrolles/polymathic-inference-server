@@ -7,8 +7,8 @@ from python.templates.inference_base import InferenceBase
 class Inference(InferenceBase):
     def __init__(self, size_id: str):
         self.size_id = size_id
-        path = "/data/datasets/sol/item.pt"
-        self.data = load(path, weights_only=False)
+        path = "/data/datasets/sol/dataset.pt"
+        self.data = load(path, weights_only=False)[0]
 
     def infer(self, input: Dict, task_id: str) -> torch.Tensor:
         return self.data['x_gen'][0].clone()

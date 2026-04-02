@@ -1,15 +1,11 @@
 model:
   id: sol
   name: SOL
-  replicas: 1
-  enabled: false
 
 sizes:
   - id: sol-base
     name: SOL Base
     path: "/mnt/home/vgoudal/ceph/huggingface/models/polymathic-ai/aion-base"
-    replicas: 1
-    enabled: false
 
 data_types:
   - id: x_tensor

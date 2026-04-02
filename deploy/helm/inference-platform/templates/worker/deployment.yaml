@@ -24,6 +24,11 @@ spec:
         - name: worker
           image: "{{ $.Values.worker.image.repository }}:{{ index $model "name" }}"
           imagePullPolicy: {{ $.Values.worker.image.pullPolicy }}
+          {{- if index $size "enabled_gpu" }}
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+          {{- end }}
           ports:
             - containerPort: {{ $.Values.worker.service.targetPort }}
           env:

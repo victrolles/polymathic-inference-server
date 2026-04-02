@@ -1,7 +1,7 @@
-FROM python:3.12-slim
-
-# FROM nvidia/cuda:13.1.1-runtime-rockylinux9
-# RUN apt-get update && apt-get install -y python3 python3-pip
+FROM nvidia/cuda:13.1.1-runtime-ubuntu22.04
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    ln -s /usr/bin/python3 /usr/bin/python
 
 WORKDIR /app
 

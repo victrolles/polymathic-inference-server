@@ -13,6 +13,10 @@ GATEWAY_HOST = os.getenv("GATEWAY_HOST", "unknown")
 GATEWAY_PORT = os.getenv("GATEWAY_PORT", "unknown")
 MEDIA_FILES_PATH = os.getenv("MEDIA_FILES_PATH", "unknown")
 
+print(f"GATEWAY_HOST: {GATEWAY_HOST}")
+print(f"GATEWAY_PORT: {GATEWAY_PORT}")
+print(f"MEDIA_FILES_PATH: {MEDIA_FILES_PATH}")
+
 server_manager = ServerManager()
 
 app = FastAPI(title="gateway")
@@ -42,13 +46,13 @@ async def health():
 @app.post("/add-server")
 async def add_server(info: ServerInfo):
     server_manager.add_server(info)
-    print(f"Added Media Service {info.model_id} to server manager")
+    print(f"Added Media Service {info} to server manager {server_manager.servers}")
     return {"registered": True}
 
 @app.post("/remove-server")
 async def remove_server(info: ServerInfo):
     server_manager.remove_server(info)
-    print(f"Removed Media Service {info.model_id} from server manager")
+    print(f"Removed Media Service {info} from server manager {server_manager.servers}")
     return {"removed": True}
 
 @app.get("/api/request_all_models_sizes_tasks")

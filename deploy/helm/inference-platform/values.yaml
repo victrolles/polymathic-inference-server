@@ -48,13 +48,13 @@ storage:
       - ReadOnlyMany
 
   mediaFiles:
-    size: 5Gi
+    size: 2Gi
     mountPath: /data/media_files
     accessModes:
       - ReadWriteMany
 
   weights:
-    size: 5Gi
+    size: 20Gi
     mountPath: /data/weights
     accessModes:
       - ReadOnlyMany

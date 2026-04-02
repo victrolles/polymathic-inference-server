@@ -9,7 +9,7 @@ kind: Deployment
 metadata:
   name: {{ include "inference-platform.media_service.name" (dict "root" $ "modelName" (index $model "name")) | quote }}
 spec:
-  replicas: {{ index $model "replicas" }}
+  replicas: {{ index $model "replicas" | default 1 }}
   selector:
     matchLabels:
       app: {{ include "inference-platform.media_service.name" (dict "root" $ "modelName" (index $model "name")) | quote }}

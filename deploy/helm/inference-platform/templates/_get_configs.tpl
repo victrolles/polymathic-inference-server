@@ -14,7 +14,7 @@
   {{- if hasKey $m "replicas" }}
   {{- $replicas = $m.replicas }}
   {{- end }}
-  {{- $enabled := false }}
+  {{- $enabled := true }}
   {{- if hasKey $m "enabled" }}
   {{- $enabled = $m.enabled }}
   {{- end }}
@@ -33,11 +33,15 @@
     {{- if hasKey $size "enabled" }}
     {{- $size_enabled = $size.enabled }}
     {{- end }}
+    {{- $size_enabled_gpu := false }}
+    {{- if hasKey $size "enabled_gpu" }}
+    {{- $size_enabled_gpu = $size.enabled_gpu }}
+    {{- end }}
     {{- $size_path := "unknown" }}
     {{- if hasKey $size "path" }}
     {{- $size_path = $size.path }}
     {{- end }}
-    {{- $sizeList = append $sizeList (dict "name" $size_id "replicas" $size_replicas "enabled" $size_enabled "path" $size_path) }}
+    {{- $sizeList = append $sizeList (dict "name" $size_id "replicas" $size_replicas "enabled" $size_enabled "path" $size_path "enabled_gpu" $size_enabled_gpu) }}
   {{- end }}
   {{- $datasetsIn := default list $yaml.datasets }}
   {{- $datasetList := list }}

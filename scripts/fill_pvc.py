@@ -39,7 +39,7 @@ def main():
 
         # Copy the weights to the PVC
         for size in config["sizes"]:
-            if size["enabled"]:
+            if size.get("enabled", True):
                 local_path = size["path"]
                 remote_dir = os.path.join("/data/weights", model, size["id"])
                 kubectl_copy(local_path, remote_dir)
