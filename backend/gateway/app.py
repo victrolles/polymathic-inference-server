@@ -5,7 +5,7 @@ import httpx
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from shared.structs import ServerInfo, ModelInfo, ModelSizeTaskRequest, Packet, InferenceRequest
+from shared.structs import ServerInfo, ModelInfo, ModelSizeTaskRequest, Packet, InferenceRequest, ModelRequest
 from shared.server_manager import ServerManager
 from shared.utils.requests import extend_url
 from shared.utils.functions import convert_packets_to_url
@@ -93,6 +93,28 @@ async def request_a_model_config_task(request: ModelSizeTaskRequest):
         error_message = (
             f"Error requesting config task from {server.url} for "
             f"model {mst.model_id} task {mst.task_id}: {e}"
+        )
+        print(error_message)
+        raise HTTPException(status_code=500, detail=error_message)
+
+@app.post("/api/request_model_information")
+async def request_model_information(request: ModelRequest):
+    server = server_manager.registry.get_server_by_model(request.model_id)
+    if server is None:
+        error_message = (
+            f"No media service for model_id={request.model_id}"
+        )
+        print(error_message)
+        raise HTTPException(status_code=404, detail=error_message)
+    try:
+        async with httpx.AsyncClient(timeout=3600) as client:
+            r = await client.get(extend_url(server.url, "/api/request_model_information"))
+            r.raise_for_status()
+            return r.json()
+    except httpx.HTTPError as e:
+        error_message = (
+            f"Error requesting model information from {server.url} for "
+            f"model {request.model_id}: {e}"
         )
         print(error_message)
         raise HTTPException(status_code=500, detail=error_message)

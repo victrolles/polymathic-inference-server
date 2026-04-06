@@ -69,6 +69,10 @@ async def request_model_sizes_tasks():
 async def request_config_task(request: TaskRequest):
     return media_service.get_config_task(request.task_id)
 
+@app.get("/api/request_model_information")
+async def request_model_information():
+    return media_service.get_model_information()
+
 @app.post("/api/request_random_data_samples")
 async def request_random_data_samples(request: TaskRequest):
     packets = media_service.get_random_data_samples(request.task_id)

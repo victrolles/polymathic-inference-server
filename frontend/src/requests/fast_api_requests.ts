@@ -28,6 +28,21 @@ export async function requestAModelConfigTask(model_size_task_id: ModelSizeTaskI
     return data.config_task as Dict;
 }
 
+export async function requestModelInformation(model_id: string): Promise<Dict> {
+    const response = await fetch("http://localhost:8000/api/request_model_information", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model_id }),
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data as Dict;
+}
+
 export async function requestRandomDataSamples(model_size_task_id: ModelSizeTaskId): Promise<Packets> {
     const response = await fetch("http://localhost:8000/api/request_random_data_samples", {
         method: "POST",

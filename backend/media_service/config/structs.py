@@ -158,6 +158,18 @@ class TaskUIConfig(BaseModel):
     output_data_size: UISize
     submit_button_text: str
 
+class LinkConfig(BaseModel):
+    name: str
+    url: str
+    alt: str
+
+class InformationConfig(BaseModel):
+    display: bool = True
+    extended_name: str = ""
+    description: str = ""
+    authors: str = ""
+    links: list[LinkConfig] = Field(default_factory=list)
+
 class TaskConfig(BaseModel):
     id: str
     name: str
@@ -200,3 +212,17 @@ class AppConfig(BaseModel):
     datasets: list[DatasetConfig]
     modalities: list[ModalityConfig]
     tasks: list[TaskConfig]
+    information: Optional[InformationConfig] = None
+
+    @model_validator(mode="after")
+    def validate_information(cls, values: "AppConfig") -> "AppConfig":
+        if values.information is None:
+            information = InformationConfig(
+                display=False,
+                extended_name="",
+                description="",
+                authors="",
+                links=[]
+            )
+            return values.model_copy(update={"information": information})
+        return values
