@@ -21,6 +21,9 @@ class ModelInfo(BaseModel):
 class TaskRequest(BaseModel):
     task_id: str
 
+class ModelRequest(BaseModel):
+    model_id: str
+
 class ModelSizeTaskId(BaseModel):
     model_id: str
     size_id: str

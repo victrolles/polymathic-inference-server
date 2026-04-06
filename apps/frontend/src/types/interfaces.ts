@@ -74,3 +74,12 @@ export interface DropBoxProps {
     switchable_modalities: Modality[] | null;
     setCurrentModality: (modality: Modality) => void;
 }
+
+export interface SideArrowProps {
+    showInformation: boolean;
+    setShowInformation: (showInformation: boolean) => void;
+}
+
+export interface ShowInformationProps {
+    model_information: Dict | null;
+}

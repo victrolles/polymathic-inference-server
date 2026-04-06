@@ -1,108 +1,48 @@
-import { useState, useEffect } from "react";
-import type { DatasetLocations, Dict, ModelSizeTaskId, Packet, Packets, SelectablePackets, Status } from "../types/types";
-import ImageSelector from "../components/MediaSelector";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { requestAModelConfigTask, requestRandomDataSamples, requestInference } from "../requests/fast_api_requests";
-import { getSelectedPackets, getSelectedDatasetLocations, numberOfSelectedPackets } from "../functions/functions";
-import type { InferenceRequestProps } from "../types/interfaces";
-import PacketsContainer from "../components/PacketsContainer";
-import SubmitButton from "../components/SubmitButton";
+import InferenceContainer from "../components/InferenceContainer";
+import SideArrowContainer from "../components/sideArrow";
+import ShowInformation from "../components/ShowInformation";
+import type { Dict } from "../types/types";
+import { requestModelInformation } from "../requests/fast_api_requests";
 
 function Inference() {
+    const [showInformation, setShowInformation] = useState(false);
     const { model_id, size_id, task_id } = useParams();
-    const [config_task, setConfigTask] = useState<Dict | null>(null);
-    const [selectable_packets, setSelectablePackets] = useState<SelectablePackets>([]);
-    const [inference_packets, setInferencePackets] = useState<Packets>([]);
-    const [samples_status, setSamplesStatus] = useState<Status>("no");
-    const [inference_status, setInferenceStatus] = useState<Status>("no");
+    const [model_information, setModelInformation] = useState<Dict | null>(null);
 
     useEffect(() => {
         if (model_id && size_id && task_id) {
 
-            //reset variables
-            setConfigTask(null);
-            setSelectablePackets([]);
-            setInferencePackets([]);
-            setSamplesStatus("loading");
-            console.log("samples_status", samples_status);
-            setInferenceStatus("no");
+            // Reset variables
+            setModelInformation(null);
+            setShowInformation(false);
 
-            // Get new config dictionary
-            requestAModelConfigTask({ model_id, size_id, task_id })
+            requestModelInformation(model_id)
             .then((data: Dict) => {
-                setConfigTask(data);
-                console.log("config_dict", data);
+                setModelInformation(data);
+                console.log("model_information", data);
             }).catch((error) => {
                 console.error(error);
-                setSamplesStatus("error");
-            });
-        
-            // Get new random data samples
-            requestRandomDataSamples({ model_id, size_id, task_id })
-            .then((packets: Packets) => {
-                setSelectablePackets(packets.map((packet: Packet) => ({ packet, is_selected: false })) as SelectablePackets);
-                setSamplesStatus("done");
-                console.log("packets", packets);
-            }).catch((error) => {
-                console.error(error);
-                setSamplesStatus("error");
             });
         }
     }, [model_id, size_id, task_id]);
-
-    const submitInferenceRequest = () => {
-        if (!model_id || !size_id || !task_id || numberOfSelectedPackets(selectable_packets) === 0) {
-            setInferenceStatus("no");
-            return;
-        }
-        setInferenceStatus("loading");
-        const inference_request: InferenceRequestProps = {
-            model_size_task_id: { model_id, size_id, task_id } as ModelSizeTaskId,
-            dataset_locations: getSelectedDatasetLocations(selectable_packets) as DatasetLocations
-        }
-
-        requestInference(inference_request)
-        .then((packets: Packets) => {
-            setInferencePackets(packets);
-            setInferenceStatus("done");
-            console.log("inference_packets", packets);
-        }).catch((error) => {
-            console.error(error);
-            setInferenceStatus("error");
-        });
-    };
-
-    if (!config_task) {
-        return null;
-    }
-
+    
     return (
-        <div className="inference">
-            <p className="slogan">{config_task.ui.text_top_screen}</p>
-            <ImageSelector
-                selectable_packets={selectable_packets}
-                setSelectablePackets={setSelectablePackets}
-                data_samples={config_task.data_samples}
-                media_size={config_task.ui.data_size}
-            />
-            {config_task.selected_data_samples.display && <PacketsContainer
-                packets={getSelectedPackets(selectable_packets)}
-                configDict={config_task.selected_data_samples as Dict}
-                status={"no"}
-                media_size={config_task.ui.selected_data_size}
-            />
-            }
-            <hr />
-            {inference_status !== "no" && <PacketsContainer
-                packets={inference_packets}
-                configDict={config_task.data_outputs as Dict}
-                media_size={config_task.ui.output_data_size}
-                status={inference_status}
-            />}
-            <SubmitButton
-                submitAction={submitInferenceRequest}
-                submit_text={config_task.ui.submit_button_text}
-            />
+        <div className="inference-page">
+            <div className={`inference-container-width ${showInformation ? "show-information-half-width" : ""}`}>
+                <InferenceContainer />
+            </div>
+            {(model_information !== null && model_information.display === true) && (
+                <>
+                    {showInformation && (
+                        <div className="show-information-container">
+                            <ShowInformation model_information={model_information} />
+                        </div>
+                    )}
+                    <SideArrowContainer showInformation={showInformation} setShowInformation={setShowInformation} />
+                </>
+            )}
         </div>
     );
 }

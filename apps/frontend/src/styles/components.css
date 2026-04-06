@@ -193,7 +193,7 @@ ul {
 }
 
 .selectable-media-item-selected img{
-    border: 2px solid red;
+    border: 4px solid var(--selected-image-border-color);
     border-radius: 10px;
     margin: 0 7px 0 7px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
@@ -251,19 +251,31 @@ ul {
     object-fit: cover;
 }
 
-.inference {
+.inference-container-width {
     width: 100%;
+    position: relative;
+    display: flex;
+}
+
+.show-information-half-width {
+    width: 66%;
+    display: flex;
+    position: relative;
+}
+
+.inference-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
+    width: 100%;
 }
 
-.inference hr {
+.inference-container hr {
     width: 80%;
 }
 
-.inference button {
+.inference-container button {
     position: absolute;
     bottom: 15px;
     width: 300px;
@@ -280,7 +292,7 @@ ul {
     transition: background-color 0.3s ease;
 }
 
-.inference button:hover {
+.inference-container button:hover {
     background-color: var(--senary-bg-hover);
 }
 
@@ -308,18 +320,18 @@ ul {
     border-radius: 10px;
 }
 
-.inference p {
+.inference-container p {
     font-size: 20px;
     color: var(--primary-bg);
     margin: 20px 0 10px 0;
 }
 
-.inference .selectable-media-item-name {
+.inference-container .selectable-media-item-name {
     margin: 0;
     padding: 0;
 }
 
-.inference .images-item-name {
+.inference-container .images-item-name {
     font-size: 15px;
     margin: 0;
     padding: 0;
@@ -483,6 +495,14 @@ ul {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
+.side-arrow-image svg {
+    stroke: var(--quaternary-bg);
+}
+
+.side-arrow-image svg:hover {
+    stroke: var(--quaternary-bg2);
+}
+
 .drop-list-item {
     cursor: pointer;
     font-size: 15px;
@@ -497,4 +517,151 @@ ul {
 
 .drop-list-item:hover {
     background-color: var(--quaternary-bg);
+}
+
+.inference-page {
+    display: flex;
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.side-arrow img {
+    width: 60px;
+    height: 60px;
+    color: var(--quaternary-bg);
+}
+
+.side-arrow {
+    position: absolute;
+    top: calc(50% - 30px);
+    right: 10px;
+    cursor: pointer;
+}
+
+.side-arrow-image-open {
+    transform: rotate(180deg);
+}
+  
+.tooltip-text {
+visibility: hidden;
+opacity: 0;
+transition: opacity 0.2s;
+
+position: absolute;
+bottom: 15px;
+left: -120px;
+
+background : var(--quaternary-bg2);
+color: var(--senary-bg);
+padding: 6px 10px;
+border-radius: 6px;
+white-space: nowrap;
+}
+
+.side-arrow:hover .tooltip-text {
+visibility: visible;
+opacity: 1;
+}
+
+.show-information-container {
+    background-color: var(--tertiary-bg);
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    border-left: 1px solid var(--border-color-2);
+    border-radius: 10px;
+    padding: 20px;
+    overflow: auto;
+    
+}
+
+.show-information {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: left;
+    object-fit: cover;
+}
+
+.show-information-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--primary-bg);
+    margin: 0 0 20px 0;
+    padding: 0;
+}
+
+.show-information-description {
+    font-size: 16px;
+    color: var(--primary-bg);
+    margin: 0 0 20px 0;
+    padding: 0;
+    text-align: left;
+}
+
+.show-information-links {
+    text-align: left;
+    font-size: 16px;
+    color: var(--primary-bg);
+    margin: 0 0 20px 0;
+    padding: 0;
+}
+
+.show-information-links p {
+    margin: 0 0 10px 0;
+    padding: 0;
+    font-weight: bold;
+}
+
+.show-information-link-list {
+    display: flex;
+    flex-direction: column;
+    list-style: disc;
+    list-style-position: outside;
+    margin: 0.35em 0 0 0;
+    padding: 0 0 0 1.35em;
+}
+
+.show-information-link {
+    display: inline-block;
+    font-size: 16px;
+    color: var(--primary-bg);
+    margin: 0.25em 0;
+    padding: 0;
+}
+
+.show-information-link-label {
+    font-weight: bold;
+}
+
+.show-information-link a {
+    color: var(--link-color);
+    text-decoration: none;
+    margin: 0 0 0 0.35em;
+}
+
+.show-information-authors {
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    display: inline-block;
+}
+
+.show-information-authors p {
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    color: var(--primary-bg);
+    font-weight: bold;
+    display: inline;
+}
+
+.show-information-authors span {
+    margin: 0 0 0 0.35em;
+    padding: 0;
+    font-size: 16px;
+    color: var(--primary-bg);
+    display: inline;
+    font-style: italic;
 }

@@ -40,6 +40,9 @@ class MediaService:
     def get_config_task(self, task_id: str) -> dict:
         return self.config_manager.registry.tasks_by_id[task_id].model_dump()
 
+    def get_model_information(self) -> dict:
+        return self.config_manager.config.information
+
     def get_random_data_samples(self, task_id: str) -> list[Packet]:
         modality_ids = self.config_manager.get_modality_ids_by_task_id_and_phase(task_id, "data_samples")
         task = self.config_manager.registry.tasks_by_id[task_id]

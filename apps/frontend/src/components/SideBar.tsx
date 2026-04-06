@@ -28,6 +28,10 @@ function SideBar() {
             setTasks(match ? match.tasks : []);
             setSize(match ? match.sizes.find((s) => s.id === size_id) as IdName : null);
             setStatus("done");
+        } else {
+            setStatus("no");
+            setTasks([]);
+            setSize(null);
         }
     }, [model_id, size_id, models_sizes_tasks]);
     
