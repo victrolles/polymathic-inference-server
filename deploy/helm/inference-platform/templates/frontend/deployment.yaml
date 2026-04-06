@@ -17,6 +17,13 @@ spec:
         - name: frontend
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          resources:
+            requests:
+              memory: "{{ .Values.frontend.resources.requests.memory }}"
+              cpu: "{{ .Values.frontend.resources.requests.cpu }}"
+            limits:
+              memory: "{{ .Values.frontend.resources.limits.memory }}"
+              cpu: "{{ .Values.frontend.resources.limits.cpu }}"
           env:
             - name: GATEWAY_SERVICE_HOST
               value: {{ include "inference-platform.gateway.service" . | quote }}

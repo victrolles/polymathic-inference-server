@@ -6,6 +6,7 @@ node_modules/
 
 # tmp files
 tmp/
+deploy/helm/inference-platform/models/
 
 # developer files
 dev/

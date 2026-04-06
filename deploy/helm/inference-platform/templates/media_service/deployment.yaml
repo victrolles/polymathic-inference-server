@@ -22,6 +22,13 @@ spec:
         - name: media-service
           image: "{{ $.Values.mediaService.image.repository }}:{{ index $model "name" }}"
           imagePullPolicy: {{ $.Values.mediaService.image.pullPolicy }}
+          resources:
+            requests:
+              memory: "{{ $.Values.mediaService.resources.requests.memory }}"
+              cpu: "{{ $.Values.mediaService.resources.requests.cpu }}"
+            limits:
+              memory: "{{ $.Values.mediaService.resources.limits.memory }}"
+              cpu: "{{ $.Values.mediaService.resources.limits.cpu }}"
           ports:
             - containerPort: {{ $.Values.mediaService.service.targetPort }}
           env:

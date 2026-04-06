@@ -34,14 +34,6 @@ kubectl delete pvc --all --wait=true
 kubectl delete configmap --all --wait=true
 kubectl delete secret --all --wait=true
 
-# minikube delete --all --purge
-# podman system prune -a --volumes -f
-# rm -rf ~/.minikube
-# rm -rf /mnt/home/vgoudal/.minikube
-# rm -rf /mnt/home/vgoudal/.kube
-# minikube config set rootless true
-# minikube start --driver=podman --container-runtime=containerd --cpus=4 --memory=8192
-
 # build frontend
 minikube image build \
   -t frontend:latest \

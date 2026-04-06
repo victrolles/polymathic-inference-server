@@ -9,6 +9,13 @@ frontend:
     port: 80
     targetPort: 80
     nodePort: 30007
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 1
+    limits:
+      memory: 2Gi
+      cpu: 2
 
 gateway:
   replicaCount: 1
@@ -20,6 +27,13 @@ gateway:
     type: ClusterIP
     port: 8000
     targetPort: 8000
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 1
+    limits:
+      memory: 2Gi
+      cpu: 2
 
 mediaService:
   image:
@@ -29,6 +43,13 @@ mediaService:
     type: ClusterIP
     port: 7000
     targetPort: 7000
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 1
+    limits:
+      memory: 2Gi
+      cpu: 2
 
 worker:
   image:
@@ -58,3 +79,6 @@ storage:
     mountPath: /data/weights
     accessModes:
       - ReadOnlyMany
+
+timeSlicing:
+  replicas: 4
