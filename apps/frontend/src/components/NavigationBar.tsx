@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { requestAllModelsSizesTasks } from "../requests/fast_api_requests";
 import type { IdName, ModelSizesTasks, ModelsSizesTasks } from "../types/types";
 import type { ModelSelectorProps, SizeSelectorProps } from "../types/interfaces";
@@ -53,6 +53,9 @@ function ModelSelector({models_sizes_tasks, setIsModelSelectorOpen} : ModelSelec
 function NavigationBar() {
     const [isModelSelectorOpen, setIsModelSelectorOpen] = useState(false);
     const [models_sizes_tasks, setModelsSizesTasks] = useState<ModelsSizesTasks>([]);
+    const location = useLocation();
+    const isHome = location.pathname === "/";
+    const isInference = location.pathname.startsWith("/inference");
 
     useEffect(() => {
         requestAllModelsSizesTasks()
@@ -61,10 +64,10 @@ function NavigationBar() {
 
     return (
         <div className="navigation-bar">
-            <p  className="navigation-bar-logo">Polymathic</p>
+            <img src="https://polymathic-ai.org/images/logo.svg" alt="Polymathic Logo" className="navigation-bar-logo" />
             <ul className="navigation-bar-container">
-                <li><Link to="/" className="navigation-bar-item"><span>Home</span></Link></li>
-                <li className="navigation-bar-item" >
+                <li><Link to="/" className={`navigation-bar-item${isHome ? "-selected" : ""}`}><span>Home</span></Link></li>
+                <li className={`navigation-bar-item${isInference ? "-selected" : ""}`} >
                   <div className="model-selector-dropdown">
                     <span onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}>Models</span>
                     {isModelSelectorOpen && <ModelSelector models_sizes_tasks={models_sizes_tasks} setIsModelSelectorOpen={setIsModelSelectorOpen} />}

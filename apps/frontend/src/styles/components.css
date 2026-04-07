@@ -39,14 +39,29 @@
 } */
 
 .navigation-bar-logo {
-    font-size: 30px;
-    font-weight: bold;
+    height: 40px;
     margin: 0 300px 0 0;
-    color: var(--secondary-bg);
 }
 
 .navigation-bar-container {
     display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.navigation-bar-container li {
+    display: flex;
+    height: calc(100% - 7px);
+    align-items: center;
+    justify-content: center;
+}
+
+.navigation-bar-item {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 .navigation-bar-item span {
@@ -61,7 +76,38 @@
 .navigation-bar-item span:hover {
     font-size: 20px;
     font-weight: bold;
-    color: var(--quaternary-bg);
+    color: var(--selected-image-border-color);
+}
+.navigation-bar-container a:hover {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--selected-image-border-color);
+}
+
+.navigation-bar-item-selected {
+    position: relative;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--selected-image-border-color);
+    text-decoration: none;
+    cursor: pointer;
+    margin: 0 20px;
+    height: calc(100% - 4px);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border-top: 3px solid transparent;
+}
+
+.navigation-bar-item-selected::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 3px;
+    background-color: var(--selected-image-border-color);
 }
 
 ul {
@@ -89,8 +135,9 @@ ul {
 .side-bar-item {
     font-size: 20px;
     font-weight: bold;
-    color: var(--senary-bg);
-    background-color: var(--quaternary-bg);
+    color: var(--selected-image-border-color);
+    border: 2px solid var(--selected-image-border-color);
+    background: transparent;
     margin: 5px 0;
     padding: 5px 20px;
     border-radius: var(--border-radius);
@@ -98,13 +145,29 @@ ul {
     cursor: pointer;
     text-align: left;
     white-space: nowrap; 
+    border-radius: 10px;
+}
+
+.side-bar-item-selected {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--secondary-bg);
+    background: var(--selected-image-border-color);
+    margin: 5px 0;
+    padding: 5px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap; 
+    border-radius: 10px;
 }
 
 .side-bar-item:hover {
     font-size: 20px;
     font-weight: bold;
-    color: var(--senary-bg);
-    background-color: var(--quaternary-bg2);
+    color: var(--secondary-bg);
+    background: var(--selected-image-border-color);
     margin: 5px 0;
     padding: 5px 20px;
     border-radius: var(--border-radius);
@@ -283,17 +346,18 @@ ul {
     margin: 0;
     padding: 10px 20px;
     border-radius: calc(var(--border-radius) * 1.5);
-    background-color: var(--senary-bg);
-    color: var(--secondary-bg);
+    background: transparent;
+    color: var(--selected-image-border-color);
+    border: 2px solid var(--selected-image-border-color);
     font-size: 18px;
     font-weight: bold;
-    border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .inference-container button:hover {
-    background-color: var(--senary-bg-hover);
+    background: var(--selected-image-border-color);
+    color: var(--secondary-bg);
 }
 
 .results-multiple-datas {
@@ -496,11 +560,11 @@ ul {
 }
 
 .side-arrow-image svg {
-    stroke: var(--quaternary-bg);
+    stroke: var(--selected-image-border-color);
 }
 
 .side-arrow-image svg:hover {
-    stroke: var(--quaternary-bg2);
+    stroke: var(--selected-image-border-color);
 }
 
 .drop-list-item {
@@ -552,8 +616,9 @@ position: absolute;
 bottom: 15px;
 left: -120px;
 
-background : var(--quaternary-bg2);
-color: var(--senary-bg);
+background : transparent;
+color: var(--selected-image-border-color);
+border: 2px solid var(--selected-image-border-color);
 padding: 6px 10px;
 border-radius: calc(var(--border-radius) * 0.6);
 white-space: nowrap;

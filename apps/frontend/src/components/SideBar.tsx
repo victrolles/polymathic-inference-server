@@ -5,7 +5,7 @@ import { requestAllModelsSizesTasks } from "../requests/fast_api_requests";
 import anim_spinner from "../assets/anim_spinner.svg";
 
 function SideBar() {
-    const { model_id, size_id } = useParams();
+    const { model_id, size_id, task_id } = useParams();
     const [status, setStatus] = useState<Status>("no");
     const [models_sizes_tasks, setModelsSizesTasks] = useState<ModelsSizesTasks>([]);
     const [tasks, setTasks] = useState<IdName[]>([]);
@@ -44,7 +44,7 @@ function SideBar() {
                     {status === "loading" && <img src={anim_spinner} alt="AI Processing" style={{ width: 32, height: 32 }} />}
                     {status === "done" && tasks.map((task) => (
                         <Link key={task.id} to={`/inference/${model_id}/${size_id}/${task.id}`}>
-                            <div className="side-bar-item">{task.name}</div>
+                            <div className={`side-bar-item ${task.id === task_id ? "side-bar-item-selected" : ""}`}>{task.name}</div>
                         </Link>
                     ))}
                 </div>
