@@ -76,7 +76,7 @@ ul {
     background-color: var(--tertiary-bg);
     border-right: 1px solid var(--border-color-2);
     padding: 10px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
 }
 
 .side-bar-title {
@@ -93,7 +93,7 @@ ul {
     background-color: var(--quaternary-bg);
     margin: 5px 0;
     padding: 5px 20px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     text-decoration: none;
     cursor: pointer;
     text-align: left;
@@ -107,7 +107,7 @@ ul {
     background-color: var(--quaternary-bg2);
     margin: 5px 0;
     padding: 5px 20px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     text-decoration: none;
     cursor: pointer;
     text-align: left;
@@ -126,7 +126,7 @@ ul {
     border: 2px solid var(--border-color);
     padding: 10px;
     width: 80%;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     background-color: var(--tertiary-bg);
     overflow: auto;
     align-items: center;
@@ -138,7 +138,7 @@ ul {
     border: 2px solid var(--border-color);
     padding: 10px;
     width: 80%;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     background-color: var(--tertiary-bg);
     overflow: auto;
     align-items: center;
@@ -151,7 +151,7 @@ ul {
     align-items: center;
     justify-content: center;
     margin: 0 7px 0 7px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
@@ -182,7 +182,7 @@ ul {
 
 .selectable-media-item img {
     margin: 7px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
@@ -194,7 +194,7 @@ ul {
 
 .selectable-media-item-selected img{
     border: 4px solid var(--selected-image-border-color);
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     margin: 0 7px 0 7px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     cursor: pointer;
@@ -202,7 +202,7 @@ ul {
 
 .selectable-media-item-not-selected img{
     margin: 0 7px 0 7px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     filter: grayscale(100%) saturate(30%) brightness(0.8);
@@ -210,7 +210,7 @@ ul {
 }
 .selectable-media-item-not-selected canvas{
     margin: 0 7px 0 7px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     filter: grayscale(100%) saturate(30%) brightness(0.8);
@@ -239,14 +239,14 @@ ul {
     width: 25vh;
     max-width: 80%;
     border: 1px solid var(--border-color);
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     background-color: var(--tertiary-bg);
 }
 
 .image-selector-image{
     width: 100%;
     height: 100%;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     margin: 0 10px;
     object-fit: cover;
 }
@@ -282,7 +282,7 @@ ul {
     left: calc(50% - 150px);
     margin: 0;
     padding: 10px 20px;
-    border-radius: 15px;
+    border-radius: calc(var(--border-radius) * 1.5);
     background-color: var(--senary-bg);
     color: var(--secondary-bg);
     font-size: 18px;
@@ -302,7 +302,7 @@ ul {
     border: 1px solid var(--border-color);
     margin: 5px;
     width: 80%;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     overflow: auto;
 }
 
@@ -317,7 +317,7 @@ ul {
     width: auto;
     height: 100%;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
 }
 
 .inference-container p {
@@ -349,7 +349,7 @@ ul {
     left: 20px;
     background-color: var(--quaternary-bg);
     border: 2px solid var(--border-color);
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
@@ -366,7 +366,7 @@ ul {
     width: 100px;
     margin: 2px;
     padding: 5px 30px 5px 20px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     text-align: left;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -386,7 +386,7 @@ ul {
     left: 155px;
     background-color: var(--quaternary-bg);
     border: 2px solid var(--border-color);
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
@@ -403,7 +403,7 @@ ul {
     width: auto;
     margin: 2px;
     padding: 5px 30px 5px 20px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     text-align: left;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -433,7 +433,7 @@ ul {
     align-items: center;
     justify-content: center;
     border: 1px solid var(--border-color-2);
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     margin: 2px;
     padding: 2px 0;
     background-color: var(--tertiary-bg2);
@@ -443,7 +443,7 @@ ul {
     display: flex;
     width: 90%;
     background-color: var(--tertiary-bg);
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     margin: 5px;
     overflow: auto;
     align-items: center;
@@ -491,7 +491,7 @@ ul {
     align-items: left;
     justify-content: left;
     background-color: var(--quaternary-bg);
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
@@ -508,7 +508,7 @@ ul {
     font-size: 15px;
     color: var(--primary-bg);
     background-color: var(--secondary-bg);
-    border-radius: 5px;
+    border-radius: calc(var(--border-radius) * 0.5);
     margin: 0.5px;
     padding: 0 5px 0 5px;
     text-align: left;
@@ -555,7 +555,7 @@ left: -120px;
 background : var(--quaternary-bg2);
 color: var(--senary-bg);
 padding: 6px 10px;
-border-radius: 6px;
+border-radius: calc(var(--border-radius) * 0.6);
 white-space: nowrap;
 }
 
@@ -569,7 +569,7 @@ opacity: 1;
     width: calc(100% - 40px);
     height: calc(100% - 40px);
     border-left: 1px solid var(--border-color-2);
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     padding: 20px;
     overflow: auto;
     

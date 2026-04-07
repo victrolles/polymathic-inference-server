@@ -38,6 +38,7 @@ function InferenceContainer() {
             .then((packets: Packets) => {
                 setSelectablePackets(packets.map((packet: Packet) => ({ packet, is_selected: false })) as SelectablePackets);
                 setSamplesStatus("done");
+                console.log("samples_status", samples_status);
             }).catch((error) => {
                 console.error(error);
                 setSamplesStatus("error");

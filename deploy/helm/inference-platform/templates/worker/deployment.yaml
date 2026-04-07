@@ -25,16 +25,15 @@ spec:
           image: "{{ $.Values.worker.image.repository }}:{{ index $model "name" }}"
           imagePullPolicy: {{ $.Values.worker.image.pullPolicy }}
           resources:
+            requests:
+              memory: {{ dig "resources" "requests" "memory" "1Gi" $size }}
+              cpu: {{ dig "resources" "requests" "cpu" 1 $size }}
             limits:
-              requests:
-                memory: {{ index $size "resources" "requests" "memory"}}
-                cpu: {{ index $size "resources" "requests" "cpu"}}
-              limits:
-                memory: {{ index $size "resources" "limits" "memory" }}
-                cpu: {{ index $size "resources" "limits" "cpu" }}
-                {{- if index $size "enabled_gpu" }}
-                nvidia.com/gpu: 1
-                {{- end }}
+              memory: {{ dig "resources" "limits" "memory" "1Gi" $size }}
+              cpu: {{ dig "resources" "limits" "cpu" 2 $size }}
+              {{- if index $size "enabled_gpu" }}
+              nvidia.com/gpu: 1
+              {{- end }}
           ports:
             - containerPort: {{ $.Values.worker.service.targetPort }}
           env:

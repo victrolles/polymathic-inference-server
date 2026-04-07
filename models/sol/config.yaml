@@ -6,6 +6,13 @@ sizes:
   - id: sol-base
     name: SOL Base
     path: "/mnt/home/vgoudal/ceph/huggingface/models/polymathic-ai/aion-base"
+    resources:
+      requests:
+        memory: 8Gi
+        cpu: 4
+      limits:
+        memory: 9Gi
+        cpu: 4
 
 data_types:
   - id: x_tensor
@@ -140,3 +147,24 @@ tasks:
     inference:
       input_data_type_id: sol_dataset_dict_formatted
       output_data_type_id: x_tensor
+
+information:
+  extended_name: "SOL: Solar Orbiter Localization"
+  description: "Deep learning is everywhere in astronomy, but most models live in silos—built for one data type, one survey, and one bespoke task. As a result, they must be retrained whenever these settings change. The AstronomIcal Omnimodal Network (AION-1) changes this: a single foundation model that spans multiple surveys and data types, producing a unified representation that transfers across domains and performs strongly even in low-data regimes. By learning shared astrophysical structure across instruments and modalities, AION-1 not only removes the need for retraining—it enables better performance, faster adaptation, and a deeper physical understanding from fewer examples."
+  authors: "Liam Parker, Francois Lanusse, Jeff Shen, Ollie Liu, Tom Hehir, Leopoldo Sarra, Lucas Meyer, Micah Bowles, Sebastian Wagner-Carena, Helen Qu, Siavash Golkar, Alberto Bietti, Hatim Bourfoune, Nathan Casserau, Pierre Cornette, Keiya Hirashima, Geraud Krawezik, Ruben Ohana, Nicholas Lourie, Michael McCabe, Rudy Morel, Payel Mukhopadhyay, Mariel Pettee, Bruno Regaldo-Saint Blancard, Kyunghyun Cho, Miles Cranmer, Shirley Ho"
+  links:
+    - name: "Github"
+      url: "https://github.com/PolymathicAI/AION"
+      alt: "SOL API and Code"
+    - name: "Blog"
+      url: "https://polymathic-ai.org/blog/aion-1/"
+      alt: "SOL"
+    - name: "Paper"
+      url: "https://arxiv.org/abs/2510.17960"
+      alt: "SOL: Solar Orbiter Localization"
+    - name: "Model Weights"
+      url: "https://huggingface.co/polymathic-ai/aion-base"
+      alt: "SOL Hugging Face"
+    - name: "Tutorial"
+      url: "https://colab.research.google.com/github/PolymathicAI/AION/blob/main/notebooks/Tutorial.ipynb"
+      alt: "SOL quick start"
