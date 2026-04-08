@@ -656,6 +656,29 @@ opacity: 1;
     padding: 0;
 }
 
+.show-information-date {
+    font-size: 20px;
+    color: var(--link-color);
+    margin: 0 0 20px 0;
+    padding: 0;
+    text-align: left;
+}
+
+.show-information-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 20px 0;
+    padding: 0;
+    object-fit: cover;
+}
+
+.show-information-image img {
+    width: 100%;
+    max-height: 200px;
+    border-radius: 10px;
+}
+
 .show-information-description {
     font-size: 16px;
     color: var(--primary-bg);

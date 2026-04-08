@@ -166,6 +166,9 @@ class LinkConfig(BaseModel):
 class InformationConfig(BaseModel):
     display: bool = True
     extended_name: str = ""
+    date: str = ""
+    short_description: str = ""
+    cover_image_path: str = ""
     description: str = ""
     authors: str = ""
     links: list[LinkConfig] = Field(default_factory=list)
@@ -220,6 +223,9 @@ class AppConfig(BaseModel):
             information = InformationConfig(
                 display=False,
                 extended_name="",
+                date="",
+                short_description="",
+                cover_image_path="",
                 description="",
                 authors="",
                 links=[]

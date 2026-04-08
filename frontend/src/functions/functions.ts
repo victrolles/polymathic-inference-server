@@ -34,3 +34,13 @@ export function numberOfSelectedPackets(selectable_packets: SelectablePackets): 
 export function isOneSelected(selectable_packets: SelectablePackets): boolean {
     return selectable_packets.filter((sp) => sp.is_selected).length >= 1;
 }
+
+export function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+  
+    return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+}

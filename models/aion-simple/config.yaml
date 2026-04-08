@@ -109,6 +109,8 @@ tasks:
 
 information:
   extended_name: "AION-1: A billion-parameter multimodal foundation model for astronomy"
+  date: "2025-12-16"
+  short_description: "Semantic search across 140 million galaxy images using AI-generated captions."
   description: "Deep learning is everywhere in astronomy, but most models live in silos—built for one data type, one survey, and one bespoke task. As a result, they must be retrained whenever these settings change. The AstronomIcal Omnimodal Network (AION-1) changes this: a single foundation model that spans multiple surveys and data types, producing a unified representation that transfers across domains and performs strongly even in low-data regimes. By learning shared astrophysical structure across instruments and modalities, AION-1 not only removes the need for retraining—it enables better performance, faster adaptation, and a deeper physical understanding from fewer examples."
   authors: "Liam Parker, Francois Lanusse, Jeff Shen, Ollie Liu, Tom Hehir, Leopoldo Sarra, Lucas Meyer, Micah Bowles, Sebastian Wagner-Carena, Helen Qu, Siavash Golkar, Alberto Bietti, Hatim Bourfoune, Nathan Casserau, Pierre Cornette, Keiya Hirashima, Geraud Krawezik, Ruben Ohana, Nicholas Lourie, Michael McCabe, Rudy Morel, Payel Mukhopadhyay, Mariel Pettee, Bruno Regaldo-Saint Blancard, Kyunghyun Cho, Miles Cranmer, Shirley Ho"
   links:

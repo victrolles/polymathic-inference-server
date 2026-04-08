@@ -33,7 +33,7 @@ class DataManager:
         rand_id = random.randint(0, 1000000)
         file_name = f"{modality_config.id}_{rand_id}"
         data_type_config: DataTypeConfig = self.config_manager.registry.data_types_by_id[modality_config.data_type_id]
-        full_path = self.media_converter.save_object(data, file_name, data_type_config)
+        full_path = self.media_converter.save_object(data, file_name, data_type_config, is_static=False)
 
         return MediaFile(
             path=full_path,
