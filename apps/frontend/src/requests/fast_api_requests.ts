@@ -44,7 +44,7 @@ export async function requestModelInformation(model_id: string): Promise<Dict> {
 }
 
 export async function requestAllModelsInformation(): Promise<Dict[]> {
-    const response = await fetch("http://localhost:8000/api/request_all_models_information", {
+    const response = await fetch("/api/request_all_models_information", {
         method: "GET",
     });
 

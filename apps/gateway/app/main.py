@@ -5,14 +5,10 @@ import httpx
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from shared.structs import ServerInfo, ModelInfo, ModelSizeTaskRequest, Packet, InferenceRequest, ModelRequest
-from media_service.config.structs import InformationConfig
-from shared.server_manager import ServerManager
-from shared.utils.requests import extend_url
-from shared.utils.functions import convert_packets_to_url, convert_path_to_url
 from python.structs.general import ServerInfo, ModelInfo, ModelSizeTaskRequest, Packet, InferenceRequest, ModelRequest
 from python.functions.server_manager import ServerManager
-from python.functions.utils import extend_url, convert_packets_to_url
+from python.functions.utils import extend_url, convert_packets_to_url, convert_path_to_url
+from python.structs.config import InformationConfig
 
 GATEWAY_HOST = os.getenv("GATEWAY_HOST", "unknown")
 GATEWAY_PORT = os.getenv("GATEWAY_PORT", "unknown")
@@ -122,7 +118,7 @@ async def request_model_information(request: ModelRequest):
             r.raise_for_status()
             information = InformationConfig(**r.json())
             if information.display:
-                information.cover_image_path = convert_path_to_url(information.cover_image_path, GATEWAY_HOST, GATEWAY_PORT)
+                information.cover_image_path = convert_path_to_url(information.cover_image_path)
             return information.model_dump(mode="json")
     except httpx.HTTPError as e:
         error_message = (
@@ -147,7 +143,7 @@ async def request_all_models_information():
                 data = r.json()
                 information_config = InformationConfig(**data)
                 if information_config.display:
-                    information_config.cover_image_path = convert_path_to_url(information_config.cover_image_path, GATEWAY_HOST, GATEWAY_PORT)
+                    information_config.cover_image_path = convert_path_to_url(information_config.cover_image_path)
                     models_information.append(information_config.model_dump(mode="json"))
         except httpx.HTTPError as e:
             error_message = f"Error requesting all models information from {server.url}: {e}"
@@ -177,7 +173,7 @@ async def request_random_data_samples(request: ModelSizeTaskRequest):
             )
             r.raise_for_status()
             packets = [Packet(**packet) for packet in r.json()]
-            new_packets = convert_packets_to_url(packets, GATEWAY_HOST, GATEWAY_PORT)
+            new_packets = convert_packets_to_url(packets)
             return {"ok": True, "packets": new_packets}
     except httpx.HTTPError as e:
         error_message = (
@@ -205,7 +201,7 @@ async def request_inference(request: InferenceRequest):
             )
             r.raise_for_status()
             packets = [Packet(**packet) for packet in r.json()]
-            new_packets = convert_packets_to_url(packets, GATEWAY_HOST, GATEWAY_PORT)
+            new_packets = convert_packets_to_url(packets)
             return {"ok": True, "packets": new_packets}
     except httpx.HTTPError as e:
         error_message = (

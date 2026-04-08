@@ -55,12 +55,12 @@ for model_path in "models"/*; do
       -f apps/media_service/Dockerfile \
       .
 
-    echo "🔨 Building image worker for model: $model_name"
+    # echo "🔨 Building image worker for model: $model_name"
 
-    minikube image build \
-      -t "worker:$model_name" \
-      -f apps/worker/Dockerfile \
-      .
+    # minikube image build \
+    #   -t "worker:$model_name" \
+    #   -f apps/worker/Dockerfile \
+    #   .
 
   fi
 done

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { requestAllModelsInformation, requestAllModelsSizesTasks } from "../requests/fast_api_requests";
-import type { Dict, ModelsSizesTasks, ModelSizeTaskId } from "../types/types";
+import { requestAllModelsInformation } from "../requests/fast_api_requests";
+import type { Dict } from "../types/types";
 import Card from "./Card";
 
 

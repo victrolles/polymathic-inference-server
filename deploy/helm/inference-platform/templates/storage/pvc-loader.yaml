@@ -15,6 +15,8 @@ spec:
           mountPath: {{ $.Values.storage.datasets.mountPath | quote }}
         - name: weights
           mountPath: {{ $.Values.storage.weights.mountPath | quote }}
+        - name: media-files
+          mountPath: {{ $.Values.storage.mediaFiles.mountPath | quote }}
   volumes:
     - name: datasets
       persistentVolumeClaim:
@@ -22,4 +24,7 @@ spec:
     - name: weights
       persistentVolumeClaim:
         claimName: {{ include "inference-platform.weights.name" $ | quote }}
+    - name: media-files
+      persistentVolumeClaim:
+        claimName: {{ include "inference-platform.mediaFiles.name" $ | quote }}
 {{- end }}
