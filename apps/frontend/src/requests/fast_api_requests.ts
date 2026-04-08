@@ -29,7 +29,7 @@ export async function requestAModelConfigTask(model_size_task_id: ModelSizeTaskI
 }
 
 export async function requestModelInformation(model_id: string): Promise<Dict> {
-    const response = await fetch("http://localhost:8000/api/request_model_information", {
+    const response = await fetch("/api/request_model_information", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model_id }),

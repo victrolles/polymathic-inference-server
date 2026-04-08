@@ -1,84 +1,76 @@
 frontend:
-  replicaCount: 1
   image:
+    pullPolicy: Never
     repository: frontend
     tag: latest
-    pullPolicy: Never
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 2
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 1Gi
   service:
-    type: NodePort
+    nodePort: 30007
     port: 80
     targetPort: 80
-    nodePort: 30007
-  resources:
-    requests:
-      memory: 1Gi
-      cpu: 1
-    limits:
-      memory: 2Gi
-      cpu: 2
-
+    type: NodePort
 gateway:
-  replicaCount: 1
   image:
+    pullPolicy: Never
     repository: gateway
     tag: latest
-    pullPolicy: Never
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 2
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 1Gi
   service:
-    type: ClusterIP
     port: 8000
     targetPort: 8000
-  resources:
-    requests:
-      memory: 1Gi
-      cpu: 1
-    limits:
-      memory: 2Gi
-      cpu: 2
-
+    type: ClusterIP
 mediaService:
   image:
-    repository: media-service
     pullPolicy: Never
+    repository: media-service
+  resources:
+    limits:
+      cpu: 8
+      memory: 8Gi
+    requests:
+      cpu: 1
+      memory: 1Gi
   service:
-    type: ClusterIP
     port: 7000
     targetPort: 7000
-  resources:
-    requests:
-      memory: 1Gi
-      cpu: 1
-    limits:
-      memory: 8Gi
-      cpu: 8
-
-worker:
-  image:
-    repository: worker
-    pullPolicy: Never
-  service:
     type: ClusterIP
-    port: 6000
-    targetPort: 6000
-
 storage:
-
   datasets:
-    size: 5Gi
+    accessModes:
+    - ReadOnlyMany
     mountPath: /data/datasets
-    accessModes:
-      - ReadOnlyMany
-
+    size: 9Gi
   mediaFiles:
-    size: 2Gi
+    accessModes:
+    - ReadWriteMany
     mountPath: /data/media_files
-    accessModes:
-      - ReadWriteMany
-
+    size: 2Gi
   weights:
-    size: 20Gi
-    mountPath: /data/weights
     accessModes:
-      - ReadOnlyMany
-
+    - ReadOnlyMany
+    mountPath: /data/weights
+    size: 6Gi
 timeSlicing:
   replicas: 4
+worker:
+  image:
+    pullPolicy: Never
+    repository: worker
+  service:
+    port: 6000
+    targetPort: 6000
+    type: ClusterIP

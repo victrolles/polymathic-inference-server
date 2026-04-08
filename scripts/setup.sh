@@ -65,6 +65,9 @@ for model_path in "models"/*; do
   fi
 done
 
+# evaluate the sizes of the datasets and weights
+python scripts/evaluate_pvc_sizes.py
+
 # deploy
 kubectl apply -f deploy/k8s/storage/pvc-inspector.yaml
 helm upgrade --install inference-platform deploy/helm/inference-platform \
