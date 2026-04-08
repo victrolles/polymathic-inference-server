@@ -112,7 +112,8 @@ async def request_model_information(request: ModelRequest):
             r = await client.get(extend_url(server.url, "/api/request_model_information"))
             r.raise_for_status()
             information = InformationConfig(**r.json())
-            information.cover_image_path = convert_path_to_url(information.cover_image_path, GATEWAY_HOST, GATEWAY_PORT)
+            if information.display:
+                information.cover_image_path = convert_path_to_url(information.cover_image_path, GATEWAY_HOST, GATEWAY_PORT)
             return information.model_dump(mode="json")
     except httpx.HTTPError as e:
         error_message = (
@@ -121,6 +122,33 @@ async def request_model_information(request: ModelRequest):
         )
         print(error_message)
         raise HTTPException(status_code=500, detail=error_message)
+
+@app.get("/api/request_all_models_information")
+async def request_all_models_information():
+    
+    # --- ASK to all Media Services ---
+    models_information: list[InformationConfig] = []
+    for server in server_manager.servers:
+        try:
+            async with httpx.AsyncClient(timeout=3600) as client:
+                r = await client.get(
+                    extend_url(server.url, "/api/request_model_information")
+                )
+                r.raise_for_status()
+                data = r.json()
+                information_config = InformationConfig(**data)
+                if information_config.display:
+                    information_config.cover_image_path = convert_path_to_url(information_config.cover_image_path, GATEWAY_HOST, GATEWAY_PORT)
+                    models_information.append(information_config.model_dump(mode="json"))
+        except httpx.HTTPError as e:
+            error_message = f"Error requesting all models information from {server.url}: {e}"
+            print(error_message)
+            raise HTTPException(status_code=500, detail=error_message)
+
+    return {
+        "ok": True,
+        "models_information": models_information
+    }
 
 @app.post("/api/request_random_data_samples")
 async def request_random_data_samples(request: ModelSizeTaskRequest):

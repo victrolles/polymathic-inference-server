@@ -42,6 +42,9 @@ class MediaService:
             cover_image_path = find_file_in_path(self.data_manager.model_path, "cover_image")
             new_cover_image_path = self.media_manager.save_cover_image(cover_image_path)
             self.config_manager.config.information.cover_image_path = new_cover_image_path
+            self.config_manager.config.information.model_id = self.config_manager.config.model.id
+            self.config_manager.config.information.size_id = self.config_manager.config.sizes[0].id
+            self.config_manager.config.information.task_id = self.config_manager.config.tasks[0].id
         return self.config_manager.config.information.model_dump(mode="json")
 
     def get_random_data_samples(self, task_id: str) -> list[Packet]:

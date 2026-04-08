@@ -165,6 +165,9 @@ class LinkConfig(BaseModel):
 
 class InformationConfig(BaseModel):
     display: bool = True
+    model_id: str = ""
+    size_id: str = ""
+    task_id: str = ""
     extended_name: str = ""
     date: str = ""
     short_description: str = ""
@@ -222,6 +225,9 @@ class AppConfig(BaseModel):
         if values.information is None:
             information = InformationConfig(
                 display=False,
+                model_id="",
+                size_id="",
+                task_id="",
                 extended_name="",
                 date="",
                 short_description="",
