@@ -1,9 +1,20 @@
 import os
 import sys
 import importlib.util
+from pathlib import Path
 from types import ModuleType
+import shutil
 
 from ..structs.general import Packet
+
+def find_file_in_path(path: str, file_name: str) -> str:
+    matches = sorted(Path(path).glob(f"{file_name}.*"))
+    if len(matches) == 0:
+        raise FileNotFoundError(f"File not found: {file_name} in {path}")
+    return str(matches[0])
+
+def copy_file_to_path(source_path: str, destination_path: str) -> None:
+    shutil.copy(Path(source_path), Path(destination_path))
 
 def extend_url(url: str, path: str) -> str:
     return url.rstrip("/") + path
@@ -21,12 +32,19 @@ def prints(message: str, server_type: str):
 def convert_path_to_url(path: str, host: str, port: int, model_id: str) -> str:
     file_name = os.path.basename(path)
     return f"/media_files/{model_id}/{file_name}"
+def convert_path_to_url(path: str, host: str, port: int) -> str:
+    split_path = path.split("/")
+    for idx in range(len(split_path)):
+        if split_path[idx] == "media_files":
+            truncated_path = "/".join(split_path[idx+1:])
+            return f"http://{host}:{port}/media_files/{truncated_path}" 
+    raise ValueError(f"Path not found: {path}")
 
-def convert_packets_to_url(packets: list[Packet], host: str, port: int, model_id: str) -> list[Packet]:
+def convert_packets_to_url(packets: list[Packet], host: str, port: int) -> list[Packet]:
     for idx, packet in enumerate(packets):
         modalities = packet.modalities  
         for idx2, modality in enumerate(modalities):
-            path = convert_path_to_url(modality.media_file.path, host, port, model_id)
+            path = convert_path_to_url(modality.media_file.path, host, port)
             packets[idx].modalities[idx2].media_file.path = path
     return packets
 

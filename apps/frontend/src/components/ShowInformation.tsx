@@ -1,5 +1,6 @@
 import type { Dict } from "../types/types";
 import type { ShowInformationProps } from "../types/interfaces";
+import { formatDate } from "../functions/functions";
 
 function Link({ link }: { link: Dict }) {
     return (
@@ -17,6 +18,10 @@ function ShowInformation({ model_information }: ShowInformationProps) {
     return (
         <div className="show-information">
             <p className="show-information-title">{model_information.extended_name}</p>
+            <p className="show-information-date">{formatDate(model_information.date)}</p>
+            <div className="show-information-image">
+                <img src={model_information.cover_image_path} alt={model_information.extended_name} />
+            </div>
             <p className="show-information-description">{model_information.description}</p>
             {model_information.links.length > 0 && (
                 <div className="show-information-links">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import InferenceContainer from "../components/InferenceContainer";
-import SideArrowContainer from "../components/sideArrow";
+import SideArrowContainer from "../components/SideArrow";
 import ShowInformation from "../components/ShowInformation";
 import type { Dict } from "../types/types";
 import { requestModelInformation } from "../requests/fast_api_requests";

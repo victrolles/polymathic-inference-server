@@ -83,3 +83,7 @@ export interface SideArrowProps {
 export interface ShowInformationProps {
     model_information: Dict | null;
 }
+
+export interface CardProps {
+    model_information: Dict;
+}

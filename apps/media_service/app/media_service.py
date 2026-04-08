@@ -3,6 +3,7 @@ import random
 from typing import Any
 
 from .config.manager import ConfigManager
+from .config.structs import InformationConfig
 from .data_manager import DataManager
 from .media_manager import MediaManager
 from .path_finder import StepType
@@ -11,6 +12,10 @@ from python.enums import DataKind
 from python.structs.general import ModelInfo, Packet, DatasetLocation, Modality, ModelSizeTaskId
 
 def setup_paths(media_files_path: str, models_path: str, datasets_path: str, model_id: str) -> None:
+from .config.data_kind import DataKind
+from shared.utils.functions import find_file_in_path, copy_file_to_path
+
+def setup_paths(media_files_path: str, models_path: str, model_id: str) -> None:
     media_files_path = os.path.join(media_files_path, model_id)
     model_path = os.path.join(models_path, model_id)
     datasets_path = os.path.join(datasets_path, model_id)
@@ -28,7 +33,6 @@ class MediaService:
         self.config_manager = ConfigManager(model_path)
         self.data_manager = DataManager(media_files_path, model_path, datasets_path, self.config_manager)
         self.media_manager = MediaManager(media_files_path)
-        
 
     def get_model_sizes_tasks(self) -> ModelInfo:
         return ModelInfo(
@@ -40,8 +44,15 @@ class MediaService:
     def get_config_task(self, task_id: str) -> dict:
         return self.config_manager.registry.tasks_by_id[task_id].model_dump()
 
-    def get_model_information(self) -> dict:
-        return self.config_manager.config.information
+    def get_model_information(self) -> InformationConfig:
+        if self.config_manager.config.information.display:
+            cover_image_path = find_file_in_path(self.data_manager.model_path, "cover_image")
+            new_cover_image_path = self.media_manager.save_cover_image(cover_image_path)
+            self.config_manager.config.information.cover_image_path = new_cover_image_path
+            self.config_manager.config.information.model_id = self.config_manager.config.model.id
+            self.config_manager.config.information.size_id = self.config_manager.config.sizes[0].id
+            self.config_manager.config.information.task_id = self.config_manager.config.tasks[0].id
+        return self.config_manager.config.information.model_dump(mode="json")
 
     def get_random_data_samples(self, task_id: str) -> list[Packet]:
         modality_ids = self.config_manager.get_modality_ids_by_task_id_and_phase(task_id, "data_samples")

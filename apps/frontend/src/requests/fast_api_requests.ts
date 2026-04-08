@@ -43,6 +43,19 @@ export async function requestModelInformation(model_id: string): Promise<Dict> {
     return data as Dict;
 }
 
+export async function requestAllModelsInformation(): Promise<Dict[]> {
+    const response = await fetch("http://localhost:8000/api/request_all_models_information", {
+        method: "GET",
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.models_information as Dict[];
+}
+
 export async function requestRandomDataSamples(model_size_task_id: ModelSizeTaskId): Promise<Packets> {
     const response = await fetch("/api/request_random_data_samples", {
         method: "POST",
