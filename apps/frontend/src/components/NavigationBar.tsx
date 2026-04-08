@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { requestAllModelsSizesTasks } from "../requests/fast_api_requests";
 import type { IdName, ModelSizesTasks, ModelsSizesTasks } from "../types/types";
 import type { ModelSelectorProps, SizeSelectorProps } from "../types/interfaces";
+import logo from "../assets/logo_dark_mode.png";
 
 function SizeSelector({model, sizes, task, setIsModelSelectorOpen}: SizeSelectorProps) {
     return (
@@ -64,7 +65,7 @@ function NavigationBar() {
 
     return (
         <div className="navigation-bar">
-            <img src="https://polymathic-ai.org/images/logo.svg" alt="Polymathic Logo" className="navigation-bar-logo" />
+            <img src={logo} alt="SciMLDemo Logo" className="navigation-bar-logo" />
             <ul className="navigation-bar-container">
                 <li><Link to="/" className={`navigation-bar-item${isHome ? "-selected" : ""}`}><span>Home</span></Link></li>
                 <li className={`navigation-bar-item${isInference ? "-selected" : ""}`} >
