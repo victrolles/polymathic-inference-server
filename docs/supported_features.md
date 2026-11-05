@@ -1,18 +1,18 @@
 # Supported Features
 
-## Dataset format
+## Dataset formats
 
- - torch (.pt)
- - huggingface (folder)
- - pickle (.pkl)
+- PyTorch (`.pt`)
+- Hugging Face (folder)
+- Pickle (`.pkl`)
 
-## Media format
+## Media formats
 
-### Image
+### Images
 
- - PIL Image (`PIL.Image.Image`)
- - Matplotlib Figure (`matplotlib.figure.Figure`)
+- PIL Image (`PIL.Image.Image`)
+- Matplotlib Figure (`matplotlib.figure.Figure`)
 
 ### Videos
 
- - Matplotlib Animation (`matplotlib.animation.FuncAnimation`)
+- Matplotlib Animation (`matplotlib.animation.FuncAnimation`)

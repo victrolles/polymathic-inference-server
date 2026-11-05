@@ -186,7 +186,7 @@ And its hard-coded version.
 
 ### Part 4 / 6 : datasets
 
-Most of the data processing is done on the [Media Service micro-service (ℹ️) ](../../server_architecture.md), so a class  `datasets` has to be defined and contains :
+Most of the data processing is done in the [Media Service](../../../README.md#architecture-and-technologies), so a class `datasets` has to be defined and contain:
  - `path` : the path to the dataset on your machine
  - `checkpoint_format` : The type of file your dataset has been saved with (.pt, .pkl, .hdf5, etc...)
  - `data_type_id` : describe the data type
